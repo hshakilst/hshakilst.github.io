@@ -1,0 +1,20 @@
+<!doctype html><html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>SQL Injection</title>
+  <meta name="generator" content="CherryTree">
+  <link rel="stylesheet" href="styles.css" type="text/css" />
+</head>
+<body><div class="main"><div class="tree">
+<p><strong>Index</strong></p>
+<p><a href="Midnight.html">Midnight</a></p>
+
+<ol>
+<li><a href="Midnight--nmap.html">nmap</a></li>
+<li><a href="Midnight--wpscan.html">wpscan</a></li>
+<li><a href="Midnight--SQL_Injection.html">SQL Injection</a></li>
+<li><a href="Midnight--foothold.html">foothold</a></li>
+<li><a href="Midnight--privesc.html">privesc</a></li>
+</ol></div>
+<div class="page"><h1><b><u>SQL Injection</u></b></h1><h3>From the website I found a interesting text saying </h3><br /><img src="images/4-1.png" alt="images/4-1.png" /><br /><br /><h3>I launched  wpscan against the site and confirmed SImply Poll Version was 1.5. We searched and found a possible exploit about sql injection in the ‘pollid’ parameter. (<a href="https://www.exploit-db.com/exploits/40971">https://www.exploit-db.com/exploits/40971</a> exploit-db)<br /><br /><h3>We launched sqlmap and was able to dump the ‘wp_user’ table. And found the admin account's hash.<br /><br />admin:$P$BaWk4oeAmrdn453hR6O6BvDqoF9yy6/<br /><br />I was unable to crack the password. So I decided to dump the user hash of database itself.<br /><br />root:*A14C02465C2ED43BDB89ACC6C7213C1D00617758<br />jose:*3AA64DAE22DBC5B7ACC28062EB18EFB7046D808C<br /><br />With the help of john I cracked the root users password succesfully.<br /><br />root:robert<br /><br />then I logged into the mysql db and changed the password for admin user of the word press site and logged to the admin panel of the wordpress.<br /><br /></h3></div></div>
+</body></html>
