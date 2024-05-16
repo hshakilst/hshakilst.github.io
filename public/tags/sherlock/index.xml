@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss">
+  <channel>
+    <title>Sherlock on Shakil&#39;s Blog</title>
+    <link>http://localhost:1313/tags/sherlock/</link>
+    <description>Recent content in Sherlock on Shakil&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Shakil Hossain - All Right Reserved.</copyright>
+    <lastBuildDate>Thu, 16 May 2024 12:59:39 +0200</lastBuildDate><atom:link href="http://localhost:1313/tags/sherlock/index.xml" rel="self" type="application/rss+xml" /><icon>http://localhost:1313/logo.svg</icon>
+    
+    
+    <item>
+      <title>HTB Sherlock Noted</title>
+      <link>http://localhost:1313/posts/htb-sherlocks/noted/</link>
+      <pubDate>Thu, 16 May 2024 12:59:39 +0200</pubDate>
+      
+      <guid>http://localhost:1313/posts/htb-sherlocks/noted/</guid>
+      <description><![CDATA[<h1 id="noted-dfir">Noted (DFIR)</h1>
+<h3 id="scenario">Scenario</h3>
+<p>Simon, a developer working at Forela, notified the CERT team about a note that appeared on his desktop. The note claimed that his system had been compromised and that sensitive data from Simon&rsquo;s workstation had been collected. The perpetrators performed data extortion on his workstation and are now threatening to release the data on the dark web unless their demands are met. Simon&rsquo;s workstation contained multiple sensitive files, including planned software projects, internal development plans, and application codebases. The threat intelligence team believes that the threat actor made some mistakes, but they have not found any way to contact the threat actors. The company&rsquo;s stakeholders are insisting that this incident be resolved and all sensitive data be recovered. They demand that under no circumstances should the data be leaked. As our junior security analyst, you have been assigned a specific type of DFIR (Digital Forensics and Incident Response) investigation in this case. The CERT lead, after triaging the workstation, has provided you with only the Notepad++ artifacts, suspecting that the attacker created the extortion note and conducted other activities with hands-on keyboard access. Your duty is to determine how the attack occurred and find a way to contact the threat actors, as they accidentally locked out their own contact information.</p>
+<h3 id="forensics">Forensics</h3>
+<ul>
+<li>
+<p><strong>Artifacts</strong>: The artifacts are from <code>Notepad++</code> software. We have two XML files named <code>config.xml</code> and <code>session.xml</code>. We are also provided with two backup files of two text files <code>LootAndPurge.java@2023-07-24_145332</code> and <code>YOU HAVE BEEN HACKED.txt@2023-07-24_150548</code>.</p>
+</li>
+<li>
+<p><strong>Extraction</strong>: The files were all in plaintext format and the volume of data was low, so extraction was not necessary. However, five files were created for classification purposes. They are <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Noted/file_history.txt">file history of recently opened files</a>, <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Noted/edited_files.txt">edited files in the alleged Notepad++</a>, <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Noted/custom_uris.txt">custom URIs the alleged Notepad++ was set to handle</a>, <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Noted/LootAndPurge.java">malicious data extortion java file</a> and <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Noted/YOU%20HAVE%20BEEN%20HACKED.txt">a ransom note file</a></p>
+</li>
+<li>
+<p><strong>Analysis</strong>:</p>
+<p>First, I examined the <code>config.xml</code> file and found some file histories. The history contained the file addresses that were recently opened by the user. I have listed them in the <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Noted/file_history.txt"><code>file_history.txt</code></a> file. Also, I found some custom URIs that were set to handle files from different types of services. They are listed in the <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Noted/custom_uris.txt"><code>custom_uris.txt</code></a> file.</p>
+<p>Second, I analyzed the <code>session.xml</code> file and there I found two files that were being edited along with their backup file locations and last modified timestamps. I added them to a file named <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Noted/edited_files.txt"><code>edited_files.txt</code></a> with the findings.</p>
+<p>Finally, I inspected the backup files and discovered a malicious <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Noted/LootAndPurge.java">Java source file</a>(LootAndPurge.java) that was used to encrypt the sensitive data and a <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Noted/YOU%20HAVE%20BEEN%20HACKED.txt">ransom note</a> where two <code>Pastebin</code> links were given to contact the cybercriminals. A password for the zip file was left behind by the perpetrators. Which can be used to decrypt the content of the zip file. The same password can be used to decrypt the <code>Pastebin</code> notes to find their Ethereum wallet address and email address.</p>
+</li>
+</ul>
+<h3 id="tools-used">Tools Used</h3>
+<ul>
+<li>Visual Studio Code</li>
+<li>Python3</li>
+</ul>
+<h3 id="questions-and-answers">Questions and Answers</h3>
+<ul>
+<li>
+<p>Q1: What is the full path of the script used by Simon for AWS operations?</p>
+<ul>
+<li>A: <code>C:\Users\Simon.stark\Documents\Dev_Ops\AWS_objects migration.pl</code></li>
+</ul>
+</li>
+<li>
+<p>Q2: The attacker duplicated some program code and compiled it on the system, knowing that the victim was a software engineer and had all the necessary utilities. They did this to blend into the environment and didn&rsquo;t bring any of their tools. This code gathered sensitive data and prepared it for exfiltration. What is the full path of the program&rsquo;s source file?</p>
+<ul>
+<li>A: <code>C:\Users\simon.stark\Desktop\LootAndPurge.java</code>.</li>
+</ul>
+</li>
+<li>
+<p>Q3: What&rsquo;s the name of the final archive file containing all the data to be exfiltrated?</p>
+<ul>
+<li>A: <code>Forela-Dev-Data.zip</code></li>
+</ul>
+</li>
+<li>
+<p>Q4: What&rsquo;s the timestamp in UTC when attacker last modified the program source file?</p>
+<ul>
+<li>A: <code>2023-07-24 09:53:23</code></li>
+</ul>
+</li>
+<li>
+<p>Q5: The attacker wrote a data extortion note after exfiltrating data. What is the crypto wallet address to which attackers demanded payment?</p>
+<ul>
+<li>A: <code>0xca8fa8f0b631ecdb18cda619c4fc9d197c8affca</code></li>
+</ul>
+</li>
+<li>
+<p>Q6: What&rsquo;s the email address of the person to contact for support?</p>
+<ul>
+<li>A: <code>CyberJunkie@mail2torjgmxgexntbrmhvgluavhj7ouul5yar6ylbvjkxwqf6ixkwyd.onion</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="summary">Summary</h3>
+<p>Using the artifacts provided I was able to answer the questions. It was pretty straightforward. But answering Question 4 was a little bit baffling to me. It was related to Windows&rsquo;s FileTime System. I did a little bit of research and piece together an article that you can read <a href="https://hshakilst.github.io/posts/filetime/">here (FileTime)</a>. Also, I added a <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Noted/convert_splitted_filetime.py">Python script</a> to convert it into UTC.</p>
+]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>HTB Sherlock Jingle Bell</title>
+      <link>http://localhost:1313/posts/htb-sherlocks/jingle-bell/</link>
+      <pubDate>Thu, 16 May 2024 12:54:17 +0200</pubDate>
+      
+      <guid>http://localhost:1313/posts/htb-sherlocks/jingle-bell/</guid>
+      <description><![CDATA[<h1 id="jingle-bell-dfir">Jingle Bell (DFIR)</h1>
+<h3 id="scenario">Scenario</h3>
+<p>Torrin is suspected to be an insider threat in Forela. He is believed to have leaked some data and removed certain applications from their workstation. They managed to bypass some controls and installed unauthorized software. Despite the forensic team&rsquo;s efforts, no evidence of data leakage was found. As a senior incident responder, you have been tasked with investigating the incident to determine the conversation between the two parties involved.</p>
+<h3 id="forensics">Forensics</h3>
+<p>We are given a Windows push notification database file named <code>wpndatabase.db</code>. We can learn more about this database file on:</p>
+<ul>
+<li><a href="https://www.mdpi.com/2673-6756/2/1/7">A Digital Forensic View of Windows 10 Notifications</a></li>
+<li><a href="https://tzworks.com/prototypes/wpn/wpn.users.guide.pdf">Windows Push Notification (wpn) Database Parser Users Guide by TZWorks®</a></li>
+</ul>
+<p>From reading these articles we discovered that in that db file, there&rsquo;s a table named <code>Notification</code>. It contains the information of the notifications shown by Windows&rsquo;s Notification Manager as <code>XML</code> payload.</p>
+<p>Therefore, we used <code>sqlitebrowser</code> and manually dumped the <code>XML</code> data from the <code>Notification</code> table. And saved them in the <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Jingle%20Bell/notifications.xml">notifications.xml</a> file.</p>
+<p>We need to analyze this XML file to answer the following questions.</p>
+<h3 id="questions-and-answers">Questions and Answers</h3>
+<ul>
+<li>
+<p>Q: Which software/application did Torrin use to leak Forela&rsquo;s secrets?</p>
+<ul>
+<li>A: Torrin used <code>Slack</code> to leak the secrets. We know this from the notification&rsquo;s <code>&lt;toast launch=&quot;&quot;&gt;</code> section.</li>
+</ul>
+</li>
+<li>
+<p>Q: What&rsquo;s the name of the rival company to which Torrin leaked the data?</p>
+<ul>
+<li>A: The rival company&rsquo;s name is <code>PrimeTech Innovations</code>. We got this information from <code>&lt;header title=&quot;&quot;&gt;</code> section of the notification.</li>
+</ul>
+</li>
+<li>
+<p>Q: What is the username of the person from the competitor organization whom Torrin shared information with?</p>
+<ul>
+<li>A: The username is <code>Cyberjunkie-PrimeTechDev</code>. We get this answer from <code>&lt;binding&gt;</code>&rsquo;s second <code>&lt;text&gt;</code> tag where the attribute <code>hint-style=&quot;bodySubtle&quot;</code> exists.</li>
+</ul>
+</li>
+<li>
+<p>Q: What&rsquo;s the channel name in which they conversed with each other?</p>
+<ul>
+<li>A: The channel name is <code>forela-secrets-leak</code>. We can derive this from <code>&lt;binding&gt;</code>&rsquo;s first <code>&lt;text&gt;</code> tag where the attribute <code>hint-maxLines=&quot;1&quot;</code> exists.</li>
+</ul>
+</li>
+<li>
+<p>Q: What was the password for the archive server?</p>
+<ul>
+<li>A: The password for the archive server is <code>Tobdaf8Qip$re@1</code>. We get this from reading the body of a notification.</li>
+</ul>
+</li>
+<li>
+<p>Q: What was the URL provided to Torrin to upload stolen data to?</p>
+<ul>
+<li>A: The URL is <code>https://drive.google.com/drive/folders/1vW97VBmxDZUIEuEUG64g5DLZvFP-Pdll?usp=sharing</code>.</li>
+</ul>
+</li>
+<li>
+<p>Q: When was the above link shared with Torrin?</p>
+<ul>
+<li>A: When answering this question we faced some difficulties. Two timestamps could be the answer to the question. Firstly, the <code>Notification</code> table has an <code>ArrivalTime</code> timestamp expressed in <code>Microsoft Filetime 64-bit</code> format. When converted to date it gave <code>GMT Thu Apr 20 2023 10:36:08</code>. But it wasn&rsquo;t the answer. Secondly, there was another timestamp embedded inside the <code>&lt;toast launch=&quot;slack://channel?id=C05451QSQM8&amp;amp;message=1681986889.660179&amp;amp;team=T054518ADUJ&amp;amp;origin=notification&quot;&gt;</code> tag of the notification&rsquo;s XML structure. The <code>message=1681986889.660179</code> converts to <code>GMT Thu Apr 20 2023 10:34:49</code>. Turns out the latter one was the correct one. So, the answer is <code>2023-04-20 10:34:49</code>.</li>
+</ul>
+</li>
+<li>
+<p>Q: For how much money did Torrin leak Forela&rsquo;s secrets?</p>
+<ul>
+<li>A: The answer is <code>£10000</code>. We could find it in the <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Jingle%20Bell/notifications.xml">notifications.xml</a> file.</li>
+</ul>
+</li>
+</ul>
+]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>HTB Sherlock BFT</title>
+      <link>http://localhost:1313/posts/htb-sherlocks/bft/</link>
+      <pubDate>Thu, 16 May 2024 12:44:59 +0200</pubDate>
+      
+      <guid>http://localhost:1313/posts/htb-sherlocks/bft/</guid>
+      <description><![CDATA[<h1 id="bft-dfir">BFT (DFIR)</h1>
+<h3 id="scenario">Scenario</h3>
+<p>In this Sherlock, you will become acquainted with MFT (Master File Table) forensics. You will be introduced to well-known tools and methodologies for analyzing MFT artifacts to identify malicious activity. During our analysis, you will utilize the MFTECmd tool to parse the provided MFT file, TimeLine Explorer to open and analyze the results from the parsed MFT, and a Hex editor to recover file contents from the MFT.</p>
+<h3 id="forensics">Forensics</h3>
+<ul>
+<li><strong>Artifact</strong>: An MFT file <code>$MFT</code> is provided. It&rsquo;s an NTFS file system&rsquo;s master file table. <a href="https://hshakilst.github.io/posts/master-file-table/">Learn more about MFT here</a>.</li>
+<li><strong>Extraction</strong>: I used <code>MFTECmd</code> to extract the contents of it and saved it to a file in CSV format.</li>
+<li><strong>Analysis</strong>: <code>Timeline Explorer</code> and <code>010Editor</code> were used to answer the questions.</li>
+</ul>
+<h3 id="tools-used">Tools Used</h3>
+<ul>
+<li><a href="https://github.com/EricZimmerman/MFTECmd">MFTECmd by Eric Zimmerman</a></li>
+<li><a href="https://ericzimmerman.github.io/#!index.md">Timeline Explorer</a></li>
+<li><a href="https://www.sweetscape.com/download/010editor/">010Editor Hex Editor</a></li>
+</ul>
+<h3 id="questions-and-answers">Questions and Answers</h3>
+<ul>
+<li>
+<p>Q1: Simon Stark was targeted by attackers on February 13. He downloaded a ZIP file from a link received in an email. What was the name of the ZIP file he downloaded from the link?</p>
+<ul>
+<li>A: The answer is <code>Stage-20240213T093324Z-001.zip</code>. I applied a filter on the header <code>Created0x10</code> with the date <code>2024-02-13</code> and on the header <code>Extension</code> with the value <code>.zip</code>.</li>
+</ul>
+</li>
+<li>
+<p>Q2: Examine the Zone Identifier contents for the initially downloaded ZIP file. This field reveals the HostUrl from where the file was downloaded, serving as a valuable Indicator of Compromise (IOC) in our investigation/analysis. What is the full Host URL from where this ZIP file was downloaded?</p>
+<ul>
+<li>
+<p>A: The answer is <code>https://storage.googleapis.com/drive-bulk-export-anonymous/20240213T093324.039Z/4133399871716478688/a40aecd0-1cf3-4f88-b55a-e188d5c1c04f/1/c277a8b4-afa9-4d34-b8ca-e1eb5e5f983c?authuser</code>.</p>
+<p>To find the URL of the downloaded file I needed to locate the <code>Stage-20240213T093324Z-001.zip:Zone.Identifier</code> file by applying a filter on <code>Extension</code> with the value <code>.Identifier</code>. The <code>Zone.Identifier</code> file separated by a <code>:</code> after the original file is an <strong>Alternate Data Stream (ADS)</strong> file. It contains the file&rsquo;s origin Location. In this case, it was a URL. It can be found under the <code>Zone Id Contents</code> header.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Q3: What is the full path and name of the malicious file that executed malicious code and connected to a C2 server?</p>
+<ul>
+<li>A: The answer is <code>C:\Users\simon.stark\Downloads\Stage-20240213T093324Z-001\Stage\invoice\invoices\invoice.bat</code>. The file was found by applying a filter on the header <code>Parent Path</code> with the initial zip file&rsquo;s partial name <code>Stage</code> and a suspicious <code>.bat</code> file was discovered.</li>
+</ul>
+</li>
+<li>
+<p>Q4: Analyze the $Created0x30 timestamp for the previously identified file. When was this file created on disk?</p>
+<ul>
+<li>A: The answer is <code>2024-02-13 16:38:39</code>. <a href="https://hshakilst.github.io/posts/master-file-table/#timestamps">Learn more about the difference between $Created0x10 and $Created0x30</a>.</li>
+</ul>
+</li>
+<li>
+<p>Q5: Finding the hex offset of an MFT record is beneficial in many investigative scenarios. Find the hex offset of the stager file from Question 3.</p>
+<ul>
+<li>A: The answer is <code>16E3000</code>. To find the answer I needed to look for the malicious file&rsquo;s <code>Entry Number</code> which was <code>23436</code>. Then I multiplied it with 1024 <code>23436*1024</code> because each entry in the MFT is <code>1024 bytes</code> in size. After that, I converted the Decimal number to Hex.</li>
+</ul>
+</li>
+<li>
+<p>Q6: Each MFT record is 1024 bytes in size. If a file on disk has smaller size than 1024 bytes, they can be stored directly on MFT File itself. These are called MFT Resident files. During Windows File system Investigation, its crucial to look for any malicious/suspicious files that may be resident in MFT. This way we can find contents of malicious files/scripts. Find the contents of The malicious stager identified in Question3 and answer with the C2 IP and port.</p>
+<ul>
+<li>
+<p>A: The answer is <code>43.204.110.203:6666</code>.</p>
+<p>I had the hex offset for the <code>invoice.bat</code> file&rsquo;s entry and from the <strong>Timeline Explorer</strong>, and I discovered the <code>File Size</code> was <code>286 bytes</code>. So, it can be safely assumed it is an <a href="https://hshakilst.github.io/posts/master-file-table/#mft-resident-files"><code>MFT Resident</code> file</a>. The contents of this file can be viewed using a Hex Editor.</p>
+<p>I opened up my Hex Editor went to the offset <code>16E3000</code> and found the file&rsquo;s contents. It used <code>powershell</code> to download a payload from the above IP.</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="summary">Summary</h3>
+<p>Using the MFT file I was able to discover a stager file residing in MFT and the URL which was used to deliver it initially. I also discovered a C2 server by reading the contents of that file. A timeline for this incident was also established using Timeline Explorer.</p>
+]]></description>
+      
+    </item>
+    
+    
+  </channel>
+</rss>

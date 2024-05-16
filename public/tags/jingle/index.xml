@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss">
+  <channel>
+    <title>Jingle on Shakil&#39;s Blog</title>
+    <link>http://localhost:1313/tags/jingle/</link>
+    <description>Recent content in Jingle on Shakil&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Shakil Hossain - All Right Reserved.</copyright>
+    <lastBuildDate>Thu, 16 May 2024 12:54:17 +0200</lastBuildDate><atom:link href="http://localhost:1313/tags/jingle/index.xml" rel="self" type="application/rss+xml" /><icon>http://localhost:1313/logo.svg</icon>
+    
+    
+    <item>
+      <title>HTB Sherlock Jingle Bell</title>
+      <link>http://localhost:1313/posts/htb-sherlocks/jingle-bell/</link>
+      <pubDate>Thu, 16 May 2024 12:54:17 +0200</pubDate>
+      
+      <guid>http://localhost:1313/posts/htb-sherlocks/jingle-bell/</guid>
+      <description><![CDATA[<h1 id="jingle-bell-dfir">Jingle Bell (DFIR)</h1>
+<h3 id="scenario">Scenario</h3>
+<p>Torrin is suspected to be an insider threat in Forela. He is believed to have leaked some data and removed certain applications from their workstation. They managed to bypass some controls and installed unauthorized software. Despite the forensic team&rsquo;s efforts, no evidence of data leakage was found. As a senior incident responder, you have been tasked with investigating the incident to determine the conversation between the two parties involved.</p>
+<h3 id="forensics">Forensics</h3>
+<p>We are given a Windows push notification database file named <code>wpndatabase.db</code>. We can learn more about this database file on:</p>
+<ul>
+<li><a href="https://www.mdpi.com/2673-6756/2/1/7">A Digital Forensic View of Windows 10 Notifications</a></li>
+<li><a href="https://tzworks.com/prototypes/wpn/wpn.users.guide.pdf">Windows Push Notification (wpn) Database Parser Users Guide by TZWorks®</a></li>
+</ul>
+<p>From reading these articles we discovered that in that db file, there&rsquo;s a table named <code>Notification</code>. It contains the information of the notifications shown by Windows&rsquo;s Notification Manager as <code>XML</code> payload.</p>
+<p>Therefore, we used <code>sqlitebrowser</code> and manually dumped the <code>XML</code> data from the <code>Notification</code> table. And saved them in the <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Jingle%20Bell/notifications.xml">notifications.xml</a> file.</p>
+<p>We need to analyze this XML file to answer the following questions.</p>
+<h3 id="questions-and-answers">Questions and Answers</h3>
+<ul>
+<li>
+<p>Q: Which software/application did Torrin use to leak Forela&rsquo;s secrets?</p>
+<ul>
+<li>A: Torrin used <code>Slack</code> to leak the secrets. We know this from the notification&rsquo;s <code>&lt;toast launch=&quot;&quot;&gt;</code> section.</li>
+</ul>
+</li>
+<li>
+<p>Q: What&rsquo;s the name of the rival company to which Torrin leaked the data?</p>
+<ul>
+<li>A: The rival company&rsquo;s name is <code>PrimeTech Innovations</code>. We got this information from <code>&lt;header title=&quot;&quot;&gt;</code> section of the notification.</li>
+</ul>
+</li>
+<li>
+<p>Q: What is the username of the person from the competitor organization whom Torrin shared information with?</p>
+<ul>
+<li>A: The username is <code>Cyberjunkie-PrimeTechDev</code>. We get this answer from <code>&lt;binding&gt;</code>&rsquo;s second <code>&lt;text&gt;</code> tag where the attribute <code>hint-style=&quot;bodySubtle&quot;</code> exists.</li>
+</ul>
+</li>
+<li>
+<p>Q: What&rsquo;s the channel name in which they conversed with each other?</p>
+<ul>
+<li>A: The channel name is <code>forela-secrets-leak</code>. We can derive this from <code>&lt;binding&gt;</code>&rsquo;s first <code>&lt;text&gt;</code> tag where the attribute <code>hint-maxLines=&quot;1&quot;</code> exists.</li>
+</ul>
+</li>
+<li>
+<p>Q: What was the password for the archive server?</p>
+<ul>
+<li>A: The password for the archive server is <code>Tobdaf8Qip$re@1</code>. We get this from reading the body of a notification.</li>
+</ul>
+</li>
+<li>
+<p>Q: What was the URL provided to Torrin to upload stolen data to?</p>
+<ul>
+<li>A: The URL is <code>https://drive.google.com/drive/folders/1vW97VBmxDZUIEuEUG64g5DLZvFP-Pdll?usp=sharing</code>.</li>
+</ul>
+</li>
+<li>
+<p>Q: When was the above link shared with Torrin?</p>
+<ul>
+<li>A: When answering this question we faced some difficulties. Two timestamps could be the answer to the question. Firstly, the <code>Notification</code> table has an <code>ArrivalTime</code> timestamp expressed in <code>Microsoft Filetime 64-bit</code> format. When converted to date it gave <code>GMT Thu Apr 20 2023 10:36:08</code>. But it wasn&rsquo;t the answer. Secondly, there was another timestamp embedded inside the <code>&lt;toast launch=&quot;slack://channel?id=C05451QSQM8&amp;amp;message=1681986889.660179&amp;amp;team=T054518ADUJ&amp;amp;origin=notification&quot;&gt;</code> tag of the notification&rsquo;s XML structure. The <code>message=1681986889.660179</code> converts to <code>GMT Thu Apr 20 2023 10:34:49</code>. Turns out the latter one was the correct one. So, the answer is <code>2023-04-20 10:34:49</code>.</li>
+</ul>
+</li>
+<li>
+<p>Q: For how much money did Torrin leak Forela&rsquo;s secrets?</p>
+<ul>
+<li>A: The answer is <code>£10000</code>. We could find it in the <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Jingle%20Bell/notifications.xml">notifications.xml</a> file.</li>
+</ul>
+</li>
+</ul>
+]]></description>
+      
+    </item>
+    
+    
+  </channel>
+</rss>

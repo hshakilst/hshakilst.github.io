@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html class="" lang="en-us"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+        <script>
+            if (location.host != new URL("http:\/\/localhost:1313\/").host) location.href = "http:\/\/localhost:1313\/"
+        </script>
+    
+    <meta name="robots" content="noai, noimageai">
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=7" />
+
+    <link
+    rel="icon"
+    href='/favicon.png'
+/>
+<link
+    rel="shortcut icon"
+    href='/favicon.ico'
+    type="image/x-icon"
+/>
+<link
+    rel="apple-touch-icon"
+    href='/apple-touch-icon.png'
+/>
+
+    <link
+        rel="icon"
+        href='/logo.svg'
+        type="image/svg+xml"
+    />
+
+<title>
+        
+            HTB Sherlock BFT  &ndash;
+        
+        Shakil&#39;s Blog
+    </title>
+
+    
+    <link href="/symbols-nerd-font/symbols-nerd-font.css" rel="stylesheet" integrity="sha512-lydow8GLOLlYNOtHlksNCmGWWCBsbIEtikXpHzfWqx78HLlyQZHOzyLwPpKol4Th6aCwLUXOfODVYgwrd3nwKQ=="/>
+    <link href="/jetbrains-mono/jetbrains-mono.css" rel="stylesheet" integrity="sha512-tJxlgL6v1Y7kFf+qB8SloaAMKnOAw6WouknxXtIjkBux9Y/9aX81EUWOJO8c/3l98DmjG8brr4to7zaez606Fg=="/>
+
+    
+    
+    <link type="text/css" rel="stylesheet" href=http://localhost:1313/css/styles.1b7aa7dceda65930f08b5d668f6610d8f1bb884e4f133cf45d3cc937d9dfd6e1612b6abaa53857ae709e1dc2fa789675ce5718adeeecf6740e5b7912b04d732a.css integrity="sha512-G3qn3O2mWTDwi11mj2YQ2PG7iE5PEzz0XTzJN9nf1uFhK2q6pThXrnCeHcL6eJZ1zlcYre7s9nQOW3kSsE1zKg==" />
+<meta name="author" content="Shakil Hossain" />
+
+    
+        <meta name="keywords" content='bft, dfir, file, htb, master, mft, sherlock, table, windows' />
+    
+    
+        <meta name="description" content="In this Sherlock, you will become acquainted with MFT (Master File Table) forensics. You will be introduced to well-known tools and methodologies for analyzing MFT artifacts to identify malicious activity." />
+    
+
+<meta property="og:site_name"
+    content='Shakil&#39;s Blog' />
+
+    <meta property="og:title" content="HTB Sherlock BFT" />
+    <meta property="og:type" content="article" />
+    
+    <meta
+        property="article:author" content="Shakil Hossain" />
+    <meta
+        property="article:published_time"
+        content='2024-05-16T12:44:59Z&#43;0200' />
+    
+        
+            <meta property="article:tag" content="bft" />
+        
+            <meta property="article:tag" content="dfir" />
+        
+            <meta property="article:tag" content="file" />
+        
+            <meta property="article:tag" content="htb" />
+        
+            <meta property="article:tag" content="master" />
+        
+            <meta property="article:tag" content="mft" />
+        
+            <meta property="article:tag" content="sherlock" />
+        
+            <meta property="article:tag" content="table" />
+        
+            <meta property="article:tag" content="windows" />
+        
+    
+    <meta property="og:url" content="http://localhost:1313/posts/htb-sherlocks/bft/" />
+    
+    
+    <meta property="og:image"
+        content="http://localhost:1313/android-chrome-512x512.png" />
+    
+        <meta property="og:description" content="BFT (DFIR) Scenario In this Sherlock, you will become acquainted with MFT (Master File Table) forensics. You will be introduced to well-known tools and methodol" />
+    
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:domain"
+      content='localhost:1313'
+/>
+<meta property="twitter:url" content="http://localhost:1313/posts/htb-sherlocks/bft/" />
+
+
+    <meta name="twitter:title" content="HTB Sherlock BFT" />
+    
+    
+    
+    <meta name="twitter:image"
+        content="http://localhost:1313/android-chrome-512x512.png" />
+    
+        <meta name="twitter:description" content="BFT (DFIR) Scenario In this Sherlock, you will become acquainted with MFT (Master File Table) forensics. You will be introduced to well-known tools and methodol" />
+    
+
+<link rel="manifest" href="/manifest/index.json" />
+</head>
+
+
+<body>
+        <div id="baseContainer"><header class="">
+<div class="titleAndSearchContainer">
+        <div id="titleContainer">
+            
+                <a class="unstyledLink" href="/">
+                    <img src='/logo.svg' alt='Logo'/>
+                </a>
+            
+            <div class="rightOfLogo">
+                <div class="titleAndHamburger">
+                    <h1>
+                        <a class="unstyledLink" href="/">Shakil&#39;s Blog</a>
+                        
+                    </h1>
+                    
+                </div>
+                <div id="wide_nav"><nav>
+    
+    <ul id="main-nav">
+        <li><a href="/">Home</a></li>
+        
+            <li><a href="/posts/">Posts</a></li>
+        
+        
+        
+        
+        
+        
+        
+            <li><a href="/tags/">Tags</a></li>
+        
+        
+    </ul>
+</nav>
+</div>
+            </div>
+        </div>
+        <div class="search">
+    <input id="searchbar" type="text" placeholder='Search' />
+    <span class="nerdlink" onclick="newSearch();">&#xf002;</span>
+</div>
+<script>
+    function newSearch() {
+        let term = searchbar.value.trim();
+        if (!term) return;
+        location.href = `/search/?q=${term}`;
+    }
+    searchbar.onkeyup = (ev) => {if (ev.keyCode == 13) newSearch()};
+</script>
+
+    </div>
+    <div id="links">
+        <a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="/index.xml">
+    
+    
+        &#xf09e;
+    
+    <span>
+        RSS
+    </span>
+</a>
+
+        
+        <a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://github.com/hshakilst">
+    
+    
+        &#xf09b;
+    
+    <span>
+        Github
+    </span>
+</a>
+<a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://linkedin.com/in/hshakilst">
+    
+    
+        &#xf0e1;
+    
+    <span>
+        LinkedIn
+    </span>
+</a>
+<a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="mailto:hshakilst@gmail.com">
+    
+    
+        &#xf6ed;
+    
+    <span>
+        Gmail
+    </span>
+</a>
+
+    </div>
+    
+
+</header>
+<div id="contentContainer">
+                <div id="content">
+                    <main>
+<article class="card single">
+    
+        <h1>HTB Sherlock BFT</h1>
+    
+    
+        <p class="date">
+            <span title='Date'> </span>
+    2024-05-16
+
+</p>
+    
+    
+    
+    
+    <div><h1 id="bft-dfir">BFT (DFIR)</h1>
+<h3 id="scenario">Scenario</h3>
+<p>In this Sherlock, you will become acquainted with MFT (Master File Table) forensics. You will be introduced to well-known tools and methodologies for analyzing MFT artifacts to identify malicious activity. During our analysis, you will utilize the MFTECmd tool to parse the provided MFT file, TimeLine Explorer to open and analyze the results from the parsed MFT, and a Hex editor to recover file contents from the MFT.</p>
+<h3 id="forensics">Forensics</h3>
+<ul>
+<li><strong>Artifact</strong>: An MFT file <code>$MFT</code> is provided. It&rsquo;s an NTFS file system&rsquo;s master file table. <a href="https://hshakilst.github.io/posts/master-file-table/">Learn more about MFT here</a>.</li>
+<li><strong>Extraction</strong>: I used <code>MFTECmd</code> to extract the contents of it and saved it to a file in CSV format.</li>
+<li><strong>Analysis</strong>: <code>Timeline Explorer</code> and <code>010Editor</code> were used to answer the questions.</li>
+</ul>
+<h3 id="tools-used">Tools Used</h3>
+<ul>
+<li><a href="https://github.com/EricZimmerman/MFTECmd">MFTECmd by Eric Zimmerman</a></li>
+<li><a href="https://ericzimmerman.github.io/#!index.md">Timeline Explorer</a></li>
+<li><a href="https://www.sweetscape.com/download/010editor/">010Editor Hex Editor</a></li>
+</ul>
+<h3 id="questions-and-answers">Questions and Answers</h3>
+<ul>
+<li>
+<p>Q1: Simon Stark was targeted by attackers on February 13. He downloaded a ZIP file from a link received in an email. What was the name of the ZIP file he downloaded from the link?</p>
+<ul>
+<li>A: The answer is <code>Stage-20240213T093324Z-001.zip</code>. I applied a filter on the header <code>Created0x10</code> with the date <code>2024-02-13</code> and on the header <code>Extension</code> with the value <code>.zip</code>.</li>
+</ul>
+</li>
+<li>
+<p>Q2: Examine the Zone Identifier contents for the initially downloaded ZIP file. This field reveals the HostUrl from where the file was downloaded, serving as a valuable Indicator of Compromise (IOC) in our investigation/analysis. What is the full Host URL from where this ZIP file was downloaded?</p>
+<ul>
+<li>
+<p>A: The answer is <code>https://storage.googleapis.com/drive-bulk-export-anonymous/20240213T093324.039Z/4133399871716478688/a40aecd0-1cf3-4f88-b55a-e188d5c1c04f/1/c277a8b4-afa9-4d34-b8ca-e1eb5e5f983c?authuser</code>.</p>
+<p>To find the URL of the downloaded file I needed to locate the <code>Stage-20240213T093324Z-001.zip:Zone.Identifier</code> file by applying a filter on <code>Extension</code> with the value <code>.Identifier</code>. The <code>Zone.Identifier</code> file separated by a <code>:</code> after the original file is an <strong>Alternate Data Stream (ADS)</strong> file. It contains the file&rsquo;s origin Location. In this case, it was a URL. It can be found under the <code>Zone Id Contents</code> header.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Q3: What is the full path and name of the malicious file that executed malicious code and connected to a C2 server?</p>
+<ul>
+<li>A: The answer is <code>C:\Users\simon.stark\Downloads\Stage-20240213T093324Z-001\Stage\invoice\invoices\invoice.bat</code>. The file was found by applying a filter on the header <code>Parent Path</code> with the initial zip file&rsquo;s partial name <code>Stage</code> and a suspicious <code>.bat</code> file was discovered.</li>
+</ul>
+</li>
+<li>
+<p>Q4: Analyze the $Created0x30 timestamp for the previously identified file. When was this file created on disk?</p>
+<ul>
+<li>A: The answer is <code>2024-02-13 16:38:39</code>. <a href="https://hshakilst.github.io/posts/master-file-table/#timestamps">Learn more about the difference between $Created0x10 and $Created0x30</a>.</li>
+</ul>
+</li>
+<li>
+<p>Q5: Finding the hex offset of an MFT record is beneficial in many investigative scenarios. Find the hex offset of the stager file from Question 3.</p>
+<ul>
+<li>A: The answer is <code>16E3000</code>. To find the answer I needed to look for the malicious file&rsquo;s <code>Entry Number</code> which was <code>23436</code>. Then I multiplied it with 1024 <code>23436*1024</code> because each entry in the MFT is <code>1024 bytes</code> in size. After that, I converted the Decimal number to Hex.</li>
+</ul>
+</li>
+<li>
+<p>Q6: Each MFT record is 1024 bytes in size. If a file on disk has smaller size than 1024 bytes, they can be stored directly on MFT File itself. These are called MFT Resident files. During Windows File system Investigation, its crucial to look for any malicious/suspicious files that may be resident in MFT. This way we can find contents of malicious files/scripts. Find the contents of The malicious stager identified in Question3 and answer with the C2 IP and port.</p>
+<ul>
+<li>
+<p>A: The answer is <code>43.204.110.203:6666</code>.</p>
+<p>I had the hex offset for the <code>invoice.bat</code> file&rsquo;s entry and from the <strong>Timeline Explorer</strong>, and I discovered the <code>File Size</code> was <code>286 bytes</code>. So, it can be safely assumed it is an <a href="https://hshakilst.github.io/posts/master-file-table/#mft-resident-files"><code>MFT Resident</code> file</a>. The contents of this file can be viewed using a Hex Editor.</p>
+<p>I opened up my Hex Editor went to the offset <code>16E3000</code> and found the file&rsquo;s contents. It used <code>powershell</code> to download a payload from the above IP.</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="summary">Summary</h3>
+<p>Using the MFT file I was able to discover a stager file residing in MFT and the URL which was used to deliver it initially. I also discovered a C2 server by reading the contents of that file. A timeline for this incident was also established using Timeline Explorer.</p>
+</div>
+</article>
+
+    <hr />
+    <p class="articleTagsContainer">
+        <span> </span>
+        <strong>Tags:</strong>
+        
+            <a
+                
+                href="/tags/bft/">#bft</a>
+        
+            <a
+                
+                href="/tags/dfir/">#dfir</a>
+        
+            <a
+                
+                href="/tags/file/">#file</a>
+        
+            <a
+                
+                href="/tags/htb/">#htb</a>
+        
+            <a
+                
+                href="/tags/master/">#master</a>
+        
+            <a
+                
+                href="/tags/mft/">#mft</a>
+        
+            <a
+                
+                href="/tags/sherlock/">#sherlock</a>
+        
+            <a
+                
+                href="/tags/table/">#table</a>
+        
+            <a
+                
+                href="/tags/windows/">#windows</a>
+        
+    </p>
+
+
+
+
+
+    
+    
+        
+        <div class="relatedArticlesContainer">
+            <hr />
+            <h2>More posts like this</h2>
+            <div class="postlist ">
+                <article class="card postlistitem">
+    <div>
+        <h2>
+            <a href="http://localhost:1313/posts/htb-sherlocks/noted/">HTB Sherlock Noted</a>
+        </h2>
+        <p class="date">
+            <span title='Date'> </span>
+    2024-05-16
+
+
+                | 
+                <span title='Tags'> </span>
+                
+                    <a href="/tags/dfir">#dfir</a>
+                
+                    <a href="/tags/file">#file</a>
+                
+                    <a href="/tags/htb">#htb</a>
+                
+                    <a href="/tags/noted">#noted</a>
+                
+                    <a href="/tags/notepad&#43;&#43;">#notepad&#43;&#43;</a>
+                
+                    <a href="/tags/sherlock">#sherlock</a>
+                
+                    <a href="/tags/time">#time</a>
+                
+                    <a href="/tags/windows">#windows</a>
+                
+            
+        </p>
+        
+            
+        
+        
+            <div class="articlePreview">
+                <p>
+                    
+                        Noted (DFIR) Scenario Simon, a developer working at Forela, notified the CERT team about a note that appeared on his desktop. The note claimed that his system had been compromised and that sensitive data from Simon&rsquo;s workstation had been collected.
+                    
+                </p>
+                <p><a href="http://localhost:1313/posts/htb-sherlocks/noted/">Continue reading </a></p>
+            </div>
+        
+    </div>
+    <hr />
+</article>
+<article class="card postlistitem">
+    <div>
+        <h2>
+            <a href="http://localhost:1313/posts/htb-sherlocks/jingle-bell/">HTB Sherlock Jingle Bell</a>
+        </h2>
+        <p class="date">
+            <span title='Date'> </span>
+    2024-05-16
+
+
+                | 
+                <span title='Tags'> </span>
+                
+                    <a href="/tags/bell">#bell</a>
+                
+                    <a href="/tags/database">#database</a>
+                
+                    <a href="/tags/dfir">#dfir</a>
+                
+                    <a href="/tags/htb">#htb</a>
+                
+                    <a href="/tags/jingle">#jingle</a>
+                
+                    <a href="/tags/notification">#notification</a>
+                
+                    <a href="/tags/push">#push</a>
+                
+                    <a href="/tags/sherlock">#sherlock</a>
+                
+                    <a href="/tags/windows">#windows</a>
+                
+                    <a href="/tags/wpndatabase">#wpndatabase</a>
+                
+            
+        </p>
+        
+            
+        
+        
+            <div class="articlePreview">
+                <p>
+                    
+                        Jingle Bell (DFIR) Scenario Torrin is suspected to be an insider threat in Forela. He is believed to have leaked some data and removed certain applications from their workstation. They managed to bypass some controls and installed unauthorized software.
+                    
+                </p>
+                <p><a href="http://localhost:1313/posts/htb-sherlocks/jingle-bell/">Continue reading </a></p>
+            </div>
+        
+    </div>
+    <hr />
+</article>
+
+            </div>
+        </div>
+    
+
+
+                    </main><footer>
+    <hr />
+
+<p><small>
+        2024 &copy; Shakil Hossain - All Right Reserved.
+    </small></p>
+    <p><small>
+        <a href='https://gitlab.com/gabmus/hugo-ficurinia'>Ficurinia theme</a> for <a href='https://gohugo.io'>Hugo</a> by <a href='https://gabmus.org'>Gabriele Musco</a>.
+    </small></p>
+</footer>
+</div>
+            </div>
+        </div>
+
+
+</body>
+</html>

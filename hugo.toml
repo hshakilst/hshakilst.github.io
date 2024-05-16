@@ -40,16 +40,6 @@ summaryLength = 30
         startLevel = 1
 
 [menu]
-    [[menu.main]]
-        identifier = "ctf"
-        name = "CTF"
-        url = "/ctf"
-        weight = 99
-    [[menu.main]]
-        identifier = "dfir"
-        name = "DFIR"
-        url = "/dfir"
-        weight = 99
     [[menu.icons]]
         identifier = "github"
         name = "Github"

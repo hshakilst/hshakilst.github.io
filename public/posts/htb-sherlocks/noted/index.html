@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html class="" lang="en-us"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+        <script>
+            if (location.host != new URL("http:\/\/localhost:1313\/").host) location.href = "http:\/\/localhost:1313\/"
+        </script>
+    
+    <meta name="robots" content="noai, noimageai">
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=7" />
+
+    <link
+    rel="icon"
+    href='/favicon.png'
+/>
+<link
+    rel="shortcut icon"
+    href='/favicon.ico'
+    type="image/x-icon"
+/>
+<link
+    rel="apple-touch-icon"
+    href='/apple-touch-icon.png'
+/>
+
+    <link
+        rel="icon"
+        href='/logo.svg'
+        type="image/svg+xml"
+    />
+
+<title>
+        
+            HTB Sherlock Noted  &ndash;
+        
+        Shakil&#39;s Blog
+    </title>
+
+    
+    <link href="/symbols-nerd-font/symbols-nerd-font.css" rel="stylesheet" integrity="sha512-lydow8GLOLlYNOtHlksNCmGWWCBsbIEtikXpHzfWqx78HLlyQZHOzyLwPpKol4Th6aCwLUXOfODVYgwrd3nwKQ=="/>
+    <link href="/jetbrains-mono/jetbrains-mono.css" rel="stylesheet" integrity="sha512-tJxlgL6v1Y7kFf+qB8SloaAMKnOAw6WouknxXtIjkBux9Y/9aX81EUWOJO8c/3l98DmjG8brr4to7zaez606Fg=="/>
+
+    
+    
+    <link type="text/css" rel="stylesheet" href=http://localhost:1313/css/styles.1b7aa7dceda65930f08b5d668f6610d8f1bb884e4f133cf45d3cc937d9dfd6e1612b6abaa53857ae709e1dc2fa789675ce5718adeeecf6740e5b7912b04d732a.css integrity="sha512-G3qn3O2mWTDwi11mj2YQ2PG7iE5PEzz0XTzJN9nf1uFhK2q6pThXrnCeHcL6eJZ1zlcYre7s9nQOW3kSsE1zKg==" />
+<meta name="author" content="Shakil Hossain" />
+
+    
+        <meta name="keywords" content='dfir, file, htb, noted, notepad&#43;&#43;, sherlock, time, windows' />
+    
+    
+        <meta name="description" content="o Simon, a developer working at Forela, notified the CERT team about a note that appeared on his desktop. The note claimed that his system had been compromised and that sensitive data from Simon&amp;rsquo;s workstation had been collected." />
+    
+
+<meta property="og:site_name"
+    content='Shakil&#39;s Blog' />
+
+    <meta property="og:title" content="HTB Sherlock Noted" />
+    <meta property="og:type" content="article" />
+    
+    <meta
+        property="article:author" content="Shakil Hossain" />
+    <meta
+        property="article:published_time"
+        content='2024-05-16T12:59:39Z&#43;0200' />
+    
+        
+            <meta property="article:tag" content="dfir" />
+        
+            <meta property="article:tag" content="file" />
+        
+            <meta property="article:tag" content="htb" />
+        
+            <meta property="article:tag" content="noted" />
+        
+            <meta property="article:tag" content="notepad&#43;&#43;" />
+        
+            <meta property="article:tag" content="sherlock" />
+        
+            <meta property="article:tag" content="time" />
+        
+            <meta property="article:tag" content="windows" />
+        
+    
+    <meta property="og:url" content="http://localhost:1313/posts/htb-sherlocks/noted/" />
+    
+    
+    <meta property="og:image"
+        content="http://localhost:1313/android-chrome-512x512.png" />
+    
+        <meta property="og:description" content="Noted (DFIR) Scenario Simon, a developer working at Forela, notified the CERT team about a note that appeared on his desktop. The note claimed that his system h" />
+    
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:domain"
+      content='localhost:1313'
+/>
+<meta property="twitter:url" content="http://localhost:1313/posts/htb-sherlocks/noted/" />
+
+
+    <meta name="twitter:title" content="HTB Sherlock Noted" />
+    
+    
+    
+    <meta name="twitter:image"
+        content="http://localhost:1313/android-chrome-512x512.png" />
+    
+        <meta name="twitter:description" content="Noted (DFIR) Scenario Simon, a developer working at Forela, notified the CERT team about a note that appeared on his desktop. The note claimed that his system h" />
+    
+
+<link rel="manifest" href="/manifest/index.json" />
+</head>
+
+
+<body>
+        <div id="baseContainer"><header class="">
+<div class="titleAndSearchContainer">
+        <div id="titleContainer">
+            
+                <a class="unstyledLink" href="/">
+                    <img src='/logo.svg' alt='Logo'/>
+                </a>
+            
+            <div class="rightOfLogo">
+                <div class="titleAndHamburger">
+                    <h1>
+                        <a class="unstyledLink" href="/">Shakil&#39;s Blog</a>
+                        
+                    </h1>
+                    
+                </div>
+                <div id="wide_nav"><nav>
+    
+    <ul id="main-nav">
+        <li><a href="/">Home</a></li>
+        
+            <li><a href="/posts/">Posts</a></li>
+        
+        
+        
+        
+        
+        
+        
+            <li><a href="/tags/">Tags</a></li>
+        
+        
+    </ul>
+</nav>
+</div>
+            </div>
+        </div>
+        <div class="search">
+    <input id="searchbar" type="text" placeholder='Search' />
+    <span class="nerdlink" onclick="newSearch();">&#xf002;</span>
+</div>
+<script>
+    function newSearch() {
+        let term = searchbar.value.trim();
+        if (!term) return;
+        location.href = `/search/?q=${term}`;
+    }
+    searchbar.onkeyup = (ev) => {if (ev.keyCode == 13) newSearch()};
+</script>
+
+    </div>
+    <div id="links">
+        <a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="/index.xml">
+    
+    
+        &#xf09e;
+    
+    <span>
+        RSS
+    </span>
+</a>
+
+        
+        <a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://github.com/hshakilst">
+    
+    
+        &#xf09b;
+    
+    <span>
+        Github
+    </span>
+</a>
+<a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://linkedin.com/in/hshakilst">
+    
+    
+        &#xf0e1;
+    
+    <span>
+        LinkedIn
+    </span>
+</a>
+<a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="mailto:hshakilst@gmail.com">
+    
+    
+        &#xf6ed;
+    
+    <span>
+        Gmail
+    </span>
+</a>
+
+    </div>
+    
+
+</header>
+<div id="contentContainer">
+                <div id="content">
+                    <main>
+<article class="card single">
+    
+        <h1>HTB Sherlock Noted</h1>
+    
+    
+        <p class="date">
+            <span title='Date'> </span>
+    2024-05-16
+
+</p>
+    
+    
+    
+    
+    <div><h1 id="noted-dfir">Noted (DFIR)</h1>
+<h3 id="scenario">Scenario</h3>
+<p>Simon, a developer working at Forela, notified the CERT team about a note that appeared on his desktop. The note claimed that his system had been compromised and that sensitive data from Simon&rsquo;s workstation had been collected. The perpetrators performed data extortion on his workstation and are now threatening to release the data on the dark web unless their demands are met. Simon&rsquo;s workstation contained multiple sensitive files, including planned software projects, internal development plans, and application codebases. The threat intelligence team believes that the threat actor made some mistakes, but they have not found any way to contact the threat actors. The company&rsquo;s stakeholders are insisting that this incident be resolved and all sensitive data be recovered. They demand that under no circumstances should the data be leaked. As our junior security analyst, you have been assigned a specific type of DFIR (Digital Forensics and Incident Response) investigation in this case. The CERT lead, after triaging the workstation, has provided you with only the Notepad++ artifacts, suspecting that the attacker created the extortion note and conducted other activities with hands-on keyboard access. Your duty is to determine how the attack occurred and find a way to contact the threat actors, as they accidentally locked out their own contact information.</p>
+<h3 id="forensics">Forensics</h3>
+<ul>
+<li>
+<p><strong>Artifacts</strong>: The artifacts are from <code>Notepad++</code> software. We have two XML files named <code>config.xml</code> and <code>session.xml</code>. We are also provided with two backup files of two text files <code>LootAndPurge.java@2023-07-24_145332</code> and <code>YOU HAVE BEEN HACKED.txt@2023-07-24_150548</code>.</p>
+</li>
+<li>
+<p><strong>Extraction</strong>: The files were all in plaintext format and the volume of data was low, so extraction was not necessary. However, five files were created for classification purposes. They are <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Noted/file_history.txt">file history of recently opened files</a>, <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Noted/edited_files.txt">edited files in the alleged Notepad++</a>, <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Noted/custom_uris.txt">custom URIs the alleged Notepad++ was set to handle</a>, <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Noted/LootAndPurge.java">malicious data extortion java file</a> and <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Noted/YOU%20HAVE%20BEEN%20HACKED.txt">a ransom note file</a></p>
+</li>
+<li>
+<p><strong>Analysis</strong>:</p>
+<p>First, I examined the <code>config.xml</code> file and found some file histories. The history contained the file addresses that were recently opened by the user. I have listed them in the <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Noted/file_history.txt"><code>file_history.txt</code></a> file. Also, I found some custom URIs that were set to handle files from different types of services. They are listed in the <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Noted/custom_uris.txt"><code>custom_uris.txt</code></a> file.</p>
+<p>Second, I analyzed the <code>session.xml</code> file and there I found two files that were being edited along with their backup file locations and last modified timestamps. I added them to a file named <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Noted/edited_files.txt"><code>edited_files.txt</code></a> with the findings.</p>
+<p>Finally, I inspected the backup files and discovered a malicious <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Noted/LootAndPurge.java">Java source file</a>(LootAndPurge.java) that was used to encrypt the sensitive data and a <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Noted/YOU%20HAVE%20BEEN%20HACKED.txt">ransom note</a> where two <code>Pastebin</code> links were given to contact the cybercriminals. A password for the zip file was left behind by the perpetrators. Which can be used to decrypt the content of the zip file. The same password can be used to decrypt the <code>Pastebin</code> notes to find their Ethereum wallet address and email address.</p>
+</li>
+</ul>
+<h3 id="tools-used">Tools Used</h3>
+<ul>
+<li>Visual Studio Code</li>
+<li>Python3</li>
+</ul>
+<h3 id="questions-and-answers">Questions and Answers</h3>
+<ul>
+<li>
+<p>Q1: What is the full path of the script used by Simon for AWS operations?</p>
+<ul>
+<li>A: <code>C:\Users\Simon.stark\Documents\Dev_Ops\AWS_objects migration.pl</code></li>
+</ul>
+</li>
+<li>
+<p>Q2: The attacker duplicated some program code and compiled it on the system, knowing that the victim was a software engineer and had all the necessary utilities. They did this to blend into the environment and didn&rsquo;t bring any of their tools. This code gathered sensitive data and prepared it for exfiltration. What is the full path of the program&rsquo;s source file?</p>
+<ul>
+<li>A: <code>C:\Users\simon.stark\Desktop\LootAndPurge.java</code>.</li>
+</ul>
+</li>
+<li>
+<p>Q3: What&rsquo;s the name of the final archive file containing all the data to be exfiltrated?</p>
+<ul>
+<li>A: <code>Forela-Dev-Data.zip</code></li>
+</ul>
+</li>
+<li>
+<p>Q4: What&rsquo;s the timestamp in UTC when attacker last modified the program source file?</p>
+<ul>
+<li>A: <code>2023-07-24 09:53:23</code></li>
+</ul>
+</li>
+<li>
+<p>Q5: The attacker wrote a data extortion note after exfiltrating data. What is the crypto wallet address to which attackers demanded payment?</p>
+<ul>
+<li>A: <code>0xca8fa8f0b631ecdb18cda619c4fc9d197c8affca</code></li>
+</ul>
+</li>
+<li>
+<p>Q6: What&rsquo;s the email address of the person to contact for support?</p>
+<ul>
+<li>A: <code>CyberJunkie@mail2torjgmxgexntbrmhvgluavhj7ouul5yar6ylbvjkxwqf6ixkwyd.onion</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="summary">Summary</h3>
+<p>Using the artifacts provided I was able to answer the questions. It was pretty straightforward. But answering Question 4 was a little bit baffling to me. It was related to Windows&rsquo;s FileTime System. I did a little bit of research and piece together an article that you can read <a href="https://hshakilst.github.io/posts/filetime/">here (FileTime)</a>. Also, I added a <a href="https://github.com/hshakilst/DFIR/blob/main/HTB%20Sherlocks/Noted/convert_splitted_filetime.py">Python script</a> to convert it into UTC.</p>
+</div>
+</article>
+
+    <hr />
+    <p class="articleTagsContainer">
+        <span> </span>
+        <strong>Tags:</strong>
+        
+            <a
+                
+                href="/tags/dfir/">#dfir</a>
+        
+            <a
+                
+                href="/tags/file/">#file</a>
+        
+            <a
+                
+                href="/tags/htb/">#htb</a>
+        
+            <a
+                
+                href="/tags/noted/">#noted</a>
+        
+            <a
+                
+                href="/tags/notepad&#43;&#43;/">#notepad&#43;&#43;</a>
+        
+            <a
+                
+                href="/tags/sherlock/">#sherlock</a>
+        
+            <a
+                
+                href="/tags/time/">#time</a>
+        
+            <a
+                
+                href="/tags/windows/">#windows</a>
+        
+    </p>
+
+
+
+
+
+    
+    
+        
+        <div class="relatedArticlesContainer">
+            <hr />
+            <h2>More posts like this</h2>
+            <div class="postlist ">
+                <article class="card postlistitem">
+    <div>
+        <h2>
+            <a href="http://localhost:1313/posts/htb-sherlocks/jingle-bell/">HTB Sherlock Jingle Bell</a>
+        </h2>
+        <p class="date">
+            <span title='Date'> </span>
+    2024-05-16
+
+
+                | 
+                <span title='Tags'> </span>
+                
+                    <a href="/tags/bell">#bell</a>
+                
+                    <a href="/tags/database">#database</a>
+                
+                    <a href="/tags/dfir">#dfir</a>
+                
+                    <a href="/tags/htb">#htb</a>
+                
+                    <a href="/tags/jingle">#jingle</a>
+                
+                    <a href="/tags/notification">#notification</a>
+                
+                    <a href="/tags/push">#push</a>
+                
+                    <a href="/tags/sherlock">#sherlock</a>
+                
+                    <a href="/tags/windows">#windows</a>
+                
+                    <a href="/tags/wpndatabase">#wpndatabase</a>
+                
+            
+        </p>
+        
+            
+        
+        
+            <div class="articlePreview">
+                <p>
+                    
+                        Jingle Bell (DFIR) Scenario Torrin is suspected to be an insider threat in Forela. He is believed to have leaked some data and removed certain applications from their workstation. They managed to bypass some controls and installed unauthorized software.
+                    
+                </p>
+                <p><a href="http://localhost:1313/posts/htb-sherlocks/jingle-bell/">Continue reading </a></p>
+            </div>
+        
+    </div>
+    <hr />
+</article>
+<article class="card postlistitem">
+    <div>
+        <h2>
+            <a href="http://localhost:1313/posts/htb-sherlocks/bft/">HTB Sherlock BFT</a>
+        </h2>
+        <p class="date">
+            <span title='Date'> </span>
+    2024-05-16
+
+
+                | 
+                <span title='Tags'> </span>
+                
+                    <a href="/tags/bft">#bft</a>
+                
+                    <a href="/tags/dfir">#dfir</a>
+                
+                    <a href="/tags/file">#file</a>
+                
+                    <a href="/tags/htb">#htb</a>
+                
+                    <a href="/tags/master">#master</a>
+                
+                    <a href="/tags/mft">#mft</a>
+                
+                    <a href="/tags/sherlock">#sherlock</a>
+                
+                    <a href="/tags/table">#table</a>
+                
+                    <a href="/tags/windows">#windows</a>
+                
+            
+        </p>
+        
+            
+        
+        
+            <div class="articlePreview">
+                <p>
+                    
+                        BFT (DFIR) Scenario In this Sherlock, you will become acquainted with MFT (Master File Table) forensics. You will be introduced to well-known tools and methodologies for analyzing MFT artifacts to identify malicious activity.
+                    
+                </p>
+                <p><a href="http://localhost:1313/posts/htb-sherlocks/bft/">Continue reading </a></p>
+            </div>
+        
+    </div>
+    <hr />
+</article>
+
+            </div>
+        </div>
+    
+
+
+                    </main><footer>
+    <hr />
+
+<p><small>
+        2024 &copy; Shakil Hossain - All Right Reserved.
+    </small></p>
+    <p><small>
+        <a href='https://gitlab.com/gabmus/hugo-ficurinia'>Ficurinia theme</a> for <a href='https://gohugo.io'>Hugo</a> by <a href='https://gabmus.org'>Gabriele Musco</a>.
+    </small></p>
+</footer>
+</div>
+            </div>
+        </div>
+
+
+</body>
+</html>

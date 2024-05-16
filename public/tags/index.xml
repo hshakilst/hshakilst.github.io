@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss">
   <channel>
     <title>Tags on Shakil&#39;s Blog</title>
-    <link>https://hshakilst.github.io/tags/</link>
+    <link>http://localhost:1313/tags/</link>
     <description>Recent content in Tags on Shakil&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Shakil Hossain - All Right Reserved.</copyright>
-    <lastBuildDate>Thu, 16 May 2024 12:14:06 +0200</lastBuildDate><atom:link href="https://hshakilst.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><icon>https://hshakilst.github.io/logo.svg</icon>
+    <lastBuildDate>Thu, 16 May 2024 12:59:39 +0200</lastBuildDate><atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" /><icon>http://localhost:1313/logo.svg</icon>
     
     
     <item>
       <title>Dfir</title>
-      <link>https://hshakilst.github.io/tags/dfir/</link>
-      <pubDate>Thu, 16 May 2024 12:14:06 +0200</pubDate>
+      <link>http://localhost:1313/tags/dfir/</link>
+      <pubDate>Thu, 16 May 2024 12:59:39 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/dfir/</guid>
+      <guid>http://localhost:1313/tags/dfir/</guid>
       <description><![CDATA[]]></description>
       
     </item>
@@ -23,10 +23,58 @@
     
     <item>
       <title>File</title>
-      <link>https://hshakilst.github.io/tags/file/</link>
-      <pubDate>Thu, 16 May 2024 12:14:06 +0200</pubDate>
+      <link>http://localhost:1313/tags/file/</link>
+      <pubDate>Thu, 16 May 2024 12:59:39 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/file/</guid>
+      <guid>http://localhost:1313/tags/file/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Htb</title>
+      <link>http://localhost:1313/tags/htb/</link>
+      <pubDate>Thu, 16 May 2024 12:59:39 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/htb/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Noted</title>
+      <link>http://localhost:1313/tags/noted/</link>
+      <pubDate>Thu, 16 May 2024 12:59:39 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/noted/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Notepad&#43;&#43;</title>
+      <link>http://localhost:1313/tags/notepad&#43;&#43;/</link>
+      <pubDate>Thu, 16 May 2024 12:59:39 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/notepad&#43;&#43;/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Sherlock</title>
+      <link>http://localhost:1313/tags/sherlock/</link>
+      <pubDate>Thu, 16 May 2024 12:59:39 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/sherlock/</guid>
       <description><![CDATA[]]></description>
       
     </item>
@@ -35,22 +83,10 @@
     
     <item>
       <title>Time</title>
-      <link>https://hshakilst.github.io/tags/time/</link>
-      <pubDate>Thu, 16 May 2024 12:14:06 +0200</pubDate>
+      <link>http://localhost:1313/tags/time/</link>
+      <pubDate>Thu, 16 May 2024 12:59:39 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/time/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>Timestamp</title>
-      <link>https://hshakilst.github.io/tags/timestamp/</link>
-      <pubDate>Thu, 16 May 2024 12:14:06 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/timestamp/</guid>
+      <guid>http://localhost:1313/tags/time/</guid>
       <description><![CDATA[]]></description>
       
     </item>
@@ -59,10 +95,94 @@
     
     <item>
       <title>Windows</title>
-      <link>https://hshakilst.github.io/tags/windows/</link>
-      <pubDate>Thu, 16 May 2024 12:14:06 +0200</pubDate>
+      <link>http://localhost:1313/tags/windows/</link>
+      <pubDate>Thu, 16 May 2024 12:59:39 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/windows/</guid>
+      <guid>http://localhost:1313/tags/windows/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Bell</title>
+      <link>http://localhost:1313/tags/bell/</link>
+      <pubDate>Thu, 16 May 2024 12:54:17 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/bell/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Database</title>
+      <link>http://localhost:1313/tags/database/</link>
+      <pubDate>Thu, 16 May 2024 12:54:17 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/database/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Jingle</title>
+      <link>http://localhost:1313/tags/jingle/</link>
+      <pubDate>Thu, 16 May 2024 12:54:17 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/jingle/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Notification</title>
+      <link>http://localhost:1313/tags/notification/</link>
+      <pubDate>Thu, 16 May 2024 12:54:17 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/notification/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Push</title>
+      <link>http://localhost:1313/tags/push/</link>
+      <pubDate>Thu, 16 May 2024 12:54:17 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/push/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Wpndatabase</title>
+      <link>http://localhost:1313/tags/wpndatabase/</link>
+      <pubDate>Thu, 16 May 2024 12:54:17 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/wpndatabase/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Bft</title>
+      <link>http://localhost:1313/tags/bft/</link>
+      <pubDate>Thu, 16 May 2024 12:44:59 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/bft/</guid>
       <description><![CDATA[]]></description>
       
     </item>
@@ -71,10 +191,22 @@
     
     <item>
       <title>Master</title>
-      <link>https://hshakilst.github.io/tags/master/</link>
-      <pubDate>Thu, 16 May 2024 11:20:29 +0200</pubDate>
+      <link>http://localhost:1313/tags/master/</link>
+      <pubDate>Thu, 16 May 2024 12:44:59 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/master/</guid>
+      <guid>http://localhost:1313/tags/master/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Mft</title>
+      <link>http://localhost:1313/tags/mft/</link>
+      <pubDate>Thu, 16 May 2024 12:44:59 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/mft/</guid>
       <description><![CDATA[]]></description>
       
     </item>
@@ -83,10 +215,22 @@
     
     <item>
       <title>Table</title>
-      <link>https://hshakilst.github.io/tags/table/</link>
-      <pubDate>Thu, 16 May 2024 11:20:29 +0200</pubDate>
+      <link>http://localhost:1313/tags/table/</link>
+      <pubDate>Thu, 16 May 2024 12:44:59 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/table/</guid>
+      <guid>http://localhost:1313/tags/table/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Timestamp</title>
+      <link>http://localhost:1313/tags/timestamp/</link>
+      <pubDate>Thu, 16 May 2024 12:14:06 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/timestamp/</guid>
       <description><![CDATA[]]></description>
       
     </item>

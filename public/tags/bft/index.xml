@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss">
+  <channel>
+    <title>Bft on Shakil&#39;s Blog</title>
+    <link>http://localhost:1313/tags/bft/</link>
+    <description>Recent content in Bft on Shakil&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Shakil Hossain - All Right Reserved.</copyright>
+    <lastBuildDate>Thu, 16 May 2024 12:44:59 +0200</lastBuildDate><atom:link href="http://localhost:1313/tags/bft/index.xml" rel="self" type="application/rss+xml" /><icon>http://localhost:1313/logo.svg</icon>
+    
+    
+    <item>
+      <title>HTB Sherlock BFT</title>
+      <link>http://localhost:1313/posts/htb-sherlocks/bft/</link>
+      <pubDate>Thu, 16 May 2024 12:44:59 +0200</pubDate>
+      
+      <guid>http://localhost:1313/posts/htb-sherlocks/bft/</guid>
+      <description><![CDATA[<h1 id="bft-dfir">BFT (DFIR)</h1>
+<h3 id="scenario">Scenario</h3>
+<p>In this Sherlock, you will become acquainted with MFT (Master File Table) forensics. You will be introduced to well-known tools and methodologies for analyzing MFT artifacts to identify malicious activity. During our analysis, you will utilize the MFTECmd tool to parse the provided MFT file, TimeLine Explorer to open and analyze the results from the parsed MFT, and a Hex editor to recover file contents from the MFT.</p>
+<h3 id="forensics">Forensics</h3>
+<ul>
+<li><strong>Artifact</strong>: An MFT file <code>$MFT</code> is provided. It&rsquo;s an NTFS file system&rsquo;s master file table. <a href="https://hshakilst.github.io/posts/master-file-table/">Learn more about MFT here</a>.</li>
+<li><strong>Extraction</strong>: I used <code>MFTECmd</code> to extract the contents of it and saved it to a file in CSV format.</li>
+<li><strong>Analysis</strong>: <code>Timeline Explorer</code> and <code>010Editor</code> were used to answer the questions.</li>
+</ul>
+<h3 id="tools-used">Tools Used</h3>
+<ul>
+<li><a href="https://github.com/EricZimmerman/MFTECmd">MFTECmd by Eric Zimmerman</a></li>
+<li><a href="https://ericzimmerman.github.io/#!index.md">Timeline Explorer</a></li>
+<li><a href="https://www.sweetscape.com/download/010editor/">010Editor Hex Editor</a></li>
+</ul>
+<h3 id="questions-and-answers">Questions and Answers</h3>
+<ul>
+<li>
+<p>Q1: Simon Stark was targeted by attackers on February 13. He downloaded a ZIP file from a link received in an email. What was the name of the ZIP file he downloaded from the link?</p>
+<ul>
+<li>A: The answer is <code>Stage-20240213T093324Z-001.zip</code>. I applied a filter on the header <code>Created0x10</code> with the date <code>2024-02-13</code> and on the header <code>Extension</code> with the value <code>.zip</code>.</li>
+</ul>
+</li>
+<li>
+<p>Q2: Examine the Zone Identifier contents for the initially downloaded ZIP file. This field reveals the HostUrl from where the file was downloaded, serving as a valuable Indicator of Compromise (IOC) in our investigation/analysis. What is the full Host URL from where this ZIP file was downloaded?</p>
+<ul>
+<li>
+<p>A: The answer is <code>https://storage.googleapis.com/drive-bulk-export-anonymous/20240213T093324.039Z/4133399871716478688/a40aecd0-1cf3-4f88-b55a-e188d5c1c04f/1/c277a8b4-afa9-4d34-b8ca-e1eb5e5f983c?authuser</code>.</p>
+<p>To find the URL of the downloaded file I needed to locate the <code>Stage-20240213T093324Z-001.zip:Zone.Identifier</code> file by applying a filter on <code>Extension</code> with the value <code>.Identifier</code>. The <code>Zone.Identifier</code> file separated by a <code>:</code> after the original file is an <strong>Alternate Data Stream (ADS)</strong> file. It contains the file&rsquo;s origin Location. In this case, it was a URL. It can be found under the <code>Zone Id Contents</code> header.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Q3: What is the full path and name of the malicious file that executed malicious code and connected to a C2 server?</p>
+<ul>
+<li>A: The answer is <code>C:\Users\simon.stark\Downloads\Stage-20240213T093324Z-001\Stage\invoice\invoices\invoice.bat</code>. The file was found by applying a filter on the header <code>Parent Path</code> with the initial zip file&rsquo;s partial name <code>Stage</code> and a suspicious <code>.bat</code> file was discovered.</li>
+</ul>
+</li>
+<li>
+<p>Q4: Analyze the $Created0x30 timestamp for the previously identified file. When was this file created on disk?</p>
+<ul>
+<li>A: The answer is <code>2024-02-13 16:38:39</code>. <a href="https://hshakilst.github.io/posts/master-file-table/#timestamps">Learn more about the difference between $Created0x10 and $Created0x30</a>.</li>
+</ul>
+</li>
+<li>
+<p>Q5: Finding the hex offset of an MFT record is beneficial in many investigative scenarios. Find the hex offset of the stager file from Question 3.</p>
+<ul>
+<li>A: The answer is <code>16E3000</code>. To find the answer I needed to look for the malicious file&rsquo;s <code>Entry Number</code> which was <code>23436</code>. Then I multiplied it with 1024 <code>23436*1024</code> because each entry in the MFT is <code>1024 bytes</code> in size. After that, I converted the Decimal number to Hex.</li>
+</ul>
+</li>
+<li>
+<p>Q6: Each MFT record is 1024 bytes in size. If a file on disk has smaller size than 1024 bytes, they can be stored directly on MFT File itself. These are called MFT Resident files. During Windows File system Investigation, its crucial to look for any malicious/suspicious files that may be resident in MFT. This way we can find contents of malicious files/scripts. Find the contents of The malicious stager identified in Question3 and answer with the C2 IP and port.</p>
+<ul>
+<li>
+<p>A: The answer is <code>43.204.110.203:6666</code>.</p>
+<p>I had the hex offset for the <code>invoice.bat</code> file&rsquo;s entry and from the <strong>Timeline Explorer</strong>, and I discovered the <code>File Size</code> was <code>286 bytes</code>. So, it can be safely assumed it is an <a href="https://hshakilst.github.io/posts/master-file-table/#mft-resident-files"><code>MFT Resident</code> file</a>. The contents of this file can be viewed using a Hex Editor.</p>
+<p>I opened up my Hex Editor went to the offset <code>16E3000</code> and found the file&rsquo;s contents. It used <code>powershell</code> to download a payload from the above IP.</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="summary">Summary</h3>
+<p>Using the MFT file I was able to discover a stager file residing in MFT and the URL which was used to deliver it initially. I also discovered a C2 server by reading the contents of that file. A timeline for this incident was also established using Timeline Explorer.</p>
+]]></description>
+      
+    </item>
+    
+    
+  </channel>
+</rss>
