@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html class="" lang="en-us"><head>
+    
+        <script>
+            if (location.host != new URL("https:\/\/hshakilst.github.io\/").host) location.href = "https:\/\/hshakilst.github.io\/"
+        </script>
+    
+    <meta name="robots" content="noai, noimageai">
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=7" />
+
+    <link
+    rel="icon"
+    href='/favicon.png'
+/>
+<link
+    rel="shortcut icon"
+    href='/favicon.ico'
+    type="image/x-icon"
+/>
+<link
+    rel="apple-touch-icon"
+    href='/apple-touch-icon.png'
+/>
+
+    <link
+        rel="icon"
+        href='/logo.svg'
+        type="image/svg+xml"
+    />
+
+<title>
+        
+            Master File Table  &ndash;
+        
+        Shakil&#39;s Blog
+    </title>
+
+    
+    <link href="/symbols-nerd-font/symbols-nerd-font.css" rel="stylesheet" integrity="sha512-lydow8GLOLlYNOtHlksNCmGWWCBsbIEtikXpHzfWqx78HLlyQZHOzyLwPpKol4Th6aCwLUXOfODVYgwrd3nwKQ=="/>
+    <link href="/jetbrains-mono/jetbrains-mono.css" rel="stylesheet" integrity="sha512-tJxlgL6v1Y7kFf+qB8SloaAMKnOAw6WouknxXtIjkBux9Y/9aX81EUWOJO8c/3l98DmjG8brr4to7zaez606Fg=="/>
+
+    
+    
+    <link type="text/css" rel="stylesheet" href=https://hshakilst.github.io/css/styles.abbd6311bb4b6ca58f8e7398140529245ae0f6428b759fcd830742eee2619eabb900ba9914a9affb82aa9a16a9b9ea727bb315315a976a0db0e7513a5f12c504.css integrity="sha512-q71jEbtLbKWPjnOYFAUpJFrg9kKLdZ/NgwdC7uJhnqu5ALqZFKmv&#43;4Kqmhapuepye7MVMVqXag2w51E6XxLFBA==" />
+<meta name="author" content="Shakil Hossain" />
+
+    
+        <meta name="keywords" content='dfir, file, master, table, windows' />
+    
+    
+        <meta name="description" content="e Table? The Master File Table (MFT) is a system file in the NTFS file system (having the name $MFT) that stores metadata information about all files and directories on an NTFS volume." />
+    
+
+<meta property="og:site_name"
+    content='Shakil&#39;s Blog' />
+
+    <meta property="og:title" content="Master File Table" />
+    <meta property="og:type" content="article" />
+    
+    <meta
+        property="article:author" content="Shakil Hossain" />
+    <meta
+        property="article:published_time"
+        content='2024-05-16T11:20:29Z&#43;0200' />
+    
+        
+            <meta property="article:tag" content="dfir" />
+        
+            <meta property="article:tag" content="file" />
+        
+            <meta property="article:tag" content="master" />
+        
+            <meta property="article:tag" content="table" />
+        
+            <meta property="article:tag" content="windows" />
+        
+    
+    <meta property="og:url" content="https://hshakilst.github.io/posts/master-file-table/" />
+    
+    
+    <meta property="og:image"
+        content="https://hshakilst.github.io/android-chrome-512x512.png" />
+    
+        <meta property="og:description" content="What is a Master File Table? The Master File Table (MFT) is a system file in the NTFS file system (having the name $MFT) that stores metadata information about " />
+    
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:domain"
+      content='akilst.github.io'
+/>
+<meta property="twitter:url" content="https://hshakilst.github.io/posts/master-file-table/" />
+
+
+    <meta name="twitter:title" content="Master File Table" />
+    
+    
+    
+    <meta name="twitter:image"
+        content="https://hshakilst.github.io/android-chrome-512x512.png" />
+    
+        <meta name="twitter:description" content="What is a Master File Table? The Master File Table (MFT) is a system file in the NTFS file system (having the name $MFT) that stores metadata information about " />
+    
+
+<link rel="manifest" href="/manifest/index.json" />
+</head>
+
+
+<body>
+        <div id="baseContainer"><header class="">
+<div class="titleAndSearchContainer">
+        <div id="titleContainer">
+            
+                <a class="unstyledLink" href="/">
+                    <img src='/logo.svg' alt='Logo'/>
+                </a>
+            
+            <div class="rightOfLogo">
+                <div class="titleAndHamburger">
+                    <h1>
+                        <a class="unstyledLink" href="/">Shakil&#39;s Blog</a>
+                        
+                    </h1>
+                    
+                </div>
+                <div id="wide_nav"><nav>
+    
+    <ul id="main-nav">
+        <li><a href="/">Home</a></li>
+        
+            <li><a href="/posts/">Posts</a></li>
+        
+        
+        
+        
+        
+        
+            <li><a href="/ctf">CTF</a></li>
+        
+            <li><a href="/dfir">DFIR</a></li>
+        
+        
+            <li><a href="/tags/">Tags</a></li>
+        
+        
+    </ul>
+</nav>
+</div>
+            </div>
+        </div>
+        <div class="search">
+    <input id="searchbar" type="text" placeholder='Search' />
+    <span class="nerdlink" onclick="newSearch();">&#xf002;</span>
+</div>
+<script>
+    function newSearch() {
+        let term = searchbar.value.trim();
+        if (!term) return;
+        location.href = `/search/?q=${term}`;
+    }
+    searchbar.onkeyup = (ev) => {if (ev.keyCode == 13) newSearch()};
+</script>
+
+    </div>
+    <div id="links">
+        <a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="/index.xml">
+    
+    
+        &#xf09e;
+    
+    <span>
+        RSS
+    </span>
+</a>
+
+        
+        <a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://github.com/hshakilst">
+    
+    
+        &#xf09b;
+    
+    <span>
+        Github
+    </span>
+</a>
+<a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://linkedin.com/in/hshakilst">
+    
+    
+        &#xf0e1;
+    
+    <span>
+        LinkedIn
+    </span>
+</a>
+<a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="mailto:hshakilst@gmail.com">
+    
+    
+        &#xf6ed;
+    
+    <span>
+        Gmail
+    </span>
+</a>
+
+    </div>
+    
+
+</header>
+<div id="contentContainer">
+                <div id="content">
+                    <main>
+<article class="card single">
+    
+        <h1>Master File Table</h1>
+    
+    
+        <p class="date">
+            <span title='Date'> </span>
+    2024-05-16
+
+</p>
+    
+    
+    
+    
+    <div><h2 id="what-is-a-master-file-table">What is a Master File Table?</h2>
+<p>The Master File Table (MFT) is a system file in the NTFS file system (having the name $MFT) that stores metadata information about all files and directories on an NTFS volume. The MFT acts as an index to all the files and directories on the volume, providing quick access to the information needed to retrieve a file.</p>
+<p>Each file and directory on an NTFS volume has a unique record in the MFT, known as an MFT entry. The MFT entry contains information such as the file name, timestamps, permissions, and a pointer to the file’s data. The corresponding MFT entry is updated when a file is created or modified.</p>
+<p>When a file is deleted, the corresponding MFT entry is marked as free, but the actual file data remains on the disk until it is overwritten by new data. This can be useful in data recovery scenarios, as the deleted file’s data may still be recoverable. Successful data recovery requires that the Disk regions occupied by the deleted data are not overwritten.</p>
+<p><strong>Note: The MFT is stored on the NTFS volume and is an important component of the NTFS file system. The MFT must remain intact and undamaged for the file system to function properly.</strong></p>
+<h2 id="why-is-the-mft-useful-for-forensics">Why is the MFT Useful for Forensics?</h2>
+<ol>
+<li>
+<p><strong>Comprehensive Data Storage</strong>: The MFT provides a detailed record of each file, including
+timestamps, permissions, and data content locations, making it invaluable for forensic
+investigations.</p>
+</li>
+<li>
+<p><strong>Recovery of Deleted Files</strong>: Even when files are deleted, their MFT entries might not be
+immediately reused. This allows forensic analysts to recover details about the deleted files,
+which can be crucial in legal contexts.</p>
+</li>
+<li>
+<p><strong>Tracking File Modifications</strong>: The MFT includes multiple timestamps that record different
+types of file access and modifications. This can help construct a timeline of activities on a
+system, an essential aspect of forensic analysis.</p>
+</li>
+<li>
+<p><strong>Detecting Malware and Unauthorized Access</strong>: Since the MFT records file creation and
+modification details, unusual changes detected in these entries can indicate unauthorised
+access or malware activity.</p>
+</li>
+</ol>
+<h2 id="general-structure-of-mft-record">General Structure of MFT Record</h2>
+<p>The structure of the Master File Table (MFT) in the NTFS file system is complex and consists of multiple records, each of which represents a file or directory on the NTFS volume. Each MFT record is 1024 bytes, making the MFT very simple to parse. An MFT record has the following general structure:</p>
+<ul>
+<li>
+<p><strong>File Record Header</strong>: This section contains information about the record itself, including the size of the record, the offset of the update sequence, and the flags that indicate the state of the file or directory.</p>
+</li>
+<li>
+<p><strong>File Attribute List</strong>: This section contains a list of attributes that describe the file or directory, including its name, timestamps, size, and data. Each attribute is stored as a separate structure with its format.</p>
+</li>
+<li>
+<p><strong>Data Runs</strong>: This section describes the location of the file or directory’s data on the disk. The data runs are stored as a series of extents describing the starting cluster and the length of each contiguous data block.</p>
+</li>
+</ul>
+<p>The exact format and structure of the MFT in NTFS can vary depending on the version of the file system in use. However, the general structure remains the same, with the File Record Header, File Attribute List, and Data Runs being the main components of each MFT entry.</p>
+<p><strong>Note: It’s important to note that accessing the MFT directly can be dangerous and potentially lead to file system corruption or data loss. Before attempting to access or modify the MFT, it’s recommended to perform operations on a backup of the MFT or back up important data beforehand.</strong></p>
+<h2 id="detailed-breakdown-of-mft-fields">Detailed Breakdown of MFT Fields</h2>
+<ol>
+<li>
+<p><strong>$STANDARD_INFORMATION</strong></p>
+<ul>
+<li><strong>Creation Time</strong>: The date and time when the file or directory was created.</li>
+<li><strong>Modification Time</strong>: The date and time when the file or directory was last modified.</li>
+<li><strong>Access Time</strong>: The date and time when the file or directory was last accessed.</li>
+<li><strong>Entry Modified Time</strong>: The date and time when the MFT entry itself was last modified.</li>
+<li><strong>Use Case</strong>: These timestamps are vital for timeline analysis to determine the sequence of user actions and file usage.</li>
+</ul>
+</li>
+<li>
+<p><strong>$FILE_NAME</strong></p>
+<ul>
+<li><strong>File Name</strong>: The name of the file or directory.</li>
+<li>Parent Directory: The MFT record number of the directory in which the file resides.</li>
+<li><strong>Additional Timestamps</strong>: Similar to $STANDARD_INFORMATION, but specific to this attribute and sometimes used as a fallback.</li>
+<li><strong>Use Case</strong>: This attribute is used to confirm the integrity of file paths and names in the system, which is crucial for tracking user movements and detecting unauthorised changes.</li>
+</ul>
+</li>
+<li>
+<p><strong>$DATA</strong></p>
+<ul>
+<li><strong>Actual Data or Pointer</strong>: Either the data itself for smaller files or a pointer to the data for larger files.</li>
+<li><strong>Use Case</strong>: Direct analysis of file contents and data recovery, especially important in cases involving data theft or unauthorized data manipulation.</li>
+</ul>
+</li>
+<li>
+<p><strong>$LOGGED_UTILITY_STREAM</strong></p>
+<ul>
+<li><strong>Transactional Data</strong>: Holds data related to transactional NTFS (TxF), which logs temporary file state changes.</li>
+<li><strong>Use Case</strong>: Can be used to track changes made during a transaction, useful in cases of system crashes or unexpected shutdowns to determine interim states.</li>
+</ul>
+</li>
+<li>
+<p><strong>$BITMAP</strong></p>
+<ul>
+<li><strong>Cluster Allocation</strong>: Maps which clusters are in use by the file.</li>
+<li><strong>Use Case</strong>: Useful for recovering deleted files or reconstructing file data from clusters not overwritten by new data.</li>
+</ul>
+</li>
+<li>
+<p><strong>$SECURITY_DESCRIPTOR</strong></p>
+<ul>
+<li><strong>Owner ID</strong>: Identifies who owns the file.</li>
+<li><strong>Permissions</strong>: Details what permissions are attached to the file (who can read, write, execute, etc.).</li>
+<li><strong>Audit Settings</strong>: Specifies what operations (like access or changes) are logged by the system.</li>
+<li><strong>Use Case</strong>: Critical for determining access rights and detecting potential security breaches where permissions may have been altered.</li>
+</ul>
+</li>
+<li>
+<p><strong>$VOLUME_INFORMATION</strong> (specific to the MFT entry for the volume itself)</p>
+<ul>
+<li><strong>Volume Serial Number</strong>: Unique identifier for the volume.</li>
+<li><strong>Flags</strong>: System flags related to the volume, such as whether it’s dirty (improperly unmounted).</li>
+<li><strong>Use Case</strong>: Useful in multi-disk systems to link files and activities to specific volumes, essential in systems recovery and forensic analysis across multiple drives.</li>
+</ul>
+</li>
+<li>
+<p><strong>$INDEX_ROOT</strong> and <strong>$INDEX_ALLOCATION</strong></p>
+<ul>
+<li><strong>Index Entries</strong>: Used in directories to index contained files for quick access.</li>
+<li><strong>Use Case</strong>: Forensically important for reconstructing directory structures and understanding how data was organized and accessed, particularly in complex investigations involving numerous files and directories.</li>
+</ul>
+</li>
+</ol>
+<h2 id="timestamps">Timestamps</h2>
+<p>Created (0x10) is the Standard Information (SI) creation timestamp. This can be modified by user level processes, for example, timestomping. Created (0x30) is the FileName (FN) creation timestamp.</p>
+<p>Timestamps of (FN) - behave differently from timestamps of (SI). These values don&rsquo;t change or all of the values change at once. However, rename and moved in a local volume are exceptions. These processes are inherited from (SI) value then set corresponding (FN) value. For more <a href="http://www.kazamiya.net/en/NTFS_Timestamps">NTFS Timestamps</a>.</p>
+<h2 id="mft-resident-files">MFT Resident Files</h2>
+<p>Files that can be stored directly within the Master File Table (MFT) known as resident files. The size of this kind of files varies depending on the file, the system, and the amount of metadata stored in the MFT.</p>
+<p>Generally, the more metadata associated with a file, the less space remains for storing the file&rsquo;s data itself within the MFT. While there is no strict upper limit, typically files smaller than approximately 900 bytes can be fully contained within their MFT record.</p>
+<h3 id="references">References</h3>
+<ul>
+<li><a href="https://www.geeksforgeeks.org/what-is-a-master-file-table/">GeeksForGeeks</a></li>
+<li><a href="http://www.kazamiya.net/en/NTFS_Timestamps">Kazamiya</a></li>
+<li><a href="BFT-Write-Up.pdf">Official Writeup BFT by Cyberjunkie &amp; Sebh24 on HTB</a></li>
+</ul>
+</div>
+</article>
+
+    <hr />
+    <p class="articleTagsContainer">
+        <span> </span>
+        <strong>Tags:</strong>
+        
+            <a
+                
+                href="/tags/dfir/">#dfir</a>
+        
+            <a
+                
+                href="/tags/file/">#file</a>
+        
+            <a
+                
+                href="/tags/master/">#master</a>
+        
+            <a
+                
+                href="/tags/table/">#table</a>
+        
+            <a
+                
+                href="/tags/windows/">#windows</a>
+        
+    </p>
+
+
+
+
+
+    
+    
+        
+        <div class="relatedArticlesContainer">
+            <hr />
+            <h2>More posts like this</h2>
+            <div class="postlist ">
+                <article class="card postlistitem">
+    <div>
+        <h2>
+            <a href="https://hshakilst.github.io/posts/filetime/">Filetime</a>
+        </h2>
+        <p class="date">
+            <span title='Date'> </span>
+    2024-05-16
+
+
+                | 
+                <span title='Tags'> </span>
+                
+                    <a href="/tags/dfir">#dfir</a>
+                
+                    <a href="/tags/file">#file</a>
+                
+                    <a href="/tags/time">#time</a>
+                
+                    <a href="/tags/timestamp">#timestamp</a>
+                
+                    <a href="/tags/windows">#windows</a>
+                
+            
+        </p>
+        
+            
+        
+        
+            <div class="articlePreview">
+                <p>
+                    
+                        FILETIME in Windows What is FILETIME? A file time is a 64-bit value that represents the number of 100-nanosecond intervals that have elapsed since 12:00 A.M. January 1, 1601 Coordinated Universal Time (UTC).
+                    
+                </p>
+                <p><a href="https://hshakilst.github.io/posts/filetime/">Continue reading </a></p>
+            </div>
+        
+    </div>
+    <hr />
+</article>
+
+            </div>
+        </div>
+    
+
+
+                    </main><footer>
+    <hr />
+
+<p><small>
+        2024 &copy; Shakil Hossain - All Right Reserved.
+    </small></p>
+    <p><small>
+        <a href='https://gitlab.com/gabmus/hugo-ficurinia'>Ficurinia theme</a> for <a href='https://gohugo.io'>Hugo</a> by <a href='https://gabmus.org'>Gabriele Musco</a>.
+    </small></p>
+</footer>
+</div>
+            </div>
+        </div>
+
+
+</body>
+</html>

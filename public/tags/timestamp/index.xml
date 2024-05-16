@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss">
+  <channel>
+    <title>Timestamp on Shakil&#39;s Blog</title>
+    <link>https://hshakilst.github.io/tags/timestamp/</link>
+    <description>Recent content in Timestamp on Shakil&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Shakil Hossain - All Right Reserved.</copyright>
+    <lastBuildDate>Thu, 16 May 2024 12:14:06 +0200</lastBuildDate><atom:link href="https://hshakilst.github.io/tags/timestamp/index.xml" rel="self" type="application/rss+xml" /><icon>https://hshakilst.github.io/logo.svg</icon>
+    
+    
+    <item>
+      <title>Filetime</title>
+      <link>https://hshakilst.github.io/posts/filetime/</link>
+      <pubDate>Thu, 16 May 2024 12:14:06 +0200</pubDate>
+      
+      <guid>https://hshakilst.github.io/posts/filetime/</guid>
+      <description><![CDATA[<h1 id="filetime-in-windows">FILETIME in Windows</h1>
+<h2 id="what-is-filetime">What is FILETIME?</h2>
+<p>A file time is a 64-bit value that represents the number of 100-nanosecond intervals that have elapsed since 12:00 A.M. January 1, 1601 Coordinated Universal Time (UTC). The system records file times when applications create, access, and write to files.</p>
+<p>The NTFS file system stores time values in UTC format, so they are not affected by changes in time zone or daylight saving time. The FAT file system stores time values based on the local time of the computer.</p>
+<p>Time stamps are updated at various times and for various reasons. The only guarantee about a file time stamp is that the file time is correctly reflected when the handle that makes the change is closed.</p>
+<blockquote>
+<p>Not all file systems can record creation and last access times, and not all file systems record them in the same manner. For example, the resolution of create time on FAT is 10 milliseconds, while write time has a resolution of 2 seconds and access time has a resolution of 1 day, so it is really the access date. The NTFS file system delays updates to the last access time for a file by up to 1 hour after the last access.</p>
+</blockquote>
+<h2 id="filetime-structure-minwinbaseh">FILETIME Structure (minwinbase.h)</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>typedef struct _FILETIME {
+</span></span><span style="display:flex;"><span>  DWORD dwLowDateTime;
+</span></span><span style="display:flex;"><span>  DWORD dwHighDateTime;
+</span></span><span style="display:flex;"><span>} FILETIME, *PFILETIME, *LPFILETIME;
+</span></span></code></pre></div><p>Here, the <code>dwLowDateTime</code> is the low-order and the <code>dwHighDateTime</code> is the high-order part of the file time.</p>
+<blockquote>
+<p>Older compilers did not have support for 64 bit types. So the structure splits the 64 bit value into two 32 bit parts. The low part contains the least significant 32 bits. The high part contains the most significant 32 bits.</p>
+</blockquote>
+<h2 id="converting-filetime-to-human-readable-format">Converting FILETIME to Human Readable Format</h2>
+<p>To convert the FILETIME into human readable format we need a unsigned 64 bit integer union. But 64 bit integer support may vary compiler to compiler based on CPU architecture and OS versions. Microsoft&rsquo;s official documentation says it supports <code>ULARGE_INTEGER</code> (unsigned 64 bit integer union) from <code>Windows 10 Build 20348</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>typedef union _ULARGE_INTEGER {
+</span></span><span style="display:flex;"><span>  struct {
+</span></span><span style="display:flex;"><span>    DWORD LowPart;
+</span></span><span style="display:flex;"><span>    DWORD HighPart;
+</span></span><span style="display:flex;"><span>  } DUMMYSTRUCTNAME;
+</span></span><span style="display:flex;"><span>  struct {
+</span></span><span style="display:flex;"><span>    DWORD LowPart;
+</span></span><span style="display:flex;"><span>    DWORD HighPart;
+</span></span><span style="display:flex;"><span>  } u;
+</span></span><span style="display:flex;"><span>  ULONGLONG QuadPart;
+</span></span><span style="display:flex;"><span>} ULARGE_INTEGER;
+</span></span></code></pre></div><blockquote>
+<p>The ULARGE_INTEGER structure is actually a union. If your compiler has built-in support for 64-bit integers, use the QuadPart member to store the 64-bit integer. Otherwise, use the LowPart and HighPart members to store the 64-bit integer.</p>
+</blockquote>
+<p>So, many softwares uses the LowPart and HighPart to store a unsigned 64 bit integer by splitting it into 32 bit each. For example <code>Notepad++</code> uses <code>originalFileLastModifTimestamp</code> as <code>LowPart</code> and
+<code>originalFileLastModifTimestampHigh</code> as <code>HighPart</code> to store the FILETIME timestamps.</p>
+<p>To retrieve a human readable date/time from these two parts needs some arithmatic operations.</p>
+<p>A simplest way to get the original FILETIME timestamp from LowPart and HighPart is a by using the following formula.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>LowPart + 2^32 * HighPart
+</span></span></code></pre></div><p>The formula does not provide a good enough precision. Meaning the retrieved value may have some deviations of minutes and seconds.</p>
+<p>To retrive the precise date/time value we need to perform some bitwise operation on the <code>LowPart</code> and <code>HighPart</code> in python to convert it into it&rsquo;s original form (a 64 bit unsigned integer).</p>
+<p>A FILETIME timestamp is a number in 100-nanosecond intervals that have elapsed since 12:00 A.M. January 1, 1601 Coordinated Universal Time (UTC) till the creation time of the timestamp. To get the creation time, we need to add it to the nanosecond value of the initial date (1601-01-01).</p>
+<p><strong>PS: We can convert the timestamp&rsquo;s value to millisecond or second also. The retrived date/time will be in UTC, as the initial value is in UTC.</strong></p>
+<p>Here&rsquo;s a simple python script to convert splitted FILETIME timestamp to human readable format.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>import datetime
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>timestamp_low = -1354503710
+</span></span><span style="display:flex;"><span>timestamp_high = 31047188
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>full_timestamp = (timestamp_high &lt;&lt; 32) | (timestamp_low &amp; 0xFFFFFFFF)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(full_timestamp)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>timestamp_seconds = full_timestamp / 10**7
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(timestamp_seconds)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>converted_date_from_file_time = datetime.datetime(1601, 1, 1) + datetime.timedelta(seconds=timestamp_seconds)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(converted_date_from_file_time)
+</span></span></code></pre></div><h2 id="references">References</h2>
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/file-times">File Times</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-ularge_integer-r1">ULARGE_INTEGER union</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-filetime">FILETIME structure</a></li>
+<li><a href="https://stackoverflow.com/questions/29266743/what-is-dwlowdatetime-and-dwhighdatetime">What is dwLowDateTime and dwHighDateTime</a></li>
+<li><a href="https://stackoverflow.com/posts/1100288/revisions">How to create FILETIME in Win32?</a></li>
+<li><a href="https://forum.hackthebox.com/t/noted-sherlock/307329/6">HTB Discussion Board</a></li>
+<li><a href="https://www.epochconverter.com/ldap">LDAP, Active Directory &amp; Filetime Timestamp Converter</a></li>
+</ul>
+]]></description>
+      
+    </item>
+    
+    
+  </channel>
+</rss>

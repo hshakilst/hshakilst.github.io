@@ -1,0 +1,67 @@
+baseURL = "https://hshakilst.github.io/"
+languageCode = "en-us"
+title = "Shakil's Blog"
+
+theme = "ficurinia"
+
+author = "Shakil Hossain"
+copyright = "Shakil Hossain - All Right Reserved."
+
+paginate = 5
+summaryLength = 30
+
+[params]
+    description = "Shakil's Blog about Cybersecurity"
+    author = "Shakil Hossain"
+    logo = "/logo.svg"
+    favicon = "/favicon.png"
+    faviconIco = "/favicon.ico"
+    appletouch = "/apple-touch-icon.png"
+    svgicon = "/logo.svg"
+    icon512 = "/android-chrome-512x512.png"
+    
+    imageInArticlePreview = true
+
+    enableRelatedArticles = true
+    relatedArticlesNum = 2 
+    forceRedirect = true
+
+[markup]
+    [markup.highlight]
+        codeFences = true
+        guessSyntax = true
+        lineNos = false
+        lineNumbersInTable = false
+        tabWidth = 4
+        style = "dracula"
+    [markup.tableOfContents]
+        endLevel = 5
+        ordered = false
+        startLevel = 1
+
+[menu]
+    [[menu.main]]
+        identifier = "ctf"
+        name = "CTF"
+        url = "/ctf"
+        weight = 99
+    [[menu.main]]
+        identifier = "dfir"
+        name = "DFIR"
+        url = "/dfir"
+        weight = 99
+    [[menu.icons]]
+        identifier = "github"
+        name = "Github"
+        url = "https://github.com/hshakilst"
+        weight = 10
+    [[menu.icons]]
+        identifier = "linkedin"
+        name = "LinkedIn"
+        url = "https://linkedin.com/in/hshakilst"
+        weight = 20
+    [[menu.icons]]
+        identifier = "email"
+        name = "Gmail"
+        url = "mailto:hshakilst@gmail.com"
+        weight = 30

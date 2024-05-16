@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss">
+  <channel>
+    <title>File on Shakil&#39;s Blog</title>
+    <link>https://hshakilst.github.io/tags/file/</link>
+    <description>Recent content in File on Shakil&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Shakil Hossain - All Right Reserved.</copyright>
+    <lastBuildDate>Thu, 16 May 2024 12:14:06 +0200</lastBuildDate><atom:link href="https://hshakilst.github.io/tags/file/index.xml" rel="self" type="application/rss+xml" /><icon>https://hshakilst.github.io/logo.svg</icon>
+    
+    
+    <item>
+      <title>Filetime</title>
+      <link>https://hshakilst.github.io/posts/filetime/</link>
+      <pubDate>Thu, 16 May 2024 12:14:06 +0200</pubDate>
+      
+      <guid>https://hshakilst.github.io/posts/filetime/</guid>
+      <description><![CDATA[<h1 id="filetime-in-windows">FILETIME in Windows</h1>
+<h2 id="what-is-filetime">What is FILETIME?</h2>
+<p>A file time is a 64-bit value that represents the number of 100-nanosecond intervals that have elapsed since 12:00 A.M. January 1, 1601 Coordinated Universal Time (UTC). The system records file times when applications create, access, and write to files.</p>
+<p>The NTFS file system stores time values in UTC format, so they are not affected by changes in time zone or daylight saving time. The FAT file system stores time values based on the local time of the computer.</p>
+<p>Time stamps are updated at various times and for various reasons. The only guarantee about a file time stamp is that the file time is correctly reflected when the handle that makes the change is closed.</p>
+<blockquote>
+<p>Not all file systems can record creation and last access times, and not all file systems record them in the same manner. For example, the resolution of create time on FAT is 10 milliseconds, while write time has a resolution of 2 seconds and access time has a resolution of 1 day, so it is really the access date. The NTFS file system delays updates to the last access time for a file by up to 1 hour after the last access.</p>
+</blockquote>
+<h2 id="filetime-structure-minwinbaseh">FILETIME Structure (minwinbase.h)</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>typedef struct _FILETIME {
+</span></span><span style="display:flex;"><span>  DWORD dwLowDateTime;
+</span></span><span style="display:flex;"><span>  DWORD dwHighDateTime;
+</span></span><span style="display:flex;"><span>} FILETIME, *PFILETIME, *LPFILETIME;
+</span></span></code></pre></div><p>Here, the <code>dwLowDateTime</code> is the low-order and the <code>dwHighDateTime</code> is the high-order part of the file time.</p>
+<blockquote>
+<p>Older compilers did not have support for 64 bit types. So the structure splits the 64 bit value into two 32 bit parts. The low part contains the least significant 32 bits. The high part contains the most significant 32 bits.</p>
+</blockquote>
+<h2 id="converting-filetime-to-human-readable-format">Converting FILETIME to Human Readable Format</h2>
+<p>To convert the FILETIME into human readable format we need a unsigned 64 bit integer union. But 64 bit integer support may vary compiler to compiler based on CPU architecture and OS versions. Microsoft&rsquo;s official documentation says it supports <code>ULARGE_INTEGER</code> (unsigned 64 bit integer union) from <code>Windows 10 Build 20348</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>typedef union _ULARGE_INTEGER {
+</span></span><span style="display:flex;"><span>  struct {
+</span></span><span style="display:flex;"><span>    DWORD LowPart;
+</span></span><span style="display:flex;"><span>    DWORD HighPart;
+</span></span><span style="display:flex;"><span>  } DUMMYSTRUCTNAME;
+</span></span><span style="display:flex;"><span>  struct {
+</span></span><span style="display:flex;"><span>    DWORD LowPart;
+</span></span><span style="display:flex;"><span>    DWORD HighPart;
+</span></span><span style="display:flex;"><span>  } u;
+</span></span><span style="display:flex;"><span>  ULONGLONG QuadPart;
+</span></span><span style="display:flex;"><span>} ULARGE_INTEGER;
+</span></span></code></pre></div><blockquote>
+<p>The ULARGE_INTEGER structure is actually a union. If your compiler has built-in support for 64-bit integers, use the QuadPart member to store the 64-bit integer. Otherwise, use the LowPart and HighPart members to store the 64-bit integer.</p>
+</blockquote>
+<p>So, many softwares uses the LowPart and HighPart to store a unsigned 64 bit integer by splitting it into 32 bit each. For example <code>Notepad++</code> uses <code>originalFileLastModifTimestamp</code> as <code>LowPart</code> and
+<code>originalFileLastModifTimestampHigh</code> as <code>HighPart</code> to store the FILETIME timestamps.</p>
+<p>To retrieve a human readable date/time from these two parts needs some arithmatic operations.</p>
+<p>A simplest way to get the original FILETIME timestamp from LowPart and HighPart is a by using the following formula.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>LowPart + 2^32 * HighPart
+</span></span></code></pre></div><p>The formula does not provide a good enough precision. Meaning the retrieved value may have some deviations of minutes and seconds.</p>
+<p>To retrive the precise date/time value we need to perform some bitwise operation on the <code>LowPart</code> and <code>HighPart</code> in python to convert it into it&rsquo;s original form (a 64 bit unsigned integer).</p>
+<p>A FILETIME timestamp is a number in 100-nanosecond intervals that have elapsed since 12:00 A.M. January 1, 1601 Coordinated Universal Time (UTC) till the creation time of the timestamp. To get the creation time, we need to add it to the nanosecond value of the initial date (1601-01-01).</p>
+<p><strong>PS: We can convert the timestamp&rsquo;s value to millisecond or second also. The retrived date/time will be in UTC, as the initial value is in UTC.</strong></p>
+<p>Here&rsquo;s a simple python script to convert splitted FILETIME timestamp to human readable format.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>import datetime
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>timestamp_low = -1354503710
+</span></span><span style="display:flex;"><span>timestamp_high = 31047188
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>full_timestamp = (timestamp_high &lt;&lt; 32) | (timestamp_low &amp; 0xFFFFFFFF)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(full_timestamp)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>timestamp_seconds = full_timestamp / 10**7
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(timestamp_seconds)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>converted_date_from_file_time = datetime.datetime(1601, 1, 1) + datetime.timedelta(seconds=timestamp_seconds)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(converted_date_from_file_time)
+</span></span></code></pre></div><h2 id="references">References</h2>
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/file-times">File Times</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-ularge_integer-r1">ULARGE_INTEGER union</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-filetime">FILETIME structure</a></li>
+<li><a href="https://stackoverflow.com/questions/29266743/what-is-dwlowdatetime-and-dwhighdatetime">What is dwLowDateTime and dwHighDateTime</a></li>
+<li><a href="https://stackoverflow.com/posts/1100288/revisions">How to create FILETIME in Win32?</a></li>
+<li><a href="https://forum.hackthebox.com/t/noted-sherlock/307329/6">HTB Discussion Board</a></li>
+<li><a href="https://www.epochconverter.com/ldap">LDAP, Active Directory &amp; Filetime Timestamp Converter</a></li>
+</ul>
+]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Master File Table</title>
+      <link>https://hshakilst.github.io/posts/master-file-table/</link>
+      <pubDate>Thu, 16 May 2024 11:20:29 +0200</pubDate>
+      
+      <guid>https://hshakilst.github.io/posts/master-file-table/</guid>
+      <description><![CDATA[<h2 id="what-is-a-master-file-table">What is a Master File Table?</h2>
+<p>The Master File Table (MFT) is a system file in the NTFS file system (having the name $MFT) that stores metadata information about all files and directories on an NTFS volume. The MFT acts as an index to all the files and directories on the volume, providing quick access to the information needed to retrieve a file.</p>
+<p>Each file and directory on an NTFS volume has a unique record in the MFT, known as an MFT entry. The MFT entry contains information such as the file name, timestamps, permissions, and a pointer to the file’s data. The corresponding MFT entry is updated when a file is created or modified.</p>
+<p>When a file is deleted, the corresponding MFT entry is marked as free, but the actual file data remains on the disk until it is overwritten by new data. This can be useful in data recovery scenarios, as the deleted file’s data may still be recoverable. Successful data recovery requires that the Disk regions occupied by the deleted data are not overwritten.</p>
+<p><strong>Note: The MFT is stored on the NTFS volume and is an important component of the NTFS file system. The MFT must remain intact and undamaged for the file system to function properly.</strong></p>
+<h2 id="why-is-the-mft-useful-for-forensics">Why is the MFT Useful for Forensics?</h2>
+<ol>
+<li>
+<p><strong>Comprehensive Data Storage</strong>: The MFT provides a detailed record of each file, including
+timestamps, permissions, and data content locations, making it invaluable for forensic
+investigations.</p>
+</li>
+<li>
+<p><strong>Recovery of Deleted Files</strong>: Even when files are deleted, their MFT entries might not be
+immediately reused. This allows forensic analysts to recover details about the deleted files,
+which can be crucial in legal contexts.</p>
+</li>
+<li>
+<p><strong>Tracking File Modifications</strong>: The MFT includes multiple timestamps that record different
+types of file access and modifications. This can help construct a timeline of activities on a
+system, an essential aspect of forensic analysis.</p>
+</li>
+<li>
+<p><strong>Detecting Malware and Unauthorized Access</strong>: Since the MFT records file creation and
+modification details, unusual changes detected in these entries can indicate unauthorised
+access or malware activity.</p>
+</li>
+</ol>
+<h2 id="general-structure-of-mft-record">General Structure of MFT Record</h2>
+<p>The structure of the Master File Table (MFT) in the NTFS file system is complex and consists of multiple records, each of which represents a file or directory on the NTFS volume. Each MFT record is 1024 bytes, making the MFT very simple to parse. An MFT record has the following general structure:</p>
+<ul>
+<li>
+<p><strong>File Record Header</strong>: This section contains information about the record itself, including the size of the record, the offset of the update sequence, and the flags that indicate the state of the file or directory.</p>
+</li>
+<li>
+<p><strong>File Attribute List</strong>: This section contains a list of attributes that describe the file or directory, including its name, timestamps, size, and data. Each attribute is stored as a separate structure with its format.</p>
+</li>
+<li>
+<p><strong>Data Runs</strong>: This section describes the location of the file or directory’s data on the disk. The data runs are stored as a series of extents describing the starting cluster and the length of each contiguous data block.</p>
+</li>
+</ul>
+<p>The exact format and structure of the MFT in NTFS can vary depending on the version of the file system in use. However, the general structure remains the same, with the File Record Header, File Attribute List, and Data Runs being the main components of each MFT entry.</p>
+<p><strong>Note: It’s important to note that accessing the MFT directly can be dangerous and potentially lead to file system corruption or data loss. Before attempting to access or modify the MFT, it’s recommended to perform operations on a backup of the MFT or back up important data beforehand.</strong></p>
+<h2 id="detailed-breakdown-of-mft-fields">Detailed Breakdown of MFT Fields</h2>
+<ol>
+<li>
+<p><strong>$STANDARD_INFORMATION</strong></p>
+<ul>
+<li><strong>Creation Time</strong>: The date and time when the file or directory was created.</li>
+<li><strong>Modification Time</strong>: The date and time when the file or directory was last modified.</li>
+<li><strong>Access Time</strong>: The date and time when the file or directory was last accessed.</li>
+<li><strong>Entry Modified Time</strong>: The date and time when the MFT entry itself was last modified.</li>
+<li><strong>Use Case</strong>: These timestamps are vital for timeline analysis to determine the sequence of user actions and file usage.</li>
+</ul>
+</li>
+<li>
+<p><strong>$FILE_NAME</strong></p>
+<ul>
+<li><strong>File Name</strong>: The name of the file or directory.</li>
+<li>Parent Directory: The MFT record number of the directory in which the file resides.</li>
+<li><strong>Additional Timestamps</strong>: Similar to $STANDARD_INFORMATION, but specific to this attribute and sometimes used as a fallback.</li>
+<li><strong>Use Case</strong>: This attribute is used to confirm the integrity of file paths and names in the system, which is crucial for tracking user movements and detecting unauthorised changes.</li>
+</ul>
+</li>
+<li>
+<p><strong>$DATA</strong></p>
+<ul>
+<li><strong>Actual Data or Pointer</strong>: Either the data itself for smaller files or a pointer to the data for larger files.</li>
+<li><strong>Use Case</strong>: Direct analysis of file contents and data recovery, especially important in cases involving data theft or unauthorized data manipulation.</li>
+</ul>
+</li>
+<li>
+<p><strong>$LOGGED_UTILITY_STREAM</strong></p>
+<ul>
+<li><strong>Transactional Data</strong>: Holds data related to transactional NTFS (TxF), which logs temporary file state changes.</li>
+<li><strong>Use Case</strong>: Can be used to track changes made during a transaction, useful in cases of system crashes or unexpected shutdowns to determine interim states.</li>
+</ul>
+</li>
+<li>
+<p><strong>$BITMAP</strong></p>
+<ul>
+<li><strong>Cluster Allocation</strong>: Maps which clusters are in use by the file.</li>
+<li><strong>Use Case</strong>: Useful for recovering deleted files or reconstructing file data from clusters not overwritten by new data.</li>
+</ul>
+</li>
+<li>
+<p><strong>$SECURITY_DESCRIPTOR</strong></p>
+<ul>
+<li><strong>Owner ID</strong>: Identifies who owns the file.</li>
+<li><strong>Permissions</strong>: Details what permissions are attached to the file (who can read, write, execute, etc.).</li>
+<li><strong>Audit Settings</strong>: Specifies what operations (like access or changes) are logged by the system.</li>
+<li><strong>Use Case</strong>: Critical for determining access rights and detecting potential security breaches where permissions may have been altered.</li>
+</ul>
+</li>
+<li>
+<p><strong>$VOLUME_INFORMATION</strong> (specific to the MFT entry for the volume itself)</p>
+<ul>
+<li><strong>Volume Serial Number</strong>: Unique identifier for the volume.</li>
+<li><strong>Flags</strong>: System flags related to the volume, such as whether it’s dirty (improperly unmounted).</li>
+<li><strong>Use Case</strong>: Useful in multi-disk systems to link files and activities to specific volumes, essential in systems recovery and forensic analysis across multiple drives.</li>
+</ul>
+</li>
+<li>
+<p><strong>$INDEX_ROOT</strong> and <strong>$INDEX_ALLOCATION</strong></p>
+<ul>
+<li><strong>Index Entries</strong>: Used in directories to index contained files for quick access.</li>
+<li><strong>Use Case</strong>: Forensically important for reconstructing directory structures and understanding how data was organized and accessed, particularly in complex investigations involving numerous files and directories.</li>
+</ul>
+</li>
+</ol>
+<h2 id="timestamps">Timestamps</h2>
+<p>Created (0x10) is the Standard Information (SI) creation timestamp. This can be modified by user level processes, for example, timestomping. Created (0x30) is the FileName (FN) creation timestamp.</p>
+<p>Timestamps of (FN) - behave differently from timestamps of (SI). These values don&rsquo;t change or all of the values change at once. However, rename and moved in a local volume are exceptions. These processes are inherited from (SI) value then set corresponding (FN) value. For more <a href="http://www.kazamiya.net/en/NTFS_Timestamps">NTFS Timestamps</a>.</p>
+<h2 id="mft-resident-files">MFT Resident Files</h2>
+<p>Files that can be stored directly within the Master File Table (MFT) known as resident files. The size of this kind of files varies depending on the file, the system, and the amount of metadata stored in the MFT.</p>
+<p>Generally, the more metadata associated with a file, the less space remains for storing the file&rsquo;s data itself within the MFT. While there is no strict upper limit, typically files smaller than approximately 900 bytes can be fully contained within their MFT record.</p>
+<h3 id="references">References</h3>
+<ul>
+<li><a href="https://www.geeksforgeeks.org/what-is-a-master-file-table/">GeeksForGeeks</a></li>
+<li><a href="http://www.kazamiya.net/en/NTFS_Timestamps">Kazamiya</a></li>
+<li><a href="BFT-Write-Up.pdf">Official Writeup BFT by Cyberjunkie &amp; Sebh24 on HTB</a></li>
+</ul>
+]]></description>
+      
+    </item>
+    
+    
+  </channel>
+</rss>
