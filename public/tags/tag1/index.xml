@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss">
+  <channel>
+    <title>Tag1 on Shakil&#39;s Blog</title>
+    <link>http://localhost:1313/tags/tag1/</link>
+    <description>Recent content in Tag1 on Shakil&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Shakil Hossain - All Right Reserved.</copyright>
+    <lastBuildDate>Thu, 16 May 2024 18:00:05 +0200</lastBuildDate><atom:link href="http://localhost:1313/tags/tag1/index.xml" rel="self" type="application/rss+xml" /><icon>http://localhost:1313/logo.svg</icon>
+    
+    
+    <item>
+      <title>Solarlab</title>
+      <link>http://localhost:1313/posts/htb-machines/solarlab/</link>
+      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
+      
+      <guid>http://localhost:1313/posts/htb-machines/solarlab/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+  </channel>
+</rss>

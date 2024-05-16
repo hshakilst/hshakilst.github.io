@@ -2,13 +2,103 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://hshakilst.github.io/tags/ctf/</loc>
+    <lastmod>2024-05-16T18:00:05+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/cve-2023-32315/</loc>
+    <lastmod>2024-05-16T18:00:05+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/cve-2023-33733/</loc>
+    <lastmod>2024-05-16T18:00:05+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/decryptor/</loc>
+    <lastmod>2024-05-16T18:00:05+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/htb/</loc>
+    <lastmod>2024-05-16T18:00:05+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/posts/htb-machines/solarlab/</loc>
+    <lastmod>2024-05-16T18:00:05+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/lab/</loc>
+    <lastmod>2024-05-16T18:00:05+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/openfire/</loc>
+    <lastmod>2024-05-16T18:00:05+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/pdf-library/</loc>
+    <lastmod>2024-05-16T18:00:05+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/posts/</loc>
+    <lastmod>2024-05-16T18:00:05+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/reportlab/</loc>
+    <lastmod>2024-05-16T18:00:05+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/</loc>
+    <lastmod>2024-05-16T18:00:05+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/share/</loc>
+    <lastmod>2024-05-16T18:00:05+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/smb/</loc>
+    <lastmod>2024-05-16T18:00:05+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/solar/</loc>
+    <lastmod>2024-05-16T18:00:05+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/</loc>
+    <lastmod>2024-05-16T18:00:05+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/windows/</loc>
+    <lastmod>2024-05-16T18:00:05+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/chisel/</loc>
+    <lastmod>2024-05-16T17:00:43+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/cve-2023-2255/</loc>
+    <lastmod>2024-05-16T17:00:43+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/dpapi/</loc>
+    <lastmod>2024-05-16T17:00:43+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/posts/htb-machines/office/</loc>
+    <lastmod>2024-05-16T17:00:43+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/kerberos/</loc>
+    <lastmod>2024-05-16T17:00:43+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/libreoffice/</loc>
+    <lastmod>2024-05-16T17:00:43+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/mimikatz/</loc>
+    <lastmod>2024-05-16T17:00:43+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/office/</loc>
+    <lastmod>2024-05-16T17:00:43+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/cve-2023-23752/</loc>
+    <lastmod>2024-05-16T16:41:36+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/dev/</loc>
+    <lastmod>2024-05-16T16:41:36+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/posts/htb-machines/devvortex/</loc>
+    <lastmod>2024-05-16T16:41:36+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/joomla/</loc>
+    <lastmod>2024-05-16T16:41:36+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/linux/</loc>
+    <lastmod>2024-05-16T16:41:36+02:00</lastmod>
+  </url><url>
+    <loc>https://hshakilst.github.io/tags/vortex/</loc>
+    <lastmod>2024-05-16T16:41:36+02:00</lastmod>
+  </url><url>
     <loc>https://hshakilst.github.io/tags/dfir/</loc>
     <lastmod>2024-05-16T12:59:39+02:00</lastmod>
   </url><url>
     <loc>https://hshakilst.github.io/tags/file/</loc>
-    <lastmod>2024-05-16T12:59:39+02:00</lastmod>
-  </url><url>
-    <loc>https://hshakilst.github.io/tags/htb/</loc>
     <lastmod>2024-05-16T12:59:39+02:00</lastmod>
   </url><url>
     <loc>https://hshakilst.github.io/posts/htb-sherlocks/noted/</loc>
@@ -20,22 +110,10 @@
     <loc>https://hshakilst.github.io/tags/notepad&#43;&#43;/</loc>
     <lastmod>2024-05-16T12:59:39+02:00</lastmod>
   </url><url>
-    <loc>https://hshakilst.github.io/posts/</loc>
-    <lastmod>2024-05-16T12:59:39+02:00</lastmod>
-  </url><url>
-    <loc>https://hshakilst.github.io/</loc>
-    <lastmod>2024-05-16T12:59:39+02:00</lastmod>
-  </url><url>
     <loc>https://hshakilst.github.io/tags/sherlock/</loc>
     <lastmod>2024-05-16T12:59:39+02:00</lastmod>
   </url><url>
-    <loc>https://hshakilst.github.io/tags/</loc>
-    <lastmod>2024-05-16T12:59:39+02:00</lastmod>
-  </url><url>
     <loc>https://hshakilst.github.io/tags/time/</loc>
-    <lastmod>2024-05-16T12:59:39+02:00</lastmod>
-  </url><url>
-    <loc>https://hshakilst.github.io/tags/windows/</loc>
     <lastmod>2024-05-16T12:59:39+02:00</lastmod>
   </url><url>
     <loc>https://hshakilst.github.io/tags/bell/</loc>
