@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss">
   <channel>
     <title>Lab on Shakil&#39;s Blog</title>
-    <link>https://hshakilst.github.io/tags/lab/</link>
+    <link>http://localhost:1313/tags/lab/</link>
     <description>Recent content in Lab on Shakil&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Shakil Hossain - All Right Reserved.</copyright>
-    <lastBuildDate>Thu, 16 May 2024 18:00:05 +0200</lastBuildDate><atom:link href="https://hshakilst.github.io/tags/lab/index.xml" rel="self" type="application/rss+xml" /><icon>https://hshakilst.github.io/logo.svg</icon>
+    <lastBuildDate>Thu, 16 May 2024 18:00:05 +0200</lastBuildDate><atom:link href="http://localhost:1313/tags/lab/index.xml" rel="self" type="application/rss+xml" /><icon>http://localhost:1313/logo.svg</icon>
     
     
     <item>
       <title>HTB Machine Solarlab</title>
-      <link>https://hshakilst.github.io/posts/htb-machines/solarlab/</link>
+      <link>http://localhost:1313/posts/htb-machines/solarlab/</link>
       <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/posts/htb-machines/solarlab/</guid>
+      <guid>http://localhost:1313/posts/htb-machines/solarlab/</guid>
       <description><![CDATA[<h1 id="solar-lab---htbhttpsapphacktheboxcommachinessolarlab">Solar Lab - <a href="https://app.hackthebox.com/machines/SolarLab">HTB</a></h1>
 <p><img src="images/image.png" alt="alt text"></p>
 <h2 id="nmap">Nmap</h2>

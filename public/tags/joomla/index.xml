@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss">
   <channel>
     <title>Joomla on Shakil&#39;s Blog</title>
-    <link>https://hshakilst.github.io/tags/joomla/</link>
+    <link>http://localhost:1313/tags/joomla/</link>
     <description>Recent content in Joomla on Shakil&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Shakil Hossain - All Right Reserved.</copyright>
-    <lastBuildDate>Thu, 16 May 2024 16:41:36 +0200</lastBuildDate><atom:link href="https://hshakilst.github.io/tags/joomla/index.xml" rel="self" type="application/rss+xml" /><icon>https://hshakilst.github.io/logo.svg</icon>
+    <lastBuildDate>Thu, 16 May 2024 16:41:36 +0200</lastBuildDate><atom:link href="http://localhost:1313/tags/joomla/index.xml" rel="self" type="application/rss+xml" /><icon>http://localhost:1313/logo.svg</icon>
     
     
     <item>
       <title>HTB Machine Devvortex</title>
-      <link>https://hshakilst.github.io/posts/htb-machines/devvortex/</link>
+      <link>http://localhost:1313/posts/htb-machines/devvortex/</link>
       <pubDate>Thu, 16 May 2024 16:41:36 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/posts/htb-machines/devvortex/</guid>
+      <guid>http://localhost:1313/posts/htb-machines/devvortex/</guid>
       <description><![CDATA[<h1 id="devvortex---htbhttpswwwhacktheboxcommachinesdevvortex">Devvortex - <a href="https://www.hackthebox.com/machines/devvortex">HTB</a></h1>
 <p><img src="images/banner.png" alt="alt text"></p>
 <h2 id="recon">Recon</h2>

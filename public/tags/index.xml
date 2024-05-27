@@ -1,308 +1,20 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss">
   <channel>
     <title>Tags on Shakil&#39;s Blog</title>
-    <link>https://hshakilst.github.io/tags/</link>
+    <link>http://localhost:1313/tags/</link>
     <description>Recent content in Tags on Shakil&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Shakil Hossain - All Right Reserved.</copyright>
-    <lastBuildDate>Thu, 16 May 2024 18:00:05 +0200</lastBuildDate><atom:link href="https://hshakilst.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><icon>https://hshakilst.github.io/logo.svg</icon>
+    <lastBuildDate>Mon, 27 May 2024 13:25:02 +0200</lastBuildDate><atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" /><icon>http://localhost:1313/logo.svg</icon>
     
     
     <item>
-      <title>Ctf</title>
-      <link>https://hshakilst.github.io/tags/ctf/</link>
-      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
+      <title>CVE-2023-3460</title>
+      <link>http://localhost:1313/tags/cve-2023-3460/</link>
+      <pubDate>Mon, 27 May 2024 13:25:02 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/ctf/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>CVE-2023-32315</title>
-      <link>https://hshakilst.github.io/tags/cve-2023-32315/</link>
-      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/cve-2023-32315/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>CVE-2023-33733</title>
-      <link>https://hshakilst.github.io/tags/cve-2023-33733/</link>
-      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/cve-2023-33733/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>Decryptor</title>
-      <link>https://hshakilst.github.io/tags/decryptor/</link>
-      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/decryptor/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>Htb</title>
-      <link>https://hshakilst.github.io/tags/htb/</link>
-      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/htb/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>Lab</title>
-      <link>https://hshakilst.github.io/tags/lab/</link>
-      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/lab/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>Openfire</title>
-      <link>https://hshakilst.github.io/tags/openfire/</link>
-      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/openfire/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>PDF Library</title>
-      <link>https://hshakilst.github.io/tags/pdf-library/</link>
-      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/pdf-library/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>ReportLab</title>
-      <link>https://hshakilst.github.io/tags/reportlab/</link>
-      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/reportlab/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>Share</title>
-      <link>https://hshakilst.github.io/tags/share/</link>
-      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/share/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>Smb</title>
-      <link>https://hshakilst.github.io/tags/smb/</link>
-      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/smb/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>Solar</title>
-      <link>https://hshakilst.github.io/tags/solar/</link>
-      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/solar/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>Windows</title>
-      <link>https://hshakilst.github.io/tags/windows/</link>
-      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/windows/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>Chisel</title>
-      <link>https://hshakilst.github.io/tags/chisel/</link>
-      <pubDate>Thu, 16 May 2024 17:00:43 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/chisel/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>CVE-2023-2255</title>
-      <link>https://hshakilst.github.io/tags/cve-2023-2255/</link>
-      <pubDate>Thu, 16 May 2024 17:00:43 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/cve-2023-2255/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>Dpapi</title>
-      <link>https://hshakilst.github.io/tags/dpapi/</link>
-      <pubDate>Thu, 16 May 2024 17:00:43 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/dpapi/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>Kerberos</title>
-      <link>https://hshakilst.github.io/tags/kerberos/</link>
-      <pubDate>Thu, 16 May 2024 17:00:43 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/kerberos/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>Libreoffice</title>
-      <link>https://hshakilst.github.io/tags/libreoffice/</link>
-      <pubDate>Thu, 16 May 2024 17:00:43 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/libreoffice/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>Mimikatz</title>
-      <link>https://hshakilst.github.io/tags/mimikatz/</link>
-      <pubDate>Thu, 16 May 2024 17:00:43 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/mimikatz/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>Office</title>
-      <link>https://hshakilst.github.io/tags/office/</link>
-      <pubDate>Thu, 16 May 2024 17:00:43 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/office/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>CVE-2023-23752</title>
-      <link>https://hshakilst.github.io/tags/cve-2023-23752/</link>
-      <pubDate>Thu, 16 May 2024 16:41:36 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/cve-2023-23752/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>Dev</title>
-      <link>https://hshakilst.github.io/tags/dev/</link>
-      <pubDate>Thu, 16 May 2024 16:41:36 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/dev/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>Joomla</title>
-      <link>https://hshakilst.github.io/tags/joomla/</link>
-      <pubDate>Thu, 16 May 2024 16:41:36 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/joomla/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>Linux</title>
-      <link>https://hshakilst.github.io/tags/linux/</link>
-      <pubDate>Thu, 16 May 2024 16:41:36 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/linux/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>Vortex</title>
-      <link>https://hshakilst.github.io/tags/vortex/</link>
-      <pubDate>Thu, 16 May 2024 16:41:36 +0200</pubDate>
-      
-      <guid>https://hshakilst.github.io/tags/vortex/</guid>
+      <guid>http://localhost:1313/tags/cve-2023-3460/</guid>
       <description><![CDATA[]]></description>
       
     </item>
@@ -311,10 +23,10 @@
     
     <item>
       <title>Dfir</title>
-      <link>https://hshakilst.github.io/tags/dfir/</link>
-      <pubDate>Thu, 16 May 2024 12:59:39 +0200</pubDate>
+      <link>http://localhost:1313/tags/dfir/</link>
+      <pubDate>Mon, 27 May 2024 13:25:02 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/dfir/</guid>
+      <guid>http://localhost:1313/tags/dfir/</guid>
       <description><![CDATA[]]></description>
       
     </item>
@@ -322,11 +34,11 @@
     
     
     <item>
-      <title>File</title>
-      <link>https://hshakilst.github.io/tags/file/</link>
-      <pubDate>Thu, 16 May 2024 12:59:39 +0200</pubDate>
+      <title>Htb</title>
+      <link>http://localhost:1313/tags/htb/</link>
+      <pubDate>Mon, 27 May 2024 13:25:02 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/file/</guid>
+      <guid>http://localhost:1313/tags/htb/</guid>
       <description><![CDATA[]]></description>
       
     </item>
@@ -334,11 +46,11 @@
     
     
     <item>
-      <title>Noted</title>
-      <link>https://hshakilst.github.io/tags/noted/</link>
-      <pubDate>Thu, 16 May 2024 12:59:39 +0200</pubDate>
+      <title>Linux</title>
+      <link>http://localhost:1313/tags/linux/</link>
+      <pubDate>Mon, 27 May 2024 13:25:02 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/noted/</guid>
+      <guid>http://localhost:1313/tags/linux/</guid>
       <description><![CDATA[]]></description>
       
     </item>
@@ -346,11 +58,35 @@
     
     
     <item>
-      <title>Notepad&#43;&#43;</title>
-      <link>https://hshakilst.github.io/tags/notepad&#43;&#43;/</link>
-      <pubDate>Thu, 16 May 2024 12:59:39 +0200</pubDate>
+      <title>LinuxCatScale</title>
+      <link>http://localhost:1313/tags/linuxcatscale/</link>
+      <pubDate>Mon, 27 May 2024 13:25:02 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/notepad&#43;&#43;/</guid>
+      <guid>http://localhost:1313/tags/linuxcatscale/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Member</title>
+      <link>http://localhost:1313/tags/member/</link>
+      <pubDate>Mon, 27 May 2024 13:25:02 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/member/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Plugin</title>
+      <link>http://localhost:1313/tags/plugin/</link>
+      <pubDate>Mon, 27 May 2024 13:25:02 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/plugin/</guid>
       <description><![CDATA[]]></description>
       
     </item>
@@ -359,10 +95,358 @@
     
     <item>
       <title>Sherlock</title>
-      <link>https://hshakilst.github.io/tags/sherlock/</link>
+      <link>http://localhost:1313/tags/sherlock/</link>
+      <pubDate>Mon, 27 May 2024 13:25:02 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/sherlock/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Ultimate</title>
+      <link>http://localhost:1313/tags/ultimate/</link>
+      <pubDate>Mon, 27 May 2024 13:25:02 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/ultimate/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Ultimatum</title>
+      <link>http://localhost:1313/tags/ultimatum/</link>
+      <pubDate>Mon, 27 May 2024 13:25:02 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/ultimatum/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Worpress</title>
+      <link>http://localhost:1313/tags/worpress/</link>
+      <pubDate>Mon, 27 May 2024 13:25:02 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/worpress/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Ctf</title>
+      <link>http://localhost:1313/tags/ctf/</link>
+      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/ctf/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>CVE-2023-32315</title>
+      <link>http://localhost:1313/tags/cve-2023-32315/</link>
+      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/cve-2023-32315/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>CVE-2023-33733</title>
+      <link>http://localhost:1313/tags/cve-2023-33733/</link>
+      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/cve-2023-33733/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Decryptor</title>
+      <link>http://localhost:1313/tags/decryptor/</link>
+      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/decryptor/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Lab</title>
+      <link>http://localhost:1313/tags/lab/</link>
+      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/lab/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Openfire</title>
+      <link>http://localhost:1313/tags/openfire/</link>
+      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/openfire/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>PDF Library</title>
+      <link>http://localhost:1313/tags/pdf-library/</link>
+      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/pdf-library/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>ReportLab</title>
+      <link>http://localhost:1313/tags/reportlab/</link>
+      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/reportlab/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Share</title>
+      <link>http://localhost:1313/tags/share/</link>
+      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/share/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Smb</title>
+      <link>http://localhost:1313/tags/smb/</link>
+      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/smb/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Solar</title>
+      <link>http://localhost:1313/tags/solar/</link>
+      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/solar/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Windows</title>
+      <link>http://localhost:1313/tags/windows/</link>
+      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/windows/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Chisel</title>
+      <link>http://localhost:1313/tags/chisel/</link>
+      <pubDate>Thu, 16 May 2024 17:00:43 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/chisel/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>CVE-2023-2255</title>
+      <link>http://localhost:1313/tags/cve-2023-2255/</link>
+      <pubDate>Thu, 16 May 2024 17:00:43 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/cve-2023-2255/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Dpapi</title>
+      <link>http://localhost:1313/tags/dpapi/</link>
+      <pubDate>Thu, 16 May 2024 17:00:43 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/dpapi/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Kerberos</title>
+      <link>http://localhost:1313/tags/kerberos/</link>
+      <pubDate>Thu, 16 May 2024 17:00:43 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/kerberos/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Libreoffice</title>
+      <link>http://localhost:1313/tags/libreoffice/</link>
+      <pubDate>Thu, 16 May 2024 17:00:43 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/libreoffice/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Mimikatz</title>
+      <link>http://localhost:1313/tags/mimikatz/</link>
+      <pubDate>Thu, 16 May 2024 17:00:43 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/mimikatz/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Office</title>
+      <link>http://localhost:1313/tags/office/</link>
+      <pubDate>Thu, 16 May 2024 17:00:43 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/office/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>CVE-2023-23752</title>
+      <link>http://localhost:1313/tags/cve-2023-23752/</link>
+      <pubDate>Thu, 16 May 2024 16:41:36 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/cve-2023-23752/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Dev</title>
+      <link>http://localhost:1313/tags/dev/</link>
+      <pubDate>Thu, 16 May 2024 16:41:36 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/dev/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Joomla</title>
+      <link>http://localhost:1313/tags/joomla/</link>
+      <pubDate>Thu, 16 May 2024 16:41:36 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/joomla/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Vortex</title>
+      <link>http://localhost:1313/tags/vortex/</link>
+      <pubDate>Thu, 16 May 2024 16:41:36 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/vortex/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>File</title>
+      <link>http://localhost:1313/tags/file/</link>
       <pubDate>Thu, 16 May 2024 12:59:39 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/sherlock/</guid>
+      <guid>http://localhost:1313/tags/file/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Noted</title>
+      <link>http://localhost:1313/tags/noted/</link>
+      <pubDate>Thu, 16 May 2024 12:59:39 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/noted/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Notepad&#43;&#43;</title>
+      <link>http://localhost:1313/tags/notepad&#43;&#43;/</link>
+      <pubDate>Thu, 16 May 2024 12:59:39 +0200</pubDate>
+      
+      <guid>http://localhost:1313/tags/notepad&#43;&#43;/</guid>
       <description><![CDATA[]]></description>
       
     </item>
@@ -371,10 +455,10 @@
     
     <item>
       <title>Time</title>
-      <link>https://hshakilst.github.io/tags/time/</link>
+      <link>http://localhost:1313/tags/time/</link>
       <pubDate>Thu, 16 May 2024 12:59:39 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/time/</guid>
+      <guid>http://localhost:1313/tags/time/</guid>
       <description><![CDATA[]]></description>
       
     </item>
@@ -383,10 +467,10 @@
     
     <item>
       <title>Bell</title>
-      <link>https://hshakilst.github.io/tags/bell/</link>
+      <link>http://localhost:1313/tags/bell/</link>
       <pubDate>Thu, 16 May 2024 12:54:17 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/bell/</guid>
+      <guid>http://localhost:1313/tags/bell/</guid>
       <description><![CDATA[]]></description>
       
     </item>
@@ -395,10 +479,10 @@
     
     <item>
       <title>Database</title>
-      <link>https://hshakilst.github.io/tags/database/</link>
+      <link>http://localhost:1313/tags/database/</link>
       <pubDate>Thu, 16 May 2024 12:54:17 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/database/</guid>
+      <guid>http://localhost:1313/tags/database/</guid>
       <description><![CDATA[]]></description>
       
     </item>
@@ -407,10 +491,10 @@
     
     <item>
       <title>Jingle</title>
-      <link>https://hshakilst.github.io/tags/jingle/</link>
+      <link>http://localhost:1313/tags/jingle/</link>
       <pubDate>Thu, 16 May 2024 12:54:17 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/jingle/</guid>
+      <guid>http://localhost:1313/tags/jingle/</guid>
       <description><![CDATA[]]></description>
       
     </item>
@@ -419,10 +503,10 @@
     
     <item>
       <title>Notification</title>
-      <link>https://hshakilst.github.io/tags/notification/</link>
+      <link>http://localhost:1313/tags/notification/</link>
       <pubDate>Thu, 16 May 2024 12:54:17 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/notification/</guid>
+      <guid>http://localhost:1313/tags/notification/</guid>
       <description><![CDATA[]]></description>
       
     </item>
@@ -431,10 +515,10 @@
     
     <item>
       <title>Push</title>
-      <link>https://hshakilst.github.io/tags/push/</link>
+      <link>http://localhost:1313/tags/push/</link>
       <pubDate>Thu, 16 May 2024 12:54:17 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/push/</guid>
+      <guid>http://localhost:1313/tags/push/</guid>
       <description><![CDATA[]]></description>
       
     </item>
@@ -443,10 +527,10 @@
     
     <item>
       <title>Wpndatabase</title>
-      <link>https://hshakilst.github.io/tags/wpndatabase/</link>
+      <link>http://localhost:1313/tags/wpndatabase/</link>
       <pubDate>Thu, 16 May 2024 12:54:17 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/wpndatabase/</guid>
+      <guid>http://localhost:1313/tags/wpndatabase/</guid>
       <description><![CDATA[]]></description>
       
     </item>
@@ -455,10 +539,10 @@
     
     <item>
       <title>Bft</title>
-      <link>https://hshakilst.github.io/tags/bft/</link>
+      <link>http://localhost:1313/tags/bft/</link>
       <pubDate>Thu, 16 May 2024 12:44:59 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/bft/</guid>
+      <guid>http://localhost:1313/tags/bft/</guid>
       <description><![CDATA[]]></description>
       
     </item>
@@ -467,10 +551,10 @@
     
     <item>
       <title>Master</title>
-      <link>https://hshakilst.github.io/tags/master/</link>
+      <link>http://localhost:1313/tags/master/</link>
       <pubDate>Thu, 16 May 2024 12:44:59 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/master/</guid>
+      <guid>http://localhost:1313/tags/master/</guid>
       <description><![CDATA[]]></description>
       
     </item>
@@ -479,10 +563,10 @@
     
     <item>
       <title>Mft</title>
-      <link>https://hshakilst.github.io/tags/mft/</link>
+      <link>http://localhost:1313/tags/mft/</link>
       <pubDate>Thu, 16 May 2024 12:44:59 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/mft/</guid>
+      <guid>http://localhost:1313/tags/mft/</guid>
       <description><![CDATA[]]></description>
       
     </item>
@@ -491,10 +575,10 @@
     
     <item>
       <title>Table</title>
-      <link>https://hshakilst.github.io/tags/table/</link>
+      <link>http://localhost:1313/tags/table/</link>
       <pubDate>Thu, 16 May 2024 12:44:59 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/table/</guid>
+      <guid>http://localhost:1313/tags/table/</guid>
       <description><![CDATA[]]></description>
       
     </item>
@@ -503,10 +587,10 @@
     
     <item>
       <title>Timestamp</title>
-      <link>https://hshakilst.github.io/tags/timestamp/</link>
+      <link>http://localhost:1313/tags/timestamp/</link>
       <pubDate>Thu, 16 May 2024 12:14:06 +0200</pubDate>
       
-      <guid>https://hshakilst.github.io/tags/timestamp/</guid>
+      <guid>http://localhost:1313/tags/timestamp/</guid>
       <description><![CDATA[]]></description>
       
     </item>
