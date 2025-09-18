@@ -6,15 +6,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Shakil Hossain - All Right Reserved.</copyright>
-    <lastBuildDate>Thu, 16 May 2024 18:00:05 +0200</lastBuildDate><atom:link href="http://localhost:1313/tags/tag1/index.xml" rel="self" type="application/rss+xml" /><icon>http://localhost:1313/logo.svg</icon>
+    <lastBuildDate>Thu, 18 Sep 2025 04:39:51 -0400</lastBuildDate><atom:link href="http://localhost:1313/tags/tag1/index.xml" rel="self" type="application/rss+xml" /><icon>http://localhost:1313/logo.svg</icon>
     
     
     <item>
-      <title>Solarlab</title>
-      <link>http://localhost:1313/posts/htb-machines/solarlab/</link>
-      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
+      <title>Logjammer</title>
+      <link>http://localhost:1313/posts/htb-sherlocks/logjammer/</link>
+      <pubDate>Thu, 18 Sep 2025 04:39:51 -0400</pubDate>
       
-      <guid>http://localhost:1313/posts/htb-machines/solarlab/</guid>
+      <guid>http://localhost:1313/posts/htb-sherlocks/logjammer/</guid>
       <description><![CDATA[]]></description>
       
     </item>

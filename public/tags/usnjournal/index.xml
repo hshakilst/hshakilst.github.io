@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss"><channel><title>Usnjournal on Shakil's Blog</title><link>https://hshakilst.github.io/tags/usnjournal/</link><description>Recent content in Usnjournal on Shakil's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>Shakil Hossain - All Right Reserved.</copyright><lastBuildDate>Thu, 18 Sep 2025 05:07:43 -0400</lastBuildDate><atom:link href="https://hshakilst.github.io/tags/usnjournal/index.xml" rel="self" type="application/rss+xml"/><icon>https://hshakilst.github.io/logo.svg</icon><item><title>HTB Sherlock Tracer</title><link>https://hshakilst.github.io/posts/htb-sherlocks/tracer/</link><pubDate>Thu, 18 Sep 2025 05:07:43 -0400</pubDate><guid>https://hshakilst.github.io/posts/htb-sherlocks/tracer/</guid><description><![CDATA[<h1 id="tracer---dfir">Tracer - DFIR</h1>
+<h3 id="scenario">Scenario</h3>
+<p>A junior SOC analyst on duty has reported multiple alerts indicating the presence of PsExec on a workstation. They verified the alerts and escalated the alerts to tier II. As an Incident responder you triaged the endpoint for artifacts of interest. Now please answer the questions regarding this security event so you can report it to your incident manager.</p>
+<h3 id="artifacts">Artifacts</h3>
+<table>
+<thead>
+<tr>
+<th>Artifact</th>
+<th>MD5 Hash</th>
+<th>Password</th>
+<th>Remarks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tracer.zip</td>
+<td>8cceeed93b876b9c60e53a1f2f7a68a1</td>
+<td>hacktheblue</td>
+<td>Contains Windows Event Logs, Prefetch files and UsnJournal files.</td>
+</tr>
+<tr>
+<td>C/$Extend/$J</td>
+<td>068a557274548bc88d2a9919c3195983</td>
+<td></td>
+<td>UsnJournal file&rsquo;s ADS.</td>
+</tr>
+<tr>
+<td>20240620050901_PECmd_Output.json</td>
+<td>1b3cd6882263b86735ebf0024c1cfa3d</td>
+<td></td>
+<td>Converted prefetch files to a single JSON file format.</td>
+</tr>
+<tr>
+<td>20240620051031_EvtxECmd_Output.json</td>
+<td>56c682158bd5e789558cf8a834313b60</td>
+<td></td>
+<td>Converted all the Windows .evtx file to a single JSON file.</td>
+</tr>
+<tr>
+<td>20240620054048_MFTECmd_J_Output.csv</td>
+<td>98eb829bfc6d7751aa1a51545a7ed430</td>
+<td></td>
+<td>Converted the Usn Journal file&rsquo;s ADS to a CSV file format. </td>
+</tr>
+</tbody>
+</table>
+<h3 id="tools">Tools</h3>
+<ul>
+<li>EvtxECmd - Eric Zimmerman Tools: To convert the windows event logs into a single JSON file.</li>
+<li>PECmd - Eric Zimmerman Tools: To convert the prefetch files into a single JSON file.</li>
+<li>MFTECmd - Eric Zimmerman Tools: To convert the Usn Journal&rsquo;s alternate data stream file $J to a CSV file format.</li>
+</ul>
+<h3 id="tasks">Tasks</h3>
+<ol>
+<li>The SOC Team suspects that an adversary is lurking in their environment and are using PsExec to move laterally. A junior SOC Analyst specifically reported the usage of PsExec on a Work Station. How many times was PsExec executed by the attacker on the system?</li>
+<li>What is the name of the service binary dropped by PsExec tool allowing attacker to execute remote commands?</li>
+<li>Now we have confirmed that PsExec ran multiple times, we are particularly interested in the 5th Last instance of the PsExec. What is the timestamp when the PsExec Service binary ran?</li>
+<li>Can you confirm the hostname of the workstation from which attacker moved laterally?</li>
+<li>What is full name of the Key File dropped by 5th last instance of the Psexec?</li>
+<li>Can you confirm the timestamp when this key file was created on disk?</li>
+<li>What is the full name of the Named Pipe ending with the &ldquo;stderr&rdquo; keyword for the 5th last instance of the PsExec?</li>
+</ol>
+<h3 id="forensic-analysis">Forensic Analysis</h3>
+<p>For task 1, 2, 3, 4 and 5 we can run the <code>jq</code> lang query on the converted prefetch JSON file <code>20240620050901_PECmd_Output.json</code> for <code>PSEXESVC.EXE</code> this is the service binary that handles the PsExec commands remotely or locally.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ cat 20240620050901_PECmd_Output.json | jq <span style="color:#f1fa8c">&#39;select(.ExecutableName==&#34;PSEXESVC.EXE&#34;)&#39;</span>                          
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;SourceFilename&#34;</span>: <span style="color:#f1fa8c">&#34;prefetch\\PSEXESVC.EXE-AD70946C.pf&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;SourceCreated&#34;</span>: <span style="color:#f1fa8c">&#34;2023-09-08 00:10:04&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;SourceModified&#34;</span>: <span style="color:#f1fa8c">&#34;2024-06-20 05:04:51&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;SourceAccessed&#34;</span>: <span style="color:#f1fa8c">&#34;2024-06-20 05:08:55&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;ExecutableName&#34;</span>: <span style="color:#f1fa8c">&#34;PSEXESVC.EXE&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;Hash&#34;</span>: <span style="color:#f1fa8c">&#34;AD70946C&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;Size&#34;</span>: <span style="color:#f1fa8c">&#34;18142&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;Version&#34;</span>: <span style="color:#f1fa8c">&#34;Windows 10 or Windows 11&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;RunCount&#34;</span>: <span style="color:#f1fa8c">&#34;9&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;LastRun&#34;</span>: <span style="color:#f1fa8c">&#34;2023-09-07 12:10:03&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;PreviousRun0&#34;</span>: <span style="color:#f1fa8c">&#34;2023-09-07 12:09:09&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;PreviousRun1&#34;</span>: <span style="color:#f1fa8c">&#34;2023-09-07 12:08:54&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;PreviousRun2&#34;</span>: <span style="color:#f1fa8c">&#34;2023-09-07 12:08:23&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;PreviousRun3&#34;</span>: <span style="color:#f1fa8c">&#34;2023-09-07 12:06:54&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;PreviousRun4&#34;</span>: <span style="color:#f1fa8c">&#34;2023-09-07 11:57:53&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;PreviousRun5&#34;</span>: <span style="color:#f1fa8c">&#34;2023-09-07 11:57:43&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;PreviousRun6&#34;</span>: <span style="color:#f1fa8c">&#34;2023-09-07 11:55:44&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;Volume0Name&#34;</span>: <span style="color:#f1fa8c">&#34;\\VOLUME{01d951602330db46-52233816}&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;Volume0Serial&#34;</span>: <span style="color:#f1fa8c">&#34;52233816&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;Volume0Created&#34;</span>: <span style="color:#f1fa8c">&#34;2023-03-08 01:48:53&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;Directories&#34;</span>: <span style="color:#f1fa8c">&#34;\\VOLUME{01d951602330db46-52233816}\\PROGRAMDATA, \\VOLUME{01d951602330db46-52233816}\\PROGRAMDATA\\MICROSOFT, \\VOLUME{01d951602330db46-52233816}\\PROGRAMDATA\\MICROSOFT\\CRYPTO, \\VOLUME{01d951602330db46-52233816}\\PROGRAMDATA\\MICROSOFT\\CRYPTO\\RSA, \\VOLUME{01d951602330db46-52233816}\\PROGRAMDATA\\MICROSOFT\\CRYPTO\\RSA\\S-1-5-18, \\VOLUME{01d951602330db46-52233816}\\WINDOWS, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;FilesLoaded&#34;</span>: <span style="color:#f1fa8c">&#34;\\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\NTDLL.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\PSEXESVC.EXE, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\KERNEL32.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\KERNELBASE.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\LOCALE.NLS, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\USER32.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\USERENV.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\WIN32U.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\UCRTBASE.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\GDI32.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\RPCRT4.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\GDI32FULL.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\MSVCP_WIN.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\ADVAPI32.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\MSVCRT.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\SECHOST.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\SHELL32.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\WTSAPI32.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\KERNEL.APPCORE.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\NTMARTA.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\PSEXEC-FORELA-WKSTN001-CAD5E7EF.KEY, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\CRYPTSP.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\RSAENH.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\BCRYPT.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\SSPICLI.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\PROFAPI.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\BCRYPTPRIMITIVES.DLL, \\VOLUME{01d951602330db46-52233816}\\PROGRAMDATA\\MICROSOFT\\CRYPTO\\RSA\\S-1-5-18\\F05260A40AE771219C4528E4628312CD_B02EC91E-ADE1-4F67-9328-AE89B0EBD197, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\CRYPTBASE.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\NETAPI32.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\LOGONCLI.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\NETUTILS.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\SYSTEM32\\WINSTA.DLL, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\PSEXEC-FORELA-WKSTN001-89A517EE.KEY, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\PSEXEC-FORELA-WKSTN001-415385DF.KEY, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\PSEXEC-FORELA-WKSTN001-C3E84A44.KEY, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\PSEXEC-FORELA-WKSTN001-95F03CFE.KEY, \\VOLUME{01d951602330db46-52233816}\\</span><span style="color:#8be9fd;font-style:italic">$MFT</span><span style="color:#f1fa8c">, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\PSEXEC-FORELA-WKSTN001-663BCB85.KEY, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\PSEXEC-FORELA-WKSTN001-7AA5D6C6.KEY, \\VOLUME{01d951602330db46-52233816}\\WINDOWS\\PSEXEC-FORELA-WKSTN001-EDCC783C.KEY&#34;</span>,                                                
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;ParsingError&#34;</span>: <span style="color:#8be9fd;font-style:italic">false</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">}</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-gdscript3" data-lang="gdscript3"><span style="display:flex;"><span>A note to count the binary last runs, we should start from the LastRun as <span style="color:#bd93f9">1</span>, PreviousRun0 as <span style="color:#bd93f9">2</span> <span style="color:#ff79c6">and</span> so on<span style="color:#ff79c6">.</span> The order of the FilesLoaded also follows this rule<span style="color:#ff79c6">.</span> The latest run<span style="color:#f1fa8c">&#39;s loaded files are on top and the first run&#39;</span>s loaded files are <span style="color:#ff79c6">in</span> the bottom<span style="color:#ff79c6">.</span> 
+</span></span></code></pre></div><p>To answer the question for Task 6 we can search the Usn Journal records and search for the update reason attribute which is <code>FileCreate</code>.
+![[Pasted image 20240621073521.png]]</p>
+<p>To answer the last Task&rsquo;s question we need search for <code>PipeEvent (Pipe Created)</code> which has an event ID of 17 and then search for pipe names that ends with <code>stderr</code> and that was created when the last 5th instance of PsExec was ran. We can do the following and compare the date created with the last 5th instance&rsquo;s run time.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ cat 20240620051031_EvtxECmd_Output.json | jq <span style="color:#f1fa8c">&#39;. | select(.TimeCreated &gt;= &#34;2023-09-07 12:06:54&#34; and .EventId==17) | select(.PayloadData2 | test(&#34;stderr$&#34;))&#39;</span> -c | head -n1
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">{</span><span style="color:#f1fa8c">&#34;PayloadData1&#34;</span>:<span style="color:#f1fa8c">&#34;ProcessID: 6836, ProcessGUID: b02ec91e-bcde-64f9-0c02-000000003000&#34;</span>,<span style="color:#f1fa8c">&#34;PayloadData2&#34;</span>:<span style="color:#f1fa8c">&#34;PipeName: \\PSEXESVC-FORELA-WKSTN001-3056-stderr&#34;</span>,<span style="color:#f1fa8c">&#34;PayloadData5&#34;</span>:<span style="color:#f1fa8c">&#34;Image: C:\\WINDOWS\\PSEXESVC.exe&#34;</span>,<span style="color:#f1fa8c">&#34;UserName&#34;</span>:<span style="color:#f1fa8c">&#34;NT AUTHORITY\\SYSTEM&#34;</span>,<span style="color:#f1fa8c">&#34;MapDescription&#34;</span>:<span style="color:#f1fa8c">&#34;PipeEvent (Pipe Created)&#34;</span>,<span style="color:#f1fa8c">&#34;ChunkNumber&#34;</span>:5,<span style="color:#f1fa8c">&#34;Computer&#34;</span>:<span style="color:#f1fa8c">&#34;Forela-Wkstn002.forela.local&#34;</span>,<span style="color:#f1fa8c">&#34;Payload&#34;</span>:<span style="color:#f1fa8c">&#34;{\&#34;EventData\&#34;:{\&#34;Data\&#34;:[{\&#34;@Name\&#34;:\&#34;RuleName\&#34;,\&#34;#text\&#34;:\&#34;-\&#34;},{\&#34;@Name\&#34;:\&#34;EventType\&#34;,\&#34;#text\&#34;:\&#34;CreatePipe\&#34;},{\&#34;@Name\&#34;:\&#34;UtcTime\&#34;,\&#34;#text\&#34;:\&#34;2023-09-07 12:06:55.069\&#34;},{\&#34;@Name\&#34;:\&#34;ProcessGuid\&#34;,\&#34;#text\&#34;:\&#34;b02ec91e-bcde-64f9-0c02-000000003000\&#34;},{\&#34;@Name\&#34;:\&#34;ProcessId\&#34;,\&#34;#text\&#34;:\&#34;6836\&#34;},{\&#34;@Name\&#34;:\&#34;PipeName\&#34;,\&#34;#text\&#34;:\&#34;\\\\PSEXESVC-FORELA-WKSTN001-3056-stderr\&#34;},{\&#34;@Name\&#34;:\&#34;Image\&#34;,\&#34;#text\&#34;:\&#34;C:\\\\WINDOWS\\\\PSEXESVC.exe\&#34;},{\&#34;@Name\&#34;:\&#34;User\&#34;,\&#34;#text\&#34;:\&#34;NT AUTHORITY\\\\SYSTEM\&#34;}]}}&#34;</span>,<span style="color:#f1fa8c">&#34;UserId&#34;</span>:<span style="color:#f1fa8c">&#34;S-1-5-18&#34;</span>,<span style="color:#f1fa8c">&#34;Channel&#34;</span>:<span style="color:#f1fa8c">&#34;Microsoft-Windows-Sysmon/Operational&#34;</span>,<span style="color:#f1fa8c">&#34;Provider&#34;</span>:<span style="color:#f1fa8c">&#34;Microsoft-Windows-Sysmon&#34;</span>,<span style="color:#f1fa8c">&#34;EventId&#34;</span>:17,<span style="color:#f1fa8c">&#34;EventRecordId&#34;</span>:<span style="color:#f1fa8c">&#34;159603&#34;</span>,<span style="color:#f1fa8c">&#34;ProcessId&#34;</span>:3552,<span style="color:#f1fa8c">&#34;ThreadId&#34;</span>:4360,<span style="color:#f1fa8c">&#34;Level&#34;</span>:<span style="color:#f1fa8c">&#34;Info&#34;</span>,<span style="color:#f1fa8c">&#34;Keywords&#34;</span>:<span style="color:#f1fa8c">&#34;Classic&#34;</span>,<span style="color:#f1fa8c">&#34;SourceFile&#34;</span>:<span style="color:#f1fa8c">&#34;.\\System32\\winevt\\logs\\Microsoft-Windows-Sysmon%4Operational.evtx&#34;</span>,<span style="color:#f1fa8c">&#34;ExtraDataOffset&#34;</span>:0,<span style="color:#f1fa8c">&#34;HiddenRecord&#34;</span>:false,<span style="color:#f1fa8c">&#34;TimeCreated&#34;</span>:<span style="color:#f1fa8c">&#34;2023-09-07T12:06:55.0846666+00:00&#34;</span>,<span style="color:#f1fa8c">&#34;RecordNumber&#34;</span>:159603<span style="color:#ff79c6">}</span>
+</span></span></code></pre></div><h3 id="summary">Summary</h3>
+<p>In this Sherlock we explored the Usn Journal and deep dived into Windows prefetch files. Also, a moderate understanding of PsExec commands was necessary to answer the task question. Finally, I included some resources to read about more those two above mentioned artifacts.</p>
+]]></description></item></channel></rss>

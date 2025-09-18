@@ -1,21 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss">
-  <channel>
-    <title>Vortex on Shakil&#39;s Blog</title>
-    <link>http://localhost:1313/tags/vortex/</link>
-    <description>Recent content in Vortex on Shakil&#39;s Blog</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <copyright>Shakil Hossain - All Right Reserved.</copyright>
-    <lastBuildDate>Thu, 16 May 2024 16:41:36 +0200</lastBuildDate><atom:link href="http://localhost:1313/tags/vortex/index.xml" rel="self" type="application/rss+xml" /><icon>http://localhost:1313/logo.svg</icon>
-    
-    
-    <item>
-      <title>HTB Machine Devvortex</title>
-      <link>http://localhost:1313/posts/htb-machines/devvortex/</link>
-      <pubDate>Thu, 16 May 2024 16:41:36 +0200</pubDate>
-      
-      <guid>http://localhost:1313/posts/htb-machines/devvortex/</guid>
-      <description><![CDATA[<h1 id="devvortex---htbhttpswwwhacktheboxcommachinesdevvortex">Devvortex - <a href="https://www.hackthebox.com/machines/devvortex">HTB</a></h1>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss"><channel><title>Vortex on Shakil's Blog</title><link>https://hshakilst.github.io/tags/vortex/</link><description>Recent content in Vortex on Shakil's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>Shakil Hossain - All Right Reserved.</copyright><lastBuildDate>Thu, 16 May 2024 16:41:36 +0200</lastBuildDate><atom:link href="https://hshakilst.github.io/tags/vortex/index.xml" rel="self" type="application/rss+xml"/><icon>https://hshakilst.github.io/logo.svg</icon><item><title>HTB Machine Devvortex</title><link>https://hshakilst.github.io/posts/htb-machines/devvortex/</link><pubDate>Thu, 16 May 2024 16:41:36 +0200</pubDate><guid>https://hshakilst.github.io/posts/htb-machines/devvortex/</guid><description><![CDATA[<h1 id="devvortex---htbhttpswwwhacktheboxcommachinesdevvortex">Devvortex - <a href="https://www.hackthebox.com/machines/devvortex">HTB</a></h1>
 <p><img src="images/banner.png" alt="alt text"></p>
 <h2 id="recon">Recon</h2>
 <h3 id="nmap-services">Nmap Services</h3>
@@ -437,10 +420,4 @@ export TERM=xterm
 </li>
 </ol>
 <p>Unfortunately all of the conditions were present in the box and we successfully gained <code>root</code> privilege following the steps described in PoC. Finally, acquired the root flag.</p>
-]]></description>
-      
-    </item>
-    
-    
-  </channel>
-</rss>
+]]></description></item></channel></rss>

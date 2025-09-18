@@ -1,489 +1,81 @@
-<!DOCTYPE html>
-<html class="" lang="en-us"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
-    
-        <script>
-            if (location.host != new URL("http:\/\/localhost:1313\/").host) location.href = "http:\/\/localhost:1313\/"
-        </script>
-    
-    <meta name="robots" content="noai, noimageai">
-    <meta name="viewport" content="width=device-width" />
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=7" />
-
-    <link
-    rel="icon"
-    href='/favicon.png'
-/>
-<link
-    rel="shortcut icon"
-    href='/favicon.ico'
-    type="image/x-icon"
-/>
-<link
-    rel="apple-touch-icon"
-    href='/apple-touch-icon.png'
-/>
-
-    <link
-        rel="icon"
-        href='/logo.svg'
-        type="image/svg+xml"
-    />
-
-<title>
-        
-            Filetime  &ndash;
-        
-        Shakil&#39;s Blog
-    </title>
-
-    
-    <link href="/symbols-nerd-font/symbols-nerd-font.css" rel="stylesheet" integrity="sha512-lydow8GLOLlYNOtHlksNCmGWWCBsbIEtikXpHzfWqx78HLlyQZHOzyLwPpKol4Th6aCwLUXOfODVYgwrd3nwKQ=="/>
-    <link href="/jetbrains-mono/jetbrains-mono.css" rel="stylesheet" integrity="sha512-tJxlgL6v1Y7kFf+qB8SloaAMKnOAw6WouknxXtIjkBux9Y/9aX81EUWOJO8c/3l98DmjG8brr4to7zaez606Fg=="/>
-
-    
-    
-    <link type="text/css" rel="stylesheet" href=http://localhost:1313/css/styles.159e622b5082f31a00ec6f1883bbaf21cb06404f86f78d11446793c0fd5d5060b90e94ef79525a194da08b247c2b8b82413944e9b2af3d2c35c0fa6157961cd6.css integrity="sha512-FZ5iK1CC8xoA7G8Yg7uvIcsGQE&#43;G940RRGeTwP1dUGC5DpTveVJaGU2giyR8K4uCQTlE6bKvPSw1wPphV5Yc1g==" />
-<meta name="author" content="Shakil Hossain" />
-
-    
-        <meta name="keywords" content='dfir, file, time, timestamp, windows' />
-    
-    
-        <meta name="description" content="What is FILETIME? A file time is a 64-bit value that represents the number of 100-nanosecond intervals that have elapsed since 12:00 A.M. January 1, 1601 Coordinated Universal Time (UTC)." />
-    
-
-<meta property="og:site_name"
-    content='Shakil&#39;s Blog' />
-
-    <meta property="og:title" content="Filetime" />
-    <meta property="og:type" content="article" />
-    
-    <meta
-        property="article:author" content="Shakil Hossain" />
-    <meta
-        property="article:published_time"
-        content='2024-05-16T12:14:06Z&#43;0200' />
-    
-        
-            <meta property="article:tag" content="dfir" />
-        
-            <meta property="article:tag" content="file" />
-        
-            <meta property="article:tag" content="time" />
-        
-            <meta property="article:tag" content="timestamp" />
-        
-            <meta property="article:tag" content="windows" />
-        
-    
-    <meta property="og:url" content="http://localhost:1313/posts/filetime/" />
-    
-    
-    <meta property="og:image"
-        content="http://localhost:1313/android-chrome-512x512.png" />
-    
-        <meta property="og:description" content="FILETIME in Windows What is FILETIME? A file time is a 64-bit value that represents the number of 100-nanosecond intervals that have elapsed since 12:00 A.M. Ja" />
-    
-
-<meta name="twitter:card" content="summary_large_image" />
-<meta property="twitter:domain"
-      content='localhost:1313'
-/>
-<meta property="twitter:url" content="http://localhost:1313/posts/filetime/" />
-
-
-    <meta name="twitter:title" content="Filetime" />
-    
-    
-    
-    <meta name="twitter:image"
-        content="http://localhost:1313/android-chrome-512x512.png" />
-    
-        <meta name="twitter:description" content="FILETIME in Windows What is FILETIME? A file time is a 64-bit value that represents the number of 100-nanosecond intervals that have elapsed since 12:00 A.M. Ja" />
-    
-
-<link rel="manifest" href="/manifest/index.json" />
-</head>
-
-
-<body>
-        <div id="baseContainer"><header class="">
-<div class="titleAndSearchContainer">
-        <div id="titleContainer">
-            
-                <a class="unstyledLink" href="/">
-                    <img src='/logo.svg' alt='Logo'/>
-                </a>
-            
-            <div class="rightOfLogo">
-                <div class="titleAndHamburger">
-                    <h1>
-                        <a class="unstyledLink" href="/">Shakil&#39;s Blog</a>
-                        
-                    </h1>
-                    
-                </div>
-                <div id="wide_nav"><nav>
-    
-    <ul id="main-nav">
-        <li><a href="/">Home</a></li>
-        
-            <li><a href="/posts/">Posts</a></li>
-        
-        
-        
-        
-        
-        
-        
-            <li><a href="/tags/">Tags</a></li>
-        
-        
-    </ul>
-</nav>
-</div>
-            </div>
-        </div>
-        <div class="search">
-    <input id="searchbar" type="text" placeholder='Search' />
-    <span class="nerdlink" onclick="newSearch();">&#xf002;</span>
-</div>
-<script>
-    function newSearch() {
-        let term = searchbar.value.trim();
-        if (!term) return;
-        location.href = `/search/?q=${term}`;
-    }
-    searchbar.onkeyup = (ev) => {if (ev.keyCode == 13) newSearch()};
-</script>
-
-    </div>
-    <div id="links">
-        <a
-    
-        rel="noreferrer"
-    
-    target="_blank"
-    class="nerdlink"
-    href="/index.xml">
-    
-    
-        &#xf09e;
-    
-    <span>
-        RSS
-    </span>
-</a>
-
-        
-        <a
-    
-        rel="noreferrer"
-    
-    target="_blank"
-    class="nerdlink"
-    href="https://github.com/hshakilst">
-    
-    
-        &#xf09b;
-    
-    <span>
-        Github
-    </span>
-</a>
-<a
-    
-        rel="noreferrer"
-    
-    target="_blank"
-    class="nerdlink"
-    href="https://linkedin.com/in/hshakilst">
-    
-    
-        &#xf0e1;
-    
-    <span>
-        LinkedIn
-    </span>
-</a>
-<a
-    
-        rel="noreferrer"
-    
-    target="_blank"
-    class="nerdlink"
-    href="mailto:hshakilst@gmail.com">
-    
-    
-        &#xf6ed;
-    
-    <span>
-        Gmail
-    </span>
-</a>
-
-    </div>
-    
-
-</header>
-<div id="contentContainer">
-                <div id="content">
-                    <main>
-<article class="card single">
-    
-        <h1>Filetime</h1>
-    
-    
-        <p class="date">
-            <span title='Date'> </span>
-    2024-05-16
-
-</p>
-    
-    
-    
-    
-    <div><h1 id="filetime-in-windows">FILETIME in Windows</h1>
-<h2 id="what-is-filetime">What is FILETIME?</h2>
-<p>A file time is a 64-bit value that represents the number of 100-nanosecond intervals that have elapsed since 12:00 A.M. January 1, 1601 Coordinated Universal Time (UTC). The system records file times when applications create, access, and write to files.</p>
-<p>The NTFS file system stores time values in UTC format, so they are not affected by changes in time zone or daylight saving time. The FAT file system stores time values based on the local time of the computer.</p>
-<p>Time stamps are updated at various times and for various reasons. The only guarantee about a file time stamp is that the file time is correctly reflected when the handle that makes the change is closed.</p>
-<blockquote>
-<p>Not all file systems can record creation and last access times, and not all file systems record them in the same manner. For example, the resolution of create time on FAT is 10 milliseconds, while write time has a resolution of 2 seconds and access time has a resolution of 1 day, so it is really the access date. The NTFS file system delays updates to the last access time for a file by up to 1 hour after the last access.</p>
-</blockquote>
-<h2 id="filetime-structure-minwinbaseh">FILETIME Structure (minwinbase.h)</h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>typedef struct _FILETIME {
-</span></span><span style="display:flex;"><span>  DWORD dwLowDateTime;
-</span></span><span style="display:flex;"><span>  DWORD dwHighDateTime;
-</span></span><span style="display:flex;"><span>} FILETIME, *PFILETIME, *LPFILETIME;
-</span></span></code></pre></div><p>Here, the <code>dwLowDateTime</code> is the low-order and the <code>dwHighDateTime</code> is the high-order part of the file time.</p>
-<blockquote>
-<p>Older compilers did not have support for 64 bit types. So the structure splits the 64 bit value into two 32 bit parts. The low part contains the least significant 32 bits. The high part contains the most significant 32 bits.</p>
-</blockquote>
-<h2 id="converting-filetime-to-human-readable-format">Converting FILETIME to Human Readable Format</h2>
-<p>To convert the FILETIME into human readable format we need a unsigned 64 bit integer union. But 64 bit integer support may vary compiler to compiler based on CPU architecture and OS versions. Microsoft&rsquo;s official documentation says it supports <code>ULARGE_INTEGER</code> (unsigned 64 bit integer union) from <code>Windows 10 Build 20348</code>.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>typedef union _ULARGE_INTEGER {
-</span></span><span style="display:flex;"><span>  struct {
-</span></span><span style="display:flex;"><span>    DWORD LowPart;
-</span></span><span style="display:flex;"><span>    DWORD HighPart;
-</span></span><span style="display:flex;"><span>  } DUMMYSTRUCTNAME;
-</span></span><span style="display:flex;"><span>  struct {
-</span></span><span style="display:flex;"><span>    DWORD LowPart;
-</span></span><span style="display:flex;"><span>    DWORD HighPart;
-</span></span><span style="display:flex;"><span>  } u;
-</span></span><span style="display:flex;"><span>  ULONGLONG QuadPart;
-</span></span><span style="display:flex;"><span>} ULARGE_INTEGER;
-</span></span></code></pre></div><blockquote>
-<p>The ULARGE_INTEGER structure is actually a union. If your compiler has built-in support for 64-bit integers, use the QuadPart member to store the 64-bit integer. Otherwise, use the LowPart and HighPart members to store the 64-bit integer.</p>
-</blockquote>
-<p>So, many softwares uses the LowPart and HighPart to store a unsigned 64 bit integer by splitting it into 32 bit each. For example <code>Notepad++</code> uses <code>originalFileLastModifTimestamp</code> as <code>LowPart</code> and
-<code>originalFileLastModifTimestampHigh</code> as <code>HighPart</code> to store the FILETIME timestamps.</p>
-<p>To retrieve a human readable date/time from these two parts needs some arithmatic operations.</p>
-<p>A simplest way to get the original FILETIME timestamp from LowPart and HighPart is a by using the following formula.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>LowPart + 2^32 * HighPart
-</span></span></code></pre></div><p>The formula does not provide a good enough precision. Meaning the retrieved value may have some deviations of minutes and seconds.</p>
-<p>To retrive the precise date/time value we need to perform some bitwise operation on the <code>LowPart</code> and <code>HighPart</code> in python to convert it into it&rsquo;s original form (a 64 bit unsigned integer).</p>
-<p>A FILETIME timestamp is a number in 100-nanosecond intervals that have elapsed since 12:00 A.M. January 1, 1601 Coordinated Universal Time (UTC) till the creation time of the timestamp. To get the creation time, we need to add it to the nanosecond value of the initial date (1601-01-01).</p>
-<p><strong>PS: We can convert the timestamp&rsquo;s value to millisecond or second also. The retrived date/time will be in UTC, as the initial value is in UTC.</strong></p>
-<p>Here&rsquo;s a simple python script to convert splitted FILETIME timestamp to human readable format.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>import datetime
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>timestamp_low = -1354503710
-</span></span><span style="display:flex;"><span>timestamp_high = 31047188
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>full_timestamp = (timestamp_high &lt;&lt; 32) | (timestamp_low &amp; 0xFFFFFFFF)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>print(full_timestamp)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>timestamp_seconds = full_timestamp / 10**7
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>print(timestamp_seconds)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>converted_date_from_file_time = datetime.datetime(1601, 1, 1) + datetime.timedelta(seconds=timestamp_seconds)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>print(converted_date_from_file_time)
-</span></span></code></pre></div><h2 id="references">References</h2>
-<ul>
-<li><a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/file-times">File Times</a></li>
-<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-ularge_integer-r1">ULARGE_INTEGER union</a></li>
-<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-filetime">FILETIME structure</a></li>
-<li><a href="https://stackoverflow.com/questions/29266743/what-is-dwlowdatetime-and-dwhighdatetime">What is dwLowDateTime and dwHighDateTime</a></li>
-<li><a href="https://stackoverflow.com/posts/1100288/revisions">How to create FILETIME in Win32?</a></li>
-<li><a href="https://forum.hackthebox.com/t/noted-sherlock/307329/6">HTB Discussion Board</a></li>
-<li><a href="https://www.epochconverter.com/ldap">LDAP, Active Directory &amp; Filetime Timestamp Converter</a></li>
-</ul>
-</div>
-</article>
-
-    <hr />
-    <p class="articleTagsContainer">
-        <span> </span>
-        <strong>Tags:</strong>
-        
-            <a
-                
-                href="/tags/dfir/">#dfir</a>
-        
-            <a
-                
-                href="/tags/file/">#file</a>
-        
-            <a
-                
-                href="/tags/time/">#time</a>
-        
-            <a
-                
-                href="/tags/timestamp/">#timestamp</a>
-        
-            <a
-                
-                href="/tags/windows/">#windows</a>
-        
-    </p>
-
-
-
-
-
-    
-    
-        
-        <div class="relatedArticlesContainer">
-            <hr />
-            <h2>More posts like this</h2>
-            <div class="postlist ">
-                <article class="card postlistitem">
-    <div>
-        <h2>
-            <a href="http://localhost:1313/posts/htb-sherlocks/ultimatum/">HTB Sherlock Ultimatum</a>
-        </h2>
-        <p class="date">
-            <span title='Date'> </span>
-    2024-05-27
-
-
-                | 
-                <span title='Tags'> </span>
-                
-                    <a href="/tags/cve-2023-3460">#CVE-2023-3460</a>
-                
-                    <a href="/tags/dfir">#dfir</a>
-                
-                    <a href="/tags/htb">#htb</a>
-                
-                    <a href="/tags/linux">#linux</a>
-                
-                    <a href="/tags/linuxcatscale">#LinuxCatScale</a>
-                
-                    <a href="/tags/member">#member</a>
-                
-                    <a href="/tags/plugin">#plugin</a>
-                
-                    <a href="/tags/sherlock">#sherlock</a>
-                
-                    <a href="/tags/ultimate">#ultimate</a>
-                
-                    <a href="/tags/ultimatum">#ultimatum</a>
-                
-                    <a href="/tags/worpress">#worpress</a>
-                
-            
-        </p>
-        
-            
-        
-        
-            <div class="articlePreview">
-                <p>
-                    
-                        Ultimatum (DFIR) Scenario One of the Forela WordPress servers was a target of notorious Threat Actors (TA). The website was running a blog dedicated to the Forela Social Club, where Forela employees can chat and discuss random topics.
-                    
-                </p>
-                <p><a href="http://localhost:1313/posts/htb-sherlocks/ultimatum/">Continue reading </a></p>
-            </div>
-        
-    </div>
-    <hr />
-</article>
-<article class="card postlistitem">
-    <div>
-        <h2>
-            <a href="http://localhost:1313/posts/htb-machines/solarlab/">HTB Machine Solarlab</a>
-        </h2>
-        <p class="date">
-            <span title='Date'> </span>
-    2024-05-16
-
-
-                | 
-                <span title='Tags'> </span>
-                
-                    <a href="/tags/ctf">#ctf</a>
-                
-                    <a href="/tags/cve-2023-32315">#CVE-2023-32315</a>
-                
-                    <a href="/tags/cve-2023-33733">#CVE-2023-33733</a>
-                
-                    <a href="/tags/decryptor">#decryptor</a>
-                
-                    <a href="/tags/htb">#htb</a>
-                
-                    <a href="/tags/lab">#lab</a>
-                
-                    <a href="/tags/openfire">#openfire</a>
-                
-                    <a href="/tags/pdf-library">#PDF library</a>
-                
-                    <a href="/tags/reportlab">#ReportLab</a>
-                
-                    <a href="/tags/share">#share</a>
-                
-                    <a href="/tags/smb">#smb</a>
-                
-                    <a href="/tags/solar">#solar</a>
-                
-                    <a href="/tags/windows">#windows</a>
-                
-            
-        </p>
-        
-            
-        
-        
-            <div class="articlePreview">
-                <p>
-                    
-                        Solar Lab - HTB Nmap PORT STATE SERVICE REASON VERSION 80/tcp open http syn-ack nginx 1.24.0 | http-methods: |_ Supported Methods: GET HEAD |_http-title: SolarLab Instant Messenger |_http-server-header: nginx/1.24.0 135/tcp open msrpc syn-ack Microsoft Windows RPC 139/tcp open netbios-ssn syn-ack Microsoft Windows netbios-ssn 445/tcp open microsoft-ds?
-                    
-                </p>
-                <p><a href="http://localhost:1313/posts/htb-machines/solarlab/">Continue reading </a></p>
-            </div>
-        
-    </div>
-    <hr />
-</article>
-
-            </div>
-        </div>
-    
-
-
-                    </main><footer>
-    <hr />
-
-<p><small>
-        2024 &copy; Shakil Hossain - All Right Reserved.
-    </small></p>
-    <p><small>
-        <a href='https://gitlab.com/gabmus/hugo-ficurinia'>Ficurinia theme</a> for <a href='https://gohugo.io'>Hugo</a> by <a href='https://gabmus.org'>Gabriele Musco</a>.
-    </small></p>
-</footer>
-</div>
-            </div>
-        </div>
-
-
-</body>
-</html>
+<!doctype html><html lang=en-us><head><script>location.host!=new URL("https://hshakilst.github.io/").host&&(location.href="https://hshakilst.github.io/")</script><meta name=robots content="noai, noimageai"><meta name=viewport content="width=device-width"><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=7"><link rel=icon href=/favicon.png><link rel="shortcut icon" href=/favicon.ico type=image/x-icon><link rel=apple-touch-icon href=/apple-touch-icon.png><link rel=icon href=/logo.svg type=image/svg+xml><title>Filetime &ndash;
+Shakil's Blog
+</title><link href=/symbols-nerd-font/symbols-nerd-font.css rel=stylesheet integrity="sha512-lydow8GLOLlYNOtHlksNCmGWWCBsbIEtikXpHzfWqx78HLlyQZHOzyLwPpKol4Th6aCwLUXOfODVYgwrd3nwKQ=="><link href=/jetbrains-mono/jetbrains-mono.css rel=stylesheet integrity="sha512-tJxlgL6v1Y7kFf+qB8SloaAMKnOAw6WouknxXtIjkBux9Y/9aX81EUWOJO8c/3l98DmjG8brr4to7zaez606Fg=="><link type=text/css rel=stylesheet href=https://hshakilst.github.io/css/styles.159e622b5082f31a00ec6f1883bbaf21cb06404f86f78d11446793c0fd5d5060b90e94ef79525a194da08b247c2b8b82413944e9b2af3d2c35c0fa6157961cd6.css integrity="sha512-FZ5iK1CC8xoA7G8Yg7uvIcsGQE+G940RRGeTwP1dUGC5DpTveVJaGU2giyR8K4uCQTlE6bKvPSw1wPphV5Yc1g=="><meta name=author content="Shakil Hossain"><meta name=keywords content='dfir,file,time,timestamp,windows'><meta name=description content="What is FILETIME? A file time is a 64-bit value that represents the number of 100-nanosecond intervals that have elapsed since 12:00 A.M. January 1, 1601 Coordinated Universal Time (UTC)."><meta property="og:site_name" content="Shakil's Blog"><meta property="og:title" content="Filetime"><meta property="og:type" content="article"><meta property="article:author" content="Shakil Hossain"><meta property="article:published_time" content='2024-05-16T12:14:06Z+0200'><meta property="article:tag" content="dfir"><meta property="article:tag" content="file"><meta property="article:tag" content="time"><meta property="article:tag" content="timestamp"><meta property="article:tag" content="windows"><meta property="og:url" content="https://hshakilst.github.io/posts/filetime/"><meta property="og:image" content="https://hshakilst.github.io/android-chrome-512x512.png"><meta property="og:description" content="FILETIME in Windows What is FILETIME? A file time is a 64-bit value that represents the number of 100-nanosecond intervals that have elapsed since 12:00 A.M. Ja"><meta name=twitter:card content="summary_large_image"><meta property="twitter:domain" content='akilst.github.io'><meta property="twitter:url" content="https://hshakilst.github.io/posts/filetime/"><meta name=twitter:title content="Filetime"><meta name=twitter:image content="https://hshakilst.github.io/android-chrome-512x512.png"><meta name=twitter:description content="FILETIME in Windows What is FILETIME? A file time is a 64-bit value that represents the number of 100-nanosecond intervals that have elapsed since 12:00 A.M. Ja"><link rel=manifest href=/manifest/index.json></head><body><div id=baseContainer><header><div class=titleAndSearchContainer><div id=titleContainer><a class=unstyledLink href=/><img src=/logo.svg alt=Logo></a><div class=rightOfLogo><div class=titleAndHamburger><h1><a class=unstyledLink href=/>Shakil's Blog</a></h1></div><div id=wide_nav><nav><ul id=main-nav><li><a href=/>Home</a></li><li><a href=/posts/>Posts</a></li><li><a href=/tags/>Tags</a></li></ul></nav></div></div></div><div class=search><input id=searchbar type=text placeholder=Search>
+<span class=nerdlink onclick=newSearch()>&#xf002;</span></div><script>function newSearch(){let e=searchbar.value.trim();if(!e)return;location.href=`/search/?q=${e}`}searchbar.onkeyup=e=>{e.keyCode==13&&newSearch()}</script></div><div id=links><a rel=noreferrer target=_blank class=nerdlink href=/index.xml>&#xf09e;
+<span>RSS
+</span></a><a rel=noreferrer target=_blank class=nerdlink href=https://github.com/hshakilst>&#xf09b;
+<span>Github
+</span></a><a rel=noreferrer target=_blank class=nerdlink href=https://linkedin.com/in/hshakilst>&#xf0e1;
+<span>LinkedIn
+</span></a><a rel=noreferrer target=_blank class=nerdlink href=mailto:hshakilst@gmail.com>&#xf6ed;
+<span>Gmail</span></a></div></header><div id=contentContainer><div id=content><main><article class="card single"><h1>Filetime</h1><p class=date><span title=Date> </span>2024-05-16</p><div><h1 id=filetime-in-windows>FILETIME in Windows</h1><h2 id=what-is-filetime>What is FILETIME?</h2><p>A file time is a 64-bit value that represents the number of 100-nanosecond intervals that have elapsed since 12:00 A.M. January 1, 1601 Coordinated Universal Time (UTC). The system records file times when applications create, access, and write to files.</p><p>The NTFS file system stores time values in UTC format, so they are not affected by changes in time zone or daylight saving time. The FAT file system stores time values based on the local time of the computer.</p><p>Time stamps are updated at various times and for various reasons. The only guarantee about a file time stamp is that the file time is correctly reflected when the handle that makes the change is closed.</p><blockquote><p>Not all file systems can record creation and last access times, and not all file systems record them in the same manner. For example, the resolution of create time on FAT is 10 milliseconds, while write time has a resolution of 2 seconds and access time has a resolution of 1 day, so it is really the access date. The NTFS file system delays updates to the last access time for a file by up to 1 hour after the last access.</p></blockquote><h2 id=filetime-structure-minwinbaseh>FILETIME Structure (minwinbase.h)</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>typedef struct _FILETIME {
+</span></span><span style=display:flex><span>  DWORD dwLowDateTime;
+</span></span><span style=display:flex><span>  DWORD dwHighDateTime;
+</span></span><span style=display:flex><span>} FILETIME, *PFILETIME, *LPFILETIME;
+</span></span></code></pre></div><p>Here, the <code>dwLowDateTime</code> is the low-order and the <code>dwHighDateTime</code> is the high-order part of the file time.</p><blockquote><p>Older compilers did not have support for 64 bit types. So the structure splits the 64 bit value into two 32 bit parts. The low part contains the least significant 32 bits. The high part contains the most significant 32 bits.</p></blockquote><h2 id=converting-filetime-to-human-readable-format>Converting FILETIME to Human Readable Format</h2><p>To convert the FILETIME into human readable format we need a unsigned 64 bit integer union. But 64 bit integer support may vary compiler to compiler based on CPU architecture and OS versions. Microsoft&rsquo;s official documentation says it supports <code>ULARGE_INTEGER</code> (unsigned 64 bit integer union) from <code>Windows 10 Build 20348</code>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>typedef union _ULARGE_INTEGER {
+</span></span><span style=display:flex><span>  struct {
+</span></span><span style=display:flex><span>    DWORD LowPart;
+</span></span><span style=display:flex><span>    DWORD HighPart;
+</span></span><span style=display:flex><span>  } DUMMYSTRUCTNAME;
+</span></span><span style=display:flex><span>  struct {
+</span></span><span style=display:flex><span>    DWORD LowPart;
+</span></span><span style=display:flex><span>    DWORD HighPart;
+</span></span><span style=display:flex><span>  } u;
+</span></span><span style=display:flex><span>  ULONGLONG QuadPart;
+</span></span><span style=display:flex><span>} ULARGE_INTEGER;
+</span></span></code></pre></div><blockquote><p>The ULARGE_INTEGER structure is actually a union. If your compiler has built-in support for 64-bit integers, use the QuadPart member to store the 64-bit integer. Otherwise, use the LowPart and HighPart members to store the 64-bit integer.</p></blockquote><p>So, many softwares uses the LowPart and HighPart to store a unsigned 64 bit integer by splitting it into 32 bit each. For example <code>Notepad++</code> uses <code>originalFileLastModifTimestamp</code> as <code>LowPart</code> and
+<code>originalFileLastModifTimestampHigh</code> as <code>HighPart</code> to store the FILETIME timestamps.</p><p>To retrieve a human readable date/time from these two parts needs some arithmatic operations.</p><p>A simplest way to get the original FILETIME timestamp from LowPart and HighPart is a by using the following formula.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>LowPart + 2^32 * HighPart
+</span></span></code></pre></div><p>The formula does not provide a good enough precision. Meaning the retrieved value may have some deviations of minutes and seconds.</p><p>To retrive the precise date/time value we need to perform some bitwise operation on the <code>LowPart</code> and <code>HighPart</code> in python to convert it into it&rsquo;s original form (a 64 bit unsigned integer).</p><p>A FILETIME timestamp is a number in 100-nanosecond intervals that have elapsed since 12:00 A.M. January 1, 1601 Coordinated Universal Time (UTC) till the creation time of the timestamp. To get the creation time, we need to add it to the nanosecond value of the initial date (1601-01-01).</p><p><strong>PS: We can convert the timestamp&rsquo;s value to millisecond or second also. The retrived date/time will be in UTC, as the initial value is in UTC.</strong></p><p>Here&rsquo;s a simple python script to convert splitted FILETIME timestamp to human readable format.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>import datetime
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>timestamp_low = -1354503710
+</span></span><span style=display:flex><span>timestamp_high = 31047188
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>full_timestamp = (timestamp_high &lt;&lt; 32) | (timestamp_low &amp; 0xFFFFFFFF)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>print(full_timestamp)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>timestamp_seconds = full_timestamp / 10**7
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>print(timestamp_seconds)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>converted_date_from_file_time = datetime.datetime(1601, 1, 1) + datetime.timedelta(seconds=timestamp_seconds)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>print(converted_date_from_file_time)
+</span></span></code></pre></div><h2 id=references>References</h2><ul><li><a href=https://learn.microsoft.com/en-us/windows/win32/sysinfo/file-times>File Times</a></li><li><a href=https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-ularge_integer-r1>ULARGE_INTEGER union</a></li><li><a href=https://learn.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-filetime>FILETIME structure</a></li><li><a href=https://stackoverflow.com/questions/29266743/what-is-dwlowdatetime-and-dwhighdatetime>What is dwLowDateTime and dwHighDateTime</a></li><li><a href=https://stackoverflow.com/posts/1100288/revisions>How to create FILETIME in Win32?</a></li><li><a href=https://forum.hackthebox.com/t/noted-sherlock/307329/6>HTB Discussion Board</a></li><li><a href=https://www.epochconverter.com/ldap>LDAP, Active Directory & Filetime Timestamp Converter</a></li></ul></div></article><hr><p class=articleTagsContainer><span> </span><strong>Tags:</strong>
+<a href=/tags/dfir/>#dfir</a>
+<a href=/tags/file/>#file</a>
+<a href=/tags/time/>#time</a>
+<a href=/tags/timestamp/>#timestamp</a>
+<a href=/tags/windows/>#windows</a></p><div class=relatedArticlesContainer><hr><h2>More posts like this</h2><div class=postlist><article class="card postlistitem"><div><h2><a href=https://hshakilst.github.io/posts/htb-sherlocks/tracer/>HTB Sherlock Tracer</a></h2><p class=date><span title=Date> </span>2025-09-18
+|
+<span title=Tags> </span><a href=/tags/dfir>#dfir</a>
+<a href=/tags/event>#event</a>
+<a href=/tags/evtx>#evtx</a>
+<a href=/tags/evtxecmd>#evtxecmd</a>
+<a href=/tags/htb>#htb</a>
+<a href=/tags/jq>#jq</a>
+<a href=/tags/log>#log</a>
+<a href=/tags/mftecmd>#mftecmd</a>
+<a href=/tags/pecmd>#pecmd</a>
+<a href=/tags/prefetch>#prefetch</a>
+<a href=/tags/sherlock>#sherlock</a>
+<a href=/tags/usnjournal>#usnjournal</a>
+<a href=/tags/windows>#windows</a>
+<a href=/tags/zimmerman-tools>#zimmerman-tools</a></p><div class=articlePreview><p>Tracer - DFIR Scenario A junior SOC analyst on duty has reported multiple alerts indicating the presence of PsExec on a workstation. They verified the alerts and escalated the alerts to tier II.</p><p><a href=https://hshakilst.github.io/posts/htb-sherlocks/tracer/>Continue reading </a></p></div></div><hr></article><article class="card postlistitem"><div><h2><a href=https://hshakilst.github.io/posts/htb-sherlocks/mellitus/>HTB Sherlock Mellitus</a></h2><p class=date><span title=Date> </span>2024-06-21
+|
+<span title=Tags> </span><a href=/tags/dfir>#dfir</a>
+<a href=/tags/dump>#dump</a>
+<a href=/tags/event>#event</a>
+<a href=/tags/evtx>#evtx</a>
+<a href=/tags/evtxecmd>#evtxecmd</a>
+<a href=/tags/floss>#floss</a>
+<a href=/tags/gimp>#gimp</a>
+<a href=/tags/htb>#htb</a>
+<a href=/tags/image>#image</a>
+<a href=/tags/jq>#jq</a>
+<a href=/tags/malware>#malware</a>
+<a href=/tags/memory>#memory</a>
+<a href=/tags/sherlock>#sherlock</a>
+<a href=/tags/volatility>#volatility</a>
+<a href=/tags/windows>#windows</a>
+<a href=/tags/zimmerman-tools>#zimmerman-tools</a></p><div class=articlePreview><p>Mellitus - DFIR Scenario You’ve been a SOC analyst for the last 4 years but you’ve been honing your incident response skills! It’s about time you bite the bullet and go for your dream job as an Incident Responder as that’s the path you’d like your career to follow.</p><p><a href=https://hshakilst.github.io/posts/htb-sherlocks/mellitus/>Continue reading </a></p></div></div><hr></article></div></div></main><footer><hr><p><small>2025 &copy; Shakil Hossain - All Right Reserved.</small></p><p><small><a href=https://gitlab.com/gabmus/hugo-ficurinia>Ficurinia theme</a> for <a href=https://gohugo.io>Hugo</a> by <a href=https://gabmus.org>Gabriele Musco</a>.</small></p></footer></div></div></div></body></html>

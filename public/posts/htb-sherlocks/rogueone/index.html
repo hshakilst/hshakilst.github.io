@@ -1,0 +1,440 @@
+<!doctype html><html lang=en-us><head><script>location.host!=new URL("https://hshakilst.github.io/").host&&(location.href="https://hshakilst.github.io/")</script><meta name=robots content="noai, noimageai"><meta name=viewport content="width=device-width"><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=7"><link rel=icon href=/favicon.png><link rel="shortcut icon" href=/favicon.ico type=image/x-icon><link rel=apple-touch-icon href=/apple-touch-icon.png><link rel=icon href=/logo.svg type=image/svg+xml><title>HTB Sherlock RogueOne &ndash;
+Shakil's Blog
+</title><link href=/symbols-nerd-font/symbols-nerd-font.css rel=stylesheet integrity="sha512-lydow8GLOLlYNOtHlksNCmGWWCBsbIEtikXpHzfWqx78HLlyQZHOzyLwPpKol4Th6aCwLUXOfODVYgwrd3nwKQ=="><link href=/jetbrains-mono/jetbrains-mono.css rel=stylesheet integrity="sha512-tJxlgL6v1Y7kFf+qB8SloaAMKnOAw6WouknxXtIjkBux9Y/9aX81EUWOJO8c/3l98DmjG8brr4to7zaez606Fg=="><link type=text/css rel=stylesheet href=https://hshakilst.github.io/css/styles.159e622b5082f31a00ec6f1883bbaf21cb06404f86f78d11446793c0fd5d5060b90e94ef79525a194da08b247c2b8b82413944e9b2af3d2c35c0fa6157961cd6.css integrity="sha512-FZ5iK1CC8xoA7G8Yg7uvIcsGQE+G940RRGeTwP1dUGC5DpTveVJaGU2giyR8K4uCQTlE6bKvPSw1wPphV5Yc1g=="><meta name=author content="Shakil Hossain"><meta name=keywords content='dfir,dump,forensic,htb,malware,memory,sherlock,volatility,windows'><meta name=description content="ario Your SIEM system generated multiple alerts in less than a minute, indicating potential C2 communication from Simon Stark&amp;rsquo;s workstation. Despite Simon not noticing anything unusual, the IT team had him share screenshots of his task manager to check for any unusual processes."><meta property="og:site_name" content="Shakil's Blog"><meta property="og:title" content="HTB Sherlock RogueOne"><meta property="og:type" content="article"><meta property="article:author" content="Shakil Hossain"><meta property="article:published_time" content='2024-06-11T15:18:00Z+0000'><meta property="article:tag" content="dfir"><meta property="article:tag" content="dump"><meta property="article:tag" content="forensic"><meta property="article:tag" content="htb"><meta property="article:tag" content="malware"><meta property="article:tag" content="memory"><meta property="article:tag" content="sherlock"><meta property="article:tag" content="volatility"><meta property="article:tag" content="windows"><meta property="og:url" content="https://hshakilst.github.io/posts/htb-sherlocks/rogueone/"><meta property="og:image" content="https://hshakilst.github.io/android-chrome-512x512.png"><meta property="og:description" content="RogueOne - DFIR Scenario Your SIEM system generated multiple alerts in less than a minute, indicating potential C2 communication from Simon Stark&amp;rsquo;s workst"><meta name=twitter:card content="summary_large_image"><meta property="twitter:domain" content='akilst.github.io'><meta property="twitter:url" content="https://hshakilst.github.io/posts/htb-sherlocks/rogueone/"><meta name=twitter:title content="HTB Sherlock RogueOne"><meta name=twitter:image content="https://hshakilst.github.io/android-chrome-512x512.png"><meta name=twitter:description content="RogueOne - DFIR Scenario Your SIEM system generated multiple alerts in less than a minute, indicating potential C2 communication from Simon Stark&amp;rsquo;s workst"><link rel=manifest href=/manifest/index.json></head><body><div id=baseContainer><header><div class=titleAndSearchContainer><div id=titleContainer><a class=unstyledLink href=/><img src=/logo.svg alt=Logo></a><div class=rightOfLogo><div class=titleAndHamburger><h1><a class=unstyledLink href=/>Shakil's Blog</a></h1></div><div id=wide_nav><nav><ul id=main-nav><li><a href=/>Home</a></li><li><a href=/posts/>Posts</a></li><li><a href=/tags/>Tags</a></li></ul></nav></div></div></div><div class=search><input id=searchbar type=text placeholder=Search>
+<span class=nerdlink onclick=newSearch()>&#xf002;</span></div><script>function newSearch(){let e=searchbar.value.trim();if(!e)return;location.href=`/search/?q=${e}`}searchbar.onkeyup=e=>{e.keyCode==13&&newSearch()}</script></div><div id=links><a rel=noreferrer target=_blank class=nerdlink href=/index.xml>&#xf09e;
+<span>RSS
+</span></a><a rel=noreferrer target=_blank class=nerdlink href=https://github.com/hshakilst>&#xf09b;
+<span>Github
+</span></a><a rel=noreferrer target=_blank class=nerdlink href=https://linkedin.com/in/hshakilst>&#xf0e1;
+<span>LinkedIn
+</span></a><a rel=noreferrer target=_blank class=nerdlink href=mailto:hshakilst@gmail.com>&#xf6ed;
+<span>Gmail</span></a></div></header><div id=contentContainer><div id=content><main><article class="card single"><h1>HTB Sherlock RogueOne</h1><p class=date><span title=Date> </span>2024-06-11</p><div><h1 id=rogueone---dfir>RogueOne - DFIR</h1><h3 id=scenario>Scenario</h3><p>Your SIEM system generated multiple alerts in less than a minute, indicating potential C2 communication from Simon Stark&rsquo;s workstation. Despite Simon not noticing anything unusual, the IT team had him share screenshots of his task manager to check for any unusual processes. No suspicious processes were found, yet alerts about C2 communications persisted. The SOC manager then directed the immediate containment of the workstation and a memory dump for analysis. As a memory forensics expert, you are tasked with assisting the SOC team at Forela to investigate and resolve this urgent incident.</p><h3 id=artifacts>Artifacts</h3><table><thead><tr><th>Artifact</th><th>MD5 Hash</th><th>Password</th></tr></thead><tbody><tr><td>RogueOne.zip</td><td>5810aa928e827d5ab8373aa4e1107572</td><td>hacktheblue</td></tr><tr><td>220230810.mem</td><td>d34ed786f888c1da061399df6cbe9d7b</td><td>n/a</td></tr></tbody></table><h3 id=tools>Tools</h3><ul><li>Volatility</li></ul><h3 id=analysis>Analysis</h3><p>Memory Dump Information</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ vol3 -f 20230810.mem windows.info
+</span></span><span style=display:flex><span>Volatility <span style=color:#bd93f9>3</span> Framework 2.7.1
+</span></span><span style=display:flex><span>Progress:  100.00		PDB scanning finished                                                                                              
+</span></span><span style=display:flex><span>Variable	Value
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Kernel Base	0xf80178400000
+</span></span><span style=display:flex><span>DTB	0x16a000
+</span></span><span style=display:flex><span>Symbols	file:///opt/volatility3/volatility3/symbols/windows/ntkrnlmp.pdb/3789767E34B7A48A3FC80CE12DE18E65-1.json.xz
+</span></span><span style=display:flex><span>Is64Bit	True
+</span></span><span style=display:flex><span>IsPAE	False
+</span></span><span style=display:flex><span>layer_name	<span style=color:#bd93f9>0</span> WindowsIntel32e
+</span></span><span style=display:flex><span>memory_layer	<span style=color:#bd93f9>1</span> FileLayer
+</span></span><span style=display:flex><span>KdVersionBlock	0xf8017900f398
+</span></span><span style=display:flex><span>Major/Minor	15.19041
+</span></span><span style=display:flex><span>MachineType	<span style=color:#bd93f9>34404</span>
+</span></span><span style=display:flex><span>KeNumberProcessors	<span style=color:#bd93f9>8</span>
+</span></span><span style=display:flex><span>SystemTime	2023-08-10 11:32:00
+</span></span><span style=display:flex><span>NtSystemRoot	C:<span style=color:#f1fa8c>\W</span>INDOWS
+</span></span><span style=display:flex><span>NtProductType	NtProductWinNt
+</span></span><span style=display:flex><span>NtMajorVersion	<span style=color:#bd93f9>10</span>
+</span></span><span style=display:flex><span>NtMinorVersion	<span style=color:#bd93f9>0</span>
+</span></span><span style=display:flex><span>PE MajorOperatingSystemVersion	<span style=color:#bd93f9>10</span>
+</span></span><span style=display:flex><span>PE MinorOperatingSystemVersion	<span style=color:#bd93f9>0</span>
+</span></span><span style=display:flex><span>PE Machine	<span style=color:#bd93f9>34404</span>
+</span></span><span style=display:flex><span>PE TimeDateStamp	Mon Nov <span style=color:#bd93f9>24</span> 23:45:00 <span style=color:#bd93f9>2070</span>
+</span></span></code></pre></div><p><strong>Profile Identification</strong>
+We are dealing with Windows 10.0 Build 19041 and x64 architecture.</p><p><strong>Malicious Process Identification</strong></p><p>Process Information</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ vol3 -f 20230810.mem windows.psscan
+</span></span><span style=display:flex><span>Volatility <span style=color:#bd93f9>3</span> Framework 2.7.1
+</span></span><span style=display:flex><span>Progress:  100.00		PDB scanning finished                        
+</span></span><span style=display:flex><span>PID	PPID	ImageFileName	Offset<span style=color:#ff79c6>(</span>V<span style=color:#ff79c6>)</span>	Threads	Handles	SessionId	Wow64	CreateTime	ExitTime	File output
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>4876	788	svchost.exe	0x9d80001bd1c0	4	-	0	False	2023-08-10 11:13:45.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>4	0	System	0x9e8b87680040	225	-	N/A	False	2023-08-10 11:13:38.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>140	4	Registry	0x9e8b876ce080	4	-	N/A	False	2023-08-10 11:13:32.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>2240	928	ShellExperienc	0x9e8b8775c080	11	-	1	False	2023-08-10 11:27:30.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>6812	7436	svchost.exe	0x9e8b87762080	3	-	1	False	2023-08-10 11:30:03.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>564	548	csrss.exe	0x9e8b882f8140	13	-	0	False	2023-08-10 11:13:41.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>436	4	smss.exe	0x9e8b8843f040	2	-	N/A	False	2023-08-10 11:13:38.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>644	636	csrss.exe	0x9e8b893eb140	14	-	1	False	2023-08-10 11:13:41.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>656	548	wininit.exe	0x9e8b89416080	1	-	0	False	2023-08-10 11:13:41.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>744	636	winlogon.exe	0x9e8b89441080	4	-	1	False	2023-08-10 11:13:42.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>4744	788	svchost.exe	0x9e8b8946d1c0	1	-	0	False	2023-08-10 11:13:45.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>788	656	services.exe	0x9e8b8949e080	10	-	0	False	2023-08-10 11:13:42.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>808	656	lsass.exe	0x9e8b894a2080	12	-	0	False	2023-08-10 11:13:42.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>928	788	svchost.exe	0x9e8b89527240	13	-	0	False	2023-08-10 11:13:42.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>964	656	fontdrvhost.ex	0x9e8b8952e180	5	-	0	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>956	744	fontdrvhost.ex	0x9e8b89530180	5	-	1	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>512	788	svchost.exe	0x9e8b895a72c0	11	-	0	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>864	788	svchost.exe	0x9e8b895a9240	6	-	0	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>7756	928	RuntimeBroker.	0x9e8b89c39080	4	-	1	False	2023-08-10 11:14:16.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1048	744	dwm.exe	0x9e8b89c520c0	14	-	1	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1148	788	svchost.exe	0x9e8b89c922c0	30	-	0	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1272	788	svchost.exe	0x9e8b89cf4280	3	-	0	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1280	788	svchost.exe	0x9e8b89cf5080	4	-	0	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1288	788	svchost.exe	0x9e8b89cf71c0	3	-	0	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1296	788	svchost.exe	0x9e8b89cf91c0	4	-	0	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1304	788	svchost.exe	0x9e8b89cfb200	4	-	0	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1432	788	svchost.exe	0x9e8b89d121c0	5	-	0	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1472	788	svchost.exe	0x9e8b89d3e1c0	7	-	0	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1500	788	svchost.exe	0x9e8b89d412c0	10	-	0	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1580	788	svchost.exe	0x9e8b89d900c0	7	-	0	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>8224	928	SearchApp.exe	0x9e8b89d92080	55	-	1	False	2023-08-10 11:14:14.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1588	788	svchost.exe	0x9e8b89d94080	6	-	0	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1712	788	svchost.exe	0x9e8b89dab1c0	2	-	0	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>5056	1580	MicrosoftEdgeU	0x9e8b89e21080	0	-	0	False	2023-08-10 11:20:44.000000 	2023-08-10 11:29:13.000000 	Disabled
+</span></span><span style=display:flex><span>1748	788	svchost.exe	0x9e8b89e541c0	11	-	0	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1756	788	svchost.exe	0x9e8b89e562c0	6	-	0	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1828	788	svchost.exe	0x9e8b89e70240	6	-	0	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>9204	4364	conhost.exe	0x9e8b89ec7080	3	-	1	False	2023-08-10 11:30:57.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>2140	788	svchost.exe	0x9e8b89f6f200	2	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1980	788	svchost.exe	0x9e8b89fbc240	3	-	0	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1988	788	svchost.exe	0x9e8b89fc1280	6	-	0	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>2044	788	svchost.exe	0x9e8b89fc2080	8	-	0	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1996	788	svchost.exe	0x9e8b89fc4080	6	-	0	False	2023-08-10 11:13:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>2184	4	MemCompression	0x9e8b8a038040	22	-	N/A	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>2168	788	svchost.exe	0x9e8b8a039240	2	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>6344	788	svchost.exe	0x9e8b8a04f340	4	-	0	False	2023-08-10 11:26:32.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>2256	788	svchost.exe	0x9e8b8a09c240	21	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>2356	788	svchost.exe	0x9e8b8a106280	2	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>2368	788	svchost.exe	0x9e8b8a108280	2	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>2476	788	svchost.exe	0x9e8b8a131240	5	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>2588	788	svchost.exe	0x9e8b8a18c240	4	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>2704	788	svchost.exe	0x9e8b8a2581c0	1	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>2740	788	svchost.exe	0x9e8b8a25b080	11	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>2816	788	svchost.exe	0x9e8b8a2ed300	5	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>2936	788	svchost.exe	0x9e8b8a327240	5	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>2948	788	svchost.exe	0x9e8b8a33b1c0	3	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>2956	788	svchost.exe	0x9e8b8a33d1c0	4	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>6224	788	svchost.exe	0x9e8b8a33e080	4	-	0	False	2023-08-10 11:28:46.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>2644	788	svchost.exe	0x9e8b8a3ea240	2	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>3108	788	svchost.exe	0x9e8b8a42f240	3	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>3204	788	spoolsv.exe	0x9e8b8a43f200	7	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>3316	788	svchost.exe	0x9e8b8a510240	10	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>3464	788	vm3dservice.ex	0x9e8b8a52d080	2	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>3404	788	svchost.exe	0x9e8b8a562080	7	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>3368	788	svchost.exe	0x9e8b8a5631c0	16	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>3324	788	svchost.exe	0x9e8b8a5652c0	7	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>3352	788	svchost.exe	0x9e8b8a574080	1	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>3376	788	svchost.exe	0x9e8b8a575080	3	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>3424	788	Sysmon64.exe	0x9e8b8a578200	13	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>3416	788	vmtoolsd.exe	0x9e8b8a57a280	11	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>3444	788	VGAuthService.	0x9e8b8a57c300	2	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>3680	788	svchost.exe	0x9e8b8a60c2c0	3	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>3756	788	svchost.exe	0x9e8b8a6a4240	6	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>3788	3464	vm3dservice.ex	0x9e8b8a71f200	2	-	1	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1616	1576	msedgewebview2	0x9e8b8a74f080	22	-	1	False	2023-08-10 11:20:25.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>3816	788	svchost.exe	0x9e8b8a761240	11	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>4132	928	unsecapp.exe	0x9e8b8a9b00c0	3	-	0	False	2023-08-10 11:13:45.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>4912	788	msdtc.exe	0x9e8b8a9b3300	9	-	0	False	2023-08-10 11:13:45.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>2776	7436	RamCapture64.e	0x9e8b8aa66080	5	-	1	False	2023-08-10 11:31:52.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1552	1576	msedgewebview2	0x9e8b8aa85080	8	-	1	False	2023-08-10 11:20:25.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>4416	928	WmiPrvSE.exe	0x9e8b8aac5280	15	-	0	False	2023-08-10 11:13:45.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>4440	788	dllhost.exe	0x9e8b8aac8080	10	-	0	False	2023-08-10 11:13:45.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>4876	788	svchost.exe	0x9e8b8aedb1c0	4	-	0	False	2023-08-10 11:13:45.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>8260	936	cmd.exe	0x9e8b8afda300	2	-	1	False	2023-08-10 11:27:15.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>6084	1576	msedgewebview2	0x9e8b8b0f1080	19	-	1	False	2023-08-10 11:20:25.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>4308	788	svchost.exe	0x9e8b8b19a1c0	6	-	0	False	2023-08-10 11:13:46.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>4160	788	svchost.exe	0x9e8b8b1ef280	2	-	0	False	2023-08-10 11:13:46.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1792	788	svchost.exe	0x9e8b8b2561c0	5	-	0	False	2023-08-10 11:13:46.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>5292	928	WmiPrvSE.exe	0x9e8b8b30a280	4	-	0	False	2023-08-10 11:13:47.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>6136	788	svchost.exe	0x9e8b8b34a080	11	-	0	False	2023-08-10 11:13:53.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>5452	788	svchost.exe	0x9e8b8b34b240	28	-	0	False	2023-08-10 11:13:51.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>5796	788	svchost.exe	0x9e8b8b4b61c0	5	-	0	False	2023-08-10 11:13:51.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>5972	788	svchost.exe	0x9e8b8b4cb240	18	-	0	False	2023-08-10 11:13:52.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1576	5864	msedgewebview2	0x9e8b8b4cc080	47	-	1	False	2023-08-10 11:20:21.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>7128	928	MoUsoCoreWorke	0x9e8b8b526280	10	-	0	False	2023-08-10 11:14:06.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>7008	788	svchost.exe	0x9e8b8b5ea080	6	-	0	False	2023-08-10 11:14:05.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>7072	788	svchost.exe	0x9e8b8b5f0240	9	-	0	False	2023-08-10 11:14:06.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>4364	6812	cmd.exe	0x9e8b8b6ef080	1	-	1	False	2023-08-10 11:30:57.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>8428	8680	SearchProtocol	0x9e8b8b742080	7	-	0	False	2023-08-10 11:29:25.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>5628	788	svchost.exe	0x9e8b8b77e080	4	-	0	False	2023-08-10 11:13:53.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>4272	1828	sihost.exe	0x9e8b8b872280	8	-	1	False	2023-08-10 11:14:07.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>2284	1576	msedgewebview2	0x9e8b8b8dc080	14	-	1	False	2023-08-10 11:20:25.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>4992	788	svchost.exe	0x9e8b8b9bd300	11	-	1	False	2023-08-10 11:14:07.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>4372	788	svchost.exe	0x9e8b8b9ce300	5	-	1	False	2023-08-10 11:14:07.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>9088	788	svchost.exe	0x9e8b8c4020c0	2	-	0	False	2023-08-10 11:26:32.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>6692	788	svchost.exe	0x9e8b8c42c280	3	-	0	False	2023-08-10 11:14:07.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>6768	6692	ctfmon.exe	0x9e8b8c452280	12	-	1	False	2023-08-10 11:14:07.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>6324	1580	taskhostw.exe	0x9e8b8c45a300	8	-	1	False	2023-08-10 11:14:07.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>7436	7400	explorer.exe	0x9e8b8c4d2080	75	-	1	False	2023-08-10 11:14:07.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>7400	744	userinit.exe	0x9e8b8c608340	0	-	1	False	2023-08-10 11:14:07.000000 	2023-08-10 11:14:34.000000 	Disabled
+</span></span><span style=display:flex><span>7236	788	svchost.exe	0x9e8b8c6b2080	7	-	1	False	2023-08-10 11:14:11.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>8560	788	svchost.exe	0x9e8b8c7430c0	7	-	0	False	2023-08-10 11:24:26.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>4112	1580	GoogleUpdate.e	0x9e8b8c74c080	3	-	0	True	2023-08-10 11:20:19.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>9612	788	SecurityHealth	0x9e8b8c7d6080	11	-	0	False	2023-08-10 11:14:25.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>5196	788	svchost.exe	0x9e8b8ca65300	3	-	0	False	2023-08-10 11:27:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>8488	928	RuntimeBroker.	0x9e8b8caa5080	8	-	1	False	2023-08-10 11:14:14.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>3616	928	RuntimeBroker.	0x9e8b8cb62080	6	-	1	False	2023-08-10 11:27:38.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>9712	7436	vmtoolsd.exe	0x9e8b8cbd5080	9	-	1	False	2023-08-10 11:14:26.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>8116	788	svchost.exe	0x9e8b8cc6e240	10	-	0	False	2023-08-10 11:14:11.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>936	7436	svchost.exe	0x9e8b8cd89080	0	-	1	False	2023-08-10 11:22:31.000000 	2023-08-10 11:27:51.000000 	Disabled
+</span></span><span style=display:flex><span>7704	928	StartMenuExper	0x9e8b8cd9e080	8	-	1	False	2023-08-10 11:14:13.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>652	788	svchost.exe	0x9e8b8cee2080	5	-	0	False	2023-08-10 11:14:13.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>7904	788	svchost.exe	0x9e8b8cf91080	3	-	0	False	2023-08-10 11:27:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>4380	928	RuntimeBroker.	0x9e8b8cf95080	3	-	1	False	2023-08-10 11:14:13.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>2728	1576	msedgewebview2	0x9e8b8cf97080	7	-	1	False	2023-08-10 11:20:21.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>8828	928	smartscreen.ex	0x9e8b8cff5300	8	-	1	False	2023-08-10 11:14:15.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>8680	788	SearchIndexer.	0x9e8b9010c240	15	-	0	False	2023-08-10 11:14:15.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>9580	7436	SecurityHealth	0x9e8b90135340	1	-	1	False	2023-08-10 11:14:25.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>10044	9952	OneDrive.exe	0x9e8b90507080	0	-	1	True	2023-08-10 11:15:31.000000 	2023-08-10 11:15:37.000000 	Disabled
+</span></span><span style=display:flex><span>9976	788	svchost.exe	0x9e8b90509080	0	-	0	False	2023-08-10 11:27:43.000000 	2023-08-10 11:31:46.000000 	Disabled
+</span></span><span style=display:flex><span>3024	928	TextInputHost.	0x9e8b9050d080	9	-	1	False	2023-08-10 11:17:11.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>4200	788	svchost.exe	0x9e8b90554240	0	-	0	False	2023-08-10 11:14:19.000000 	2023-08-10 11:16:20.000000 	Disabled
+</span></span><span style=display:flex><span>6680	4364	whoami.exe	0x9e8b905f1080	0	-	1	False	2023-08-10 11:31:01.000000 	2023-08-10 11:31:01.000000 	Disabled
+</span></span><span style=display:flex><span>4664	928	dllhost.exe	0x9e8b907ef080	8	-	1	False	2023-08-10 11:14:21.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1908	2740	audiodg.exe	0x9e8b90ec9080	5	-	0	False	2023-08-10 11:27:38.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>6620	928	SecurityHealth	0x9e8b911e2080	0	-	1	False	2023-08-10 11:28:47.000000 	2023-08-10 11:29:52.000000 	Disabled
+</span></span><span style=display:flex><span>9724	788	svchost.exe	0x9e8b911e3080	4	-	0	False	2023-08-10 11:28:20.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>10176	788	SgrmBroker.exe	0x9e8b911e5080	7	-	0	False	2023-08-10 11:15:45.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>3136	788	MsMpEng.exe	0x9e8b914f0300	10	-	0	False	2023-08-10 11:24:47.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>9816	2776	conhost.exe	0x9e8b91cda080	6	-	1	False	2023-08-10 11:31:52.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>6000	788	svchost.exe	0x9e8b926e7300	2	-	0	False	2023-08-10 11:27:43.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1244	788	svchost.exe	0x9e8b92987300	5	-	0	False	2023-08-10 11:26:35.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>5864	7436	WinRAR.exe	0x9e8b92bdb0c0	5	-	1	False	2023-08-10 11:20:21.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1564	788	svchost.exe	0x9e8b92bdf080	1	-	0	False	2023-08-10 11:14:54.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1668	8260	conhost.exe	0x9e8b92c65300	3	-	1	False	2023-08-10 11:27:15.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>7416	788	svchost.exe	0x9e8b92ddd340	1	-	1	False	2023-08-10 11:15:45.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>10072	788	svchost.exe	0x9e8b92f1c340	9	-	0	False	2023-08-10 11:15:45.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>9784	8680	SearchFilterHo	0x9e8b92fda080	4	-	0	False	2023-08-10 11:31:32.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>1396	788	uhssvc.exe	0x9e8b930402c0	3	-	0	False	2023-08-10 11:15:45.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>5232	928	ApplicationFra	0x9e8b9a26d080	3	-	1	False	2023-08-10 11:27:42.000000 	N/A	Disabled
+</span></span><span style=display:flex><span>3108	788	svchost.exe	0xb58d4b50f240	3	-	0	False	2023-08-10 11:13:44.000000 	N/A	Disabled
+</span></span></code></pre></div><p>We see a process invoked the <code>whoami.exe</code> process. The PID is <code>6680</code> and PPID is <code>4364</code>. Let&rsquo;s do a process tree on this PPID.</p><p>Process Tree on PID <code>4364</code>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ vol3 -f 20230810.mem windows.pstree --pid <span style=color:#bd93f9>4364</span>
+</span></span><span style=display:flex><span>Volatility <span style=color:#bd93f9>3</span> Framework 2.7.1
+</span></span><span style=display:flex><span>Progress:  100.00		PDB scanning finished                        
+</span></span><span style=display:flex><span>PID	PPID	ImageFileName	Offset<span style=color:#ff79c6>(</span>V<span style=color:#ff79c6>)</span>	Threads	Handles	SessionId	Wow64	CreateTime	ExitTime	Audit	Cmd	Path
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>744	636	winlogon.exe	0x9e8b89441080	4	-	1	False	2023-08-10 11:13:42.000000 	N/A	<span style=color:#f1fa8c>\D</span>evice<span style=color:#f1fa8c>\H</span>arddiskVolume3<span style=color:#f1fa8c>\W</span>indows<span style=color:#f1fa8c>\S</span>ystem32<span style=color:#f1fa8c>\w</span>inlogon.exe	winlogon.exe	C:<span style=color:#f1fa8c>\W</span>INDOWS<span style=color:#f1fa8c>\s</span>ystem32<span style=color:#f1fa8c>\w</span>inlogon.exe
+</span></span><span style=display:flex><span>* 7400	744	userinit.exe	0x9e8b8c608340	0	-	1	False	2023-08-10 11:14:07.000000 	2023-08-10 11:14:34.000000 	<span style=color:#f1fa8c>\D</span>evice<span style=color:#f1fa8c>\H</span>arddiskVolume3<span style=color:#f1fa8c>\W</span>indows<span style=color:#f1fa8c>\S</span>ystem32<span style=color:#f1fa8c>\u</span>serinit.exe	-	-
+</span></span><span style=display:flex><span>** 7436	7400	explorer.exe	0x9e8b8c4d2080	75	-	1	False	2023-08-10 11:14:07.000000 	N/A	<span style=color:#f1fa8c>\D</span>evice<span style=color:#f1fa8c>\H</span>arddiskVolume3<span style=color:#f1fa8c>\W</span>indows<span style=color:#f1fa8c>\e</span>xplorer.exe	C:<span style=color:#f1fa8c>\W</span>INDOWS<span style=color:#f1fa8c>\E</span>xplorer.EXE	C:<span style=color:#f1fa8c>\W</span>INDOWS<span style=color:#f1fa8c>\E</span>xplorer.EXE
+</span></span><span style=display:flex><span>*** 6812	7436	svchost.exe	0x9e8b87762080	3	-	1	False	2023-08-10 11:30:03.000000 	N/A	<span style=color:#f1fa8c>\D</span>evice<span style=color:#f1fa8c>\H</span>arddiskVolume3<span style=color:#f1fa8c>\U</span>sers<span style=color:#f1fa8c>\s</span>imon.stark<span style=color:#f1fa8c>\D</span>ownloads<span style=color:#f1fa8c>\s</span>vchost.exe	<span style=color:#f1fa8c>&#34;C:\Users\simon.stark\Downloads\svchost.exe&#34;</span> 	C:<span style=color:#f1fa8c>\U</span>sers<span style=color:#f1fa8c>\s</span>imon.stark<span style=color:#f1fa8c>\D</span>ownloads<span style=color:#f1fa8c>\s</span>vchost.exe
+</span></span><span style=display:flex><span>**** 4364	6812	cmd.exe	0x9e8b8b6ef080	1	-	1	False	2023-08-10 11:30:57.000000 	N/A	<span style=color:#f1fa8c>\D</span>evice<span style=color:#f1fa8c>\H</span>arddiskVolume3<span style=color:#f1fa8c>\W</span>indows<span style=color:#f1fa8c>\S</span>ystem32<span style=color:#f1fa8c>\c</span>md.exe	C:<span style=color:#f1fa8c>\W</span>INDOWS<span style=color:#f1fa8c>\s</span>ystem32<span style=color:#f1fa8c>\c</span>md.exe	C:<span style=color:#f1fa8c>\W</span>INDOWS<span style=color:#f1fa8c>\s</span>ystem32<span style=color:#f1fa8c>\c</span>md.exe
+</span></span><span style=display:flex><span>***** 9204	4364	conhost.exe	0x9e8b89ec7080	3	-	1	False	2023-08-10 11:30:57.000000 	N/A	<span style=color:#f1fa8c>\D</span>evice<span style=color:#f1fa8c>\H</span>arddiskVolume3<span style=color:#f1fa8c>\W</span>indows<span style=color:#f1fa8c>\S</span>ystem32<span style=color:#f1fa8c>\c</span>onhost.exe	<span style=color:#f1fa8c>\?</span>?<span style=color:#f1fa8c>\C</span>:<span style=color:#f1fa8c>\W</span>INDOWS<span style=color:#f1fa8c>\s</span>ystem32<span style=color:#f1fa8c>\c</span>onhost.exe 0x4	C:<span style=color:#f1fa8c>\W</span>INDOWS<span style=color:#f1fa8c>\s</span>ystem32<span style=color:#f1fa8c>\c</span>onhost.exe
+</span></span></code></pre></div><p>We found the process&rsquo;s name that spawned <code>whoami.exe</code>. It was <code>cmd.exe</code>, and it was spawned from another process named <code>svchost.exe</code> which at a first glance looks like a legit windows process (mainly used to load windows services). But the file resides in <code>C:\Windows\System32</code> folder, which is a trusted and protected folder. But in this case, it was loaded from <code>C:\Users\simon.stark\Downloads\svchost.exe</code>. Which looks malicious and suspicious. Please skip to Step 2 to where I dump the malicious file.</p><p><strong>Search For The Malicious Files (Alternative Way):</strong></p><ul><li><em>Step 1: Search for open handles inside the malicious process</em></li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ vol3 -f 20230810.mem windows.handles --pid <span style=color:#bd93f9>6812</span>
+</span></span><span style=display:flex><span>Volatility <span style=color:#bd93f9>3</span> Framework 2.7.1
+</span></span><span style=display:flex><span>Progress:  100.00		PDB scanning finished                        
+</span></span><span style=display:flex><span>PID	Process	Offset	HandleValue	Type	GrantedAccess	Name
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b8084e0	0x4	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96564d70	0xc	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b808fe0	0x10	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b9619d890	0x14	텘࿲환࿲쨐࿲Ԑӎࡃ࿲ᴐҦࡃ࿲┐Ѿࡃ࿲쩙࿲	0x1	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96564140	0x18	IoCompletion	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8c406510	0x1c	TpWorkerFactory	0xf00ff	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8cdda2f0	0x20	IRTimer	0x100002	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b9619ef50	0x24	텘࿲환࿲쨐࿲Ԑӎࡃ࿲ᴐҦࡃ࿲┐Ѿࡃ࿲쩙࿲	0x1	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8cddb940	0x28	IRTimer	0x100002	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b961a0a20	0x2c	텘࿲환࿲쨐࿲Ԑӎࡃ࿲ᴐҦࡃ࿲┐Ѿࡃ࿲쩙࿲	0x1	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96564210	0x30	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96563b10	0x34	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b965642f0	0x38	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b808860	0x3c	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b8085e0	0x40	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0xb58d4a3b02a0	0x44	Directory	0x3	KnownDlls
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b90911280	0x48	File	0x100020	<span style=color:#f1fa8c>\D</span>evice<span style=color:#f1fa8c>\H</span>arddiskVolume3<span style=color:#f1fa8c>\U</span>sers<span style=color:#f1fa8c>\s</span>imon.stark<span style=color:#f1fa8c>\D</span>ownloads
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96563410	0x4c	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b91697b50	0x50	Mutant	0x1f0001	SM0:6812:304:WilStaging_02
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b89f7d070	0x54	ALPC Port	0x1f0001	
+</span></span><span style=display:flex><span>6812	svchost.exe	0xb58d4a969480	0x58	Directory	0xf	BaseNamedObjects
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b66ee50	0x5c	Semaphore	0x1f0003	SM0:6812:304:WilStaging_02_p0
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b66f5d0	0x60	Semaphore	0x1f0003	SM0:6812:304:WilStaging_02_p0h
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96563790	0x64	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b965643d0	0x68	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b965644b0	0x6c	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b965649f0	0x70	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96563940	0x74	IoCompletion	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b5ef510	0x78	TpWorkerFactory	0xf00ff	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8cdda730	0x7c	IRTimer	0x100002	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b9619d480	0x80	텘࿲환࿲쨐࿲Ԑӎࡃ࿲ᴐҦࡃ࿲┐Ѿࡃ࿲쩙࿲	0x1	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b89d05a10	0x84	IRTimer	0x100002	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b961a0e30	0x88	텘࿲환࿲쨐࿲Ԑӎࡃ࿲ᴐҦࡃ࿲┐Ѿࡃ࿲쩙࿲	0x1	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96564830	0x8c	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96564bb0	0x90	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b82b080	0x98	Thread	0x1fffff	Tid <span style=color:#bd93f9>2032</span> Pid <span style=color:#bd93f9>6812</span>
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b806f60	0x9c	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b809060	0xa4	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96564590	0xac	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b8090e0	0xb0	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b90903e00	0xb4	File	0x16019f	<span style=color:#f1fa8c>\D</span>evice<span style=color:#f1fa8c>\A</span>fd<span style=color:#f1fa8c>\E</span>ndpoint
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96564670	0xbc	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96564750	0xc4	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96563870	0xc8	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96563250	0xcc	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96564c90	0xd0	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b965634f0	0xd4	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b8088e0	0xd8	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96188420	0xdc	텘࿲환࿲쨐࿲Ԑӎࡃ࿲ᴐҦࡃ࿲┐Ѿࡃ࿲쩙࿲	0x1	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96563330	0xe0	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b965635d0	0xe4	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96563a30	0xe8	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96563bf0	0xec	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96563cd0	0xf0	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b88a4ad40	0xfc	WindowStation	0xf037f	WinSta0
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b88bfb810	0x100	Desktop	0xf01ff	Default
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b88a4ad40	0x104	WindowStation	0xf037f	WinSta0
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b808360	0x110	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0xb58d54a0c070	0x114	Key	0x20019	USER<span style=color:#f1fa8c>\S</span>-1-5-21-3239415629-1862073780-2394361899-1602_CLASSES<span style=color:#f1fa8c>\L</span>OCAL SETTINGS<span style=color:#f1fa8c>\S</span>OFTWARE<span style=color:#f1fa8c>\M</span>ICROSOFT
+</span></span><span style=display:flex><span>6812	svchost.exe	0xb58d54a09920	0x118	Key	0x20019	USER<span style=color:#f1fa8c>\S</span>-1-5-21-3239415629-1862073780-2394361899-1602_CLASSES<span style=color:#f1fa8c>\L</span>OCAL SETTINGS
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b809160	0x11c	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96563f70	0x120	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96565470	0x124	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96565550	0x128	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b808a60	0x12c	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b808260	0x130	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b808ae0	0x134	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b808660	0x138	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b808760	0x13c	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b808ee0	0x140	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96565c50	0x144	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b965666d0	0x148	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96566970	0x14c	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b965650f0	0x150	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96566430	0x154	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b965659b0	0x158	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b965657f0	0x15c	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b965651d0	0x160	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b965658d0	0x164	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96566350	0x168	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b808460	0x16c	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b82b080	0x170	Thread	0x1003	Tid <span style=color:#bd93f9>2032</span> Pid <span style=color:#bd93f9>6812</span>
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b6746f0	0x174	Mutant	0x1f0001	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b674790	0x178	Mutant	0x1f0001	
+</span></span><span style=display:flex><span>6812	svchost.exe	0xb58d4dc1e9b0	0x17c	Token	0xf01ff	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b6748d0	0x180	Mutant	0x1f0001	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b960de860	0x184	Semaphore	0x100003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8c7032f0	0x188	Mutant	0x1f0001	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b6754b0	0x18c	Mutant	0x1f0001	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96565630	0x190	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b0ae960	0x194	Semaphore	0x100003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b965667b0	0x198	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96566890	0x19c	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96566510	0x1a0	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b8083e0	0x1a4	Semaphore	0x100003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b808f60	0x1a8	Semaphore	0x100003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b8086e0	0x1ac	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96565a90	0x1b4	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96564e50	0x1b8	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96565390	0x1bc	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b954232e0	0x1c0	Semaphore	0x100003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b95423b60	0x1c4	Semaphore	0x100003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b954234e0	0x1c8	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b965652b0	0x1cc	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96564f30	0x1d0	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96565710	0x1d4	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b90127d90	0x1d8	TpWorkerFactory	0xf00ff	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96567cc0	0x1dc	IoCompletion	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b6dd070	0x1e0	ALPC Port	0x1f0001	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b965665f0	0x1e4	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96565d30	0x1e8	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0xb58d54a0b4c0	0x1ec	Key	0x20019	USER
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96565b70	0x1f0	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b913841e0	0x1f4	File	0x100001	<span style=color:#f1fa8c>\D</span>evice<span style=color:#f1fa8c>\K</span>secDD
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b913857c0	0x1f8	File	0x100001	<span style=color:#f1fa8c>\D</span>evice<span style=color:#f1fa8c>\C</span>NG
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b0a7fe0	0x208	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0xb58d4dc1e9b0	0x20c	Token	0x8	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b90910c44	0x210	VRegConfigurationContext	0x120189	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8af76e80	0x214	IRTimer	0x100002	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b0a7ee0	0x218	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b0af3e0	0x21c	Semaphore	0x100003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96565e10	0x220	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96565ef0	0x224	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b965660b0	0x228	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b0af760	0x22c	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96566190	0x230	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96566270	0x234	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96566f90	0x238	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96567850	0x23c	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b965682d0	0x240	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96568570	0x244	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96566c10	0x248	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96568110	0x24c	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0xb58d4dc1e9b0	0x250	Token	0x8	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8aec3080	0x254	Thread	0x1fffff	Tid <span style=color:#bd93f9>9240</span> Pid <span style=color:#bd93f9>6812</span>
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b961a2de0	0x258	텘࿲환࿲쨐࿲Ԑӎࡃ࿲ᴐҦࡃ࿲┐Ѿࡃ࿲쩙࿲	0x1	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8af76930	0x25c	IRTimer	0x100002	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b961a2c40	0x260	텘࿲환࿲쨐࿲Ԑӎࡃ࿲ᴐҦࡃ࿲┐Ѿࡃ࿲쩙࿲	0x1	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b965673f0	0x264	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b960de1e0	0x268	Semaphore	0x100003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b3632c0	0x26c	Thread	0x1fffff	Tid <span style=color:#bd93f9>7980</span> Pid <span style=color:#bd93f9>6812</span>
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b965674d0	0x278	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96567150	0x27c	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96567af0	0x280	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96567070	0x284	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96567f50	0x288	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96566b30	0x28c	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b809360	0x290	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b960d8c60	0x294	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b90910790	0x298	File	0x100080	<span style=color:#f1fa8c>\D</span>evice<span style=color:#f1fa8c>\N</span>si
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96566a50	0x29c	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96567690	0x2ac	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96567230	0x2b4	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b96566eb0	0x2b8	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b965683b0	0x2bc	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b965681f0	0x2c0	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b808c60	0x2c4	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b0e2070	0x2d0	ALPC Port	0x1f0001	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b960cff60	0x2d4	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b809ce0	0x2d8	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b909042b0	0x2dc	File	0x120089	<span style=color:#f1fa8c>\D</span>evice<span style=color:#f1fa8c>\N</span>amedPipe<span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>6812	svchost.exe	0x9e8b8aec3080	0x2e4	Thread	0x1fffff	Tid <span style=color:#bd93f9>9240</span> Pid <span style=color:#bd93f9>6812</span>
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b9090dbd4	0x2e8	TmEn	0x120196	
+</span></span><span style=display:flex><span>6812	svchost.exe	0xb58d4a93e9b0	0x2ec	Token	0xf01ff	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b90118080	0x2f0	Thread	0x1fffff	Tid <span style=color:#bd93f9>6328</span> Pid <span style=color:#bd93f9>6812</span>
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b809960	0x2f4	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b809de0	0x2f8	Event	0x1f0003	
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8b6ef080	0x2fc	Process	0x1fffff	cmd.exe Pid <span style=color:#bd93f9>4364</span>
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b8cd46270	0x308	EtwRegistration	0x804	
+</span></span><span style=display:flex><span>6812	svchost.exe	0xb58d52d94180	0x30c	Key	0x8	USER<span style=color:#f1fa8c>\S</span>-1-5-21-3239415629-1862073780-2394361899-1602<span style=color:#f1fa8c>\S</span>OFTWARE<span style=color:#f1fa8c>\M</span>ICROSOFT<span style=color:#f1fa8c>\W</span>INDOWS NT<span style=color:#f1fa8c>\C</span>URRENTVERSION
+</span></span></code></pre></div><p>Interesting location</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text><span style=display:flex><span>6812	svchost.exe	0xb58d4a3b02a0	0x44	Directory	0x3	KnownDlls
+</span></span><span style=display:flex><span>6812	svchost.exe	0x9e8b90911280	0x48	File	0x100020	\Device\HarddiskVolume3\Users\simon.stark\Downloads
+</span></span></code></pre></div><ul><li><em>Step 2: Search for the file in the <code>\Device\HarddiskVolume3\Users\simon.stark\Downloads</code>.</em></li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ vol3 -f 20230810.mem windows.filescan | grep <span style=color:#f1fa8c>&#34;Users&#34;</span> | grep <span style=color:#f1fa8c>&#34;simon.stark&#34;</span> | grep <span style=color:#f1fa8c>&#34;Downloads&#34;</span>
+</span></span><span style=display:flex><span>0x9e8b8ae28ca0.0<span style=color:#f1fa8c>\U</span>sers<span style=color:#f1fa8c>\s</span>imon.stark<span style=color:#f1fa8c>\D</span>ownloads	<span style=color:#bd93f9>216</span>
+</span></span><span style=display:flex><span>0x9e8b8ae29dd0	<span style=color:#f1fa8c>\U</span>sers<span style=color:#f1fa8c>\s</span>imon.stark<span style=color:#f1fa8c>\D</span>ownloads	<span style=color:#bd93f9>216</span>
+</span></span><span style=display:flex><span>0x9e8b909045d0	<span style=color:#f1fa8c>\U</span>sers<span style=color:#f1fa8c>\s</span>imon.stark<span style=color:#f1fa8c>\D</span>ownloads<span style=color:#f1fa8c>\s</span>vchost.exe	<span style=color:#bd93f9>216</span>
+</span></span><span style=display:flex><span>0x9e8b90911280	<span style=color:#f1fa8c>\U</span>sers<span style=color:#f1fa8c>\s</span>imon.stark<span style=color:#f1fa8c>\D</span>ownloads	<span style=color:#bd93f9>216</span>
+</span></span><span style=display:flex><span>0x9e8b909142f0	<span style=color:#f1fa8c>\U</span>sers<span style=color:#f1fa8c>\s</span>imon.stark<span style=color:#f1fa8c>\D</span>ownloads	<span style=color:#bd93f9>216</span>
+</span></span><span style=display:flex><span>0x9e8b91946a20	<span style=color:#f1fa8c>\U</span>sers<span style=color:#f1fa8c>\s</span>imon.stark<span style=color:#f1fa8c>\D</span>ownloads	<span style=color:#bd93f9>216</span>
+</span></span><span style=display:flex><span>0x9e8b91ec0140	<span style=color:#f1fa8c>\U</span>sers<span style=color:#f1fa8c>\s</span>imon.stark<span style=color:#f1fa8c>\D</span>ownloads<span style=color:#f1fa8c>\s</span>vchost.exe	<span style=color:#bd93f9>216</span>
+</span></span></code></pre></div><p>Dump Malicious File</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ vol3 -f 20230810.mem windows.dumpfiles --virtaddr 0x9e8b909045d0              
+</span></span><span style=display:flex><span>Volatility <span style=color:#bd93f9>3</span> Framework 2.7.1
+</span></span><span style=display:flex><span>Progress:  100.00		PDB scanning finished                        
+</span></span><span style=display:flex><span>Cache	FileObject	FileName	Result
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DataSectionObject	0x9e8b909045d0	svchost.exe	Error dumping file
+</span></span><span style=display:flex><span>ImageSectionObject	0x9e8b909045d0	svchost.exe	file.0x9e8b909045d0.0x9e8b957f24c0.ImageSectionObject.svchost.exe.img
+</span></span></code></pre></div><p>Don&rsquo;t need the DataSectionObject to analyze the Binary. We are after the ImageSectionObject.</p><p>Check the Malware&rsquo;s md5sum and send it to the reverse engineering team.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ md5sum file.0x9e8b909045d0.0x9e8b957f24c0.ImageSectionObject.svchost.exe.img 
+</span></span><span style=display:flex><span>5bd547c6f5bfc4858fe62c8867acfbb5  file.0x9e8b909045d0.0x9e8b957f24c0.ImageSectionObject.svchost.exe.img
+</span></span></code></pre></div><p><strong>VirusTotal</strong></p><p>VirusTotal Detection Ratio:
+<img src=images/20240611200132.png alt="alt text"></p><h3 id=summary>Summary</h3><p>The TA used a legit Windows binary file name to blend into the processes. But in the we successfully discovered their C2 server and IoCs using memory forensics and from <a href=https://www.virustotal.com/gui/file/eaf09578d6eca82501aa2b3fcef473c3795ea365a9b33a252e5dc712c62981ea>VirusTotal</a> platform.</p></div></article><hr><p class=articleTagsContainer><span> </span><strong>Tags:</strong>
+<a href=/tags/dfir/>#dfir</a>
+<a href=/tags/dump/>#dump</a>
+<a href=/tags/forensic/>#forensic</a>
+<a href=/tags/htb/>#htb</a>
+<a href=/tags/malware/>#malware</a>
+<a href=/tags/memory/>#memory</a>
+<a href=/tags/sherlock/>#sherlock</a>
+<a href=/tags/volatility/>#volatility</a>
+<a href=/tags/windows/>#windows</a></p><div class=relatedArticlesContainer><hr><h2>More posts like this</h2><div class=postlist><article class="card postlistitem"><div><h2><a href=https://hshakilst.github.io/posts/htb-sherlocks/tracer/>HTB Sherlock Tracer</a></h2><p class=date><span title=Date> </span>2025-09-18
+|
+<span title=Tags> </span><a href=/tags/dfir>#dfir</a>
+<a href=/tags/event>#event</a>
+<a href=/tags/evtx>#evtx</a>
+<a href=/tags/evtxecmd>#evtxecmd</a>
+<a href=/tags/htb>#htb</a>
+<a href=/tags/jq>#jq</a>
+<a href=/tags/log>#log</a>
+<a href=/tags/mftecmd>#mftecmd</a>
+<a href=/tags/pecmd>#pecmd</a>
+<a href=/tags/prefetch>#prefetch</a>
+<a href=/tags/sherlock>#sherlock</a>
+<a href=/tags/usnjournal>#usnjournal</a>
+<a href=/tags/windows>#windows</a>
+<a href=/tags/zimmerman-tools>#zimmerman-tools</a></p><div class=articlePreview><p>Tracer - DFIR Scenario A junior SOC analyst on duty has reported multiple alerts indicating the presence of PsExec on a workstation. They verified the alerts and escalated the alerts to tier II.</p><p><a href=https://hshakilst.github.io/posts/htb-sherlocks/tracer/>Continue reading </a></p></div></div><hr></article><article class="card postlistitem"><div><h2><a href=https://hshakilst.github.io/posts/htb-sherlocks/mellitus/>HTB Sherlock Mellitus</a></h2><p class=date><span title=Date> </span>2024-06-21
+|
+<span title=Tags> </span><a href=/tags/dfir>#dfir</a>
+<a href=/tags/dump>#dump</a>
+<a href=/tags/event>#event</a>
+<a href=/tags/evtx>#evtx</a>
+<a href=/tags/evtxecmd>#evtxecmd</a>
+<a href=/tags/floss>#floss</a>
+<a href=/tags/gimp>#gimp</a>
+<a href=/tags/htb>#htb</a>
+<a href=/tags/image>#image</a>
+<a href=/tags/jq>#jq</a>
+<a href=/tags/malware>#malware</a>
+<a href=/tags/memory>#memory</a>
+<a href=/tags/sherlock>#sherlock</a>
+<a href=/tags/volatility>#volatility</a>
+<a href=/tags/windows>#windows</a>
+<a href=/tags/zimmerman-tools>#zimmerman-tools</a></p><div class=articlePreview><p>Mellitus - DFIR Scenario You’ve been a SOC analyst for the last 4 years but you’ve been honing your incident response skills! It’s about time you bite the bullet and go for your dream job as an Incident Responder as that’s the path you’d like your career to follow.</p><p><a href=https://hshakilst.github.io/posts/htb-sherlocks/mellitus/>Continue reading </a></p></div></div><hr></article></div></div></main><footer><hr><p><small>2025 &copy; Shakil Hossain - All Right Reserved.</small></p><p><small><a href=https://gitlab.com/gabmus/hugo-ficurinia>Ficurinia theme</a> for <a href=https://gohugo.io>Hugo</a> by <a href=https://gabmus.org>Gabriele Musco</a>.</small></p></footer></div></div></div></body></html>

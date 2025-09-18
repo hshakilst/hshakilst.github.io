@@ -1,462 +1,76 @@
-<!DOCTYPE html>
-<html class="home" lang="en-us"><head>
-	<meta name="generator" content="Hugo 0.124.1"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
-    
-        <script>
-            if (location.host != new URL("http:\/\/localhost:1313\/").host) location.href = "http:\/\/localhost:1313\/"
-        </script>
-    
-    <meta name="robots" content="noai, noimageai">
-    <meta name="viewport" content="width=device-width" />
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=7" />
-
-    
-        
-          <link href="http://localhost:1313/index.xml" rel="alternate" type="application/rss+xml" title="Shakil&#39;s Blog" />
-          <link href="http://localhost:1313/index.xml" rel="feed" type="application/rss+xml" title="Shakil&#39;s Blog" />
-        
-    <link
-    rel="icon"
-    href='/favicon.png'
-/>
-<link
-    rel="shortcut icon"
-    href='/favicon.ico'
-    type="image/x-icon"
-/>
-<link
-    rel="apple-touch-icon"
-    href='/apple-touch-icon.png'
-/>
-
-    <link
-        rel="icon"
-        href='/logo.svg'
-        type="image/svg+xml"
-    />
-
-<title>
-        
-        Shakil&#39;s Blog
-    </title>
-
-    
-    <link href="/symbols-nerd-font/symbols-nerd-font.css" rel="stylesheet" integrity="sha512-lydow8GLOLlYNOtHlksNCmGWWCBsbIEtikXpHzfWqx78HLlyQZHOzyLwPpKol4Th6aCwLUXOfODVYgwrd3nwKQ=="/>
-    <link href="/jetbrains-mono/jetbrains-mono.css" rel="stylesheet" integrity="sha512-tJxlgL6v1Y7kFf+qB8SloaAMKnOAw6WouknxXtIjkBux9Y/9aX81EUWOJO8c/3l98DmjG8brr4to7zaez606Fg=="/>
-
-    
-    
-    <link type="text/css" rel="stylesheet" href=http://localhost:1313/css/styles.159e622b5082f31a00ec6f1883bbaf21cb06404f86f78d11446793c0fd5d5060b90e94ef79525a194da08b247c2b8b82413944e9b2af3d2c35c0fa6157961cd6.css integrity="sha512-FZ5iK1CC8xoA7G8Yg7uvIcsGQE&#43;G940RRGeTwP1dUGC5DpTveVJaGU2giyR8K4uCQTlE6bKvPSw1wPphV5Yc1g==" />
-<meta name="author" content="Shakil Hossain" />
-
-    
-        <meta name="description" content="Shakil&#39;s Blog about Cybersecurity" />
-    
-
-<meta property="og:site_name"
-    content='Shakil&#39;s Blog' />
-
-    <meta property="og:title"
-        content='Shakil&#39;s Blog' />
-    
-        <meta property="og:description" content="Shakil&#39;s Blog about Cybersecurity" />
-    
-    <meta property="og:type" content="blog" />
-    <meta property="og:image"
-        content='http://localhost:1313/android-chrome-512x512.png' />
-
-<meta name="twitter:card" content="summary_large_image" />
-<meta property="twitter:domain"
-      content='localhost:1313'
-/>
-<meta property="twitter:url" content="http://localhost:1313/" />
-
-
-    <meta name="twitter:title"
-        content='Shakil&#39;s Blog' />
-    
-        <meta name="twitter:description" content="Shakil&#39;s Blog about Cybersecurity" />
-    
-    <meta name="twitter:image"
-        content='http://localhost:1313/android-chrome-512x512.png' />
-
-<link rel="manifest" href="/manifest/index.json" />
-</head>
-
-
-    
-    
-    
-
-<body>
-        <div id="baseContainer"><header class="jumbotronContainer">
-<div class="titleAndSearchContainer">
-        <div id="titleContainer">
-            
-                <a class="unstyledLink" href="/">
-                    <img src='/logo.svg' alt='Logo'/>
-                </a>
-            
-            <div class="rightOfLogo">
-                <div class="titleAndHamburger">
-                    <h1>
-                        <a class="unstyledLink" href="/">Shakil&#39;s Blog</a>
-                        
-                    </h1>
-                    
-                </div>
-                <div id="wide_nav"><nav>
-    
-    <ul id="main-nav">
-        <li><a href="/">Home</a></li>
-        
-            <li><a href="/posts/">Posts</a></li>
-        
-        
-        
-        
-        
-        
-        
-            <li><a href="/tags/">Tags</a></li>
-        
-        
-    </ul>
-</nav>
-</div>
-            </div>
-        </div>
-        <div class="search">
-    <input id="searchbar" type="text" placeholder='Search' />
-    <span class="nerdlink" onclick="newSearch();">&#xf002;</span>
-</div>
-<script>
-    function newSearch() {
-        let term = searchbar.value.trim();
-        if (!term) return;
-        location.href = `/search/?q=${term}`;
-    }
-    searchbar.onkeyup = (ev) => {if (ev.keyCode == 13) newSearch()};
-</script>
-
-    </div>
-    <div id="links">
-        <a
-    
-        rel="noreferrer"
-    
-    target="_blank"
-    class="nerdlink"
-    href="/index.xml">
-    
-    
-        &#xf09e;
-    
-    <span>
-        RSS
-    </span>
-</a>
-
-        
-        <a
-    
-        rel="noreferrer"
-    
-    target="_blank"
-    class="nerdlink"
-    href="https://github.com/hshakilst">
-    
-    
-        &#xf09b;
-    
-    <span>
-        Github
-    </span>
-</a>
-<a
-    
-        rel="noreferrer"
-    
-    target="_blank"
-    class="nerdlink"
-    href="https://linkedin.com/in/hshakilst">
-    
-    
-        &#xf0e1;
-    
-    <span>
-        LinkedIn
-    </span>
-</a>
-<a
-    
-        rel="noreferrer"
-    
-    target="_blank"
-    class="nerdlink"
-    href="mailto:hshakilst@gmail.com">
-    
-    
-        &#xf6ed;
-    
-    <span>
-        Gmail
-    </span>
-</a>
-
-    </div>
-    
-
-</header>
-<div id="contentContainer">
-                <div id="content">
-                    <main>
-
-    
-    
-    
-
-
-
-
-
-    
-
-
-
-<div class="postlist " id="postlist">
-<article class="card postlistitem">
-    <div>
-        <h2>
-            <a href="http://localhost:1313/posts/htb-sherlocks/jingle-bell/">HTB Sherlock Jingle Bell</a>
-        </h2>
-        <p class="date">
-            <span title='Date'> </span>
-    2024-05-16
-
-
-                | 
-                <span title='Tags'> </span>
-                
-                    <a href="/tags/bell">#bell</a>
-                
-                    <a href="/tags/database">#database</a>
-                
-                    <a href="/tags/dfir">#dfir</a>
-                
-                    <a href="/tags/htb">#htb</a>
-                
-                    <a href="/tags/jingle">#jingle</a>
-                
-                    <a href="/tags/notification">#notification</a>
-                
-                    <a href="/tags/push">#push</a>
-                
-                    <a href="/tags/sherlock">#sherlock</a>
-                
-                    <a href="/tags/windows">#windows</a>
-                
-                    <a href="/tags/wpndatabase">#wpndatabase</a>
-                
-            
-        </p>
-        
-            
-        
-        
-            <div class="articlePreview">
-                <p>
-                    
-                        Jingle Bell (DFIR) Scenario Torrin is suspected to be an insider threat in Forela. He is believed to have leaked some data and removed certain applications from their workstation. They managed to bypass some controls and installed unauthorized software.
-                    
-                </p>
-                <p><a href="http://localhost:1313/posts/htb-sherlocks/jingle-bell/">Continue reading </a></p>
-            </div>
-        
-    </div>
-    <hr />
-</article>
-<article class="card postlistitem">
-    <div>
-        <h2>
-            <a href="http://localhost:1313/posts/htb-sherlocks/bft/">HTB Sherlock BFT</a>
-        </h2>
-        <p class="date">
-            <span title='Date'> </span>
-    2024-05-16
-
-
-                | 
-                <span title='Tags'> </span>
-                
-                    <a href="/tags/bft">#bft</a>
-                
-                    <a href="/tags/dfir">#dfir</a>
-                
-                    <a href="/tags/file">#file</a>
-                
-                    <a href="/tags/htb">#htb</a>
-                
-                    <a href="/tags/master">#master</a>
-                
-                    <a href="/tags/mft">#mft</a>
-                
-                    <a href="/tags/sherlock">#sherlock</a>
-                
-                    <a href="/tags/table">#table</a>
-                
-                    <a href="/tags/windows">#windows</a>
-                
-            
-        </p>
-        
-            
-        
-        
-            <div class="articlePreview">
-                <p>
-                    
-                        BFT (DFIR) Scenario In this Sherlock, you will become acquainted with MFT (Master File Table) forensics. You will be introduced to well-known tools and methodologies for analyzing MFT artifacts to identify malicious activity.
-                    
-                </p>
-                <p><a href="http://localhost:1313/posts/htb-sherlocks/bft/">Continue reading </a></p>
-            </div>
-        
-    </div>
-    <hr />
-</article>
-<article class="card postlistitem">
-    <div>
-        <h2>
-            <a href="http://localhost:1313/posts/filetime/">Filetime</a>
-        </h2>
-        <p class="date">
-            <span title='Date'> </span>
-    2024-05-16
-
-
-                | 
-                <span title='Tags'> </span>
-                
-                    <a href="/tags/dfir">#dfir</a>
-                
-                    <a href="/tags/file">#file</a>
-                
-                    <a href="/tags/time">#time</a>
-                
-                    <a href="/tags/timestamp">#timestamp</a>
-                
-                    <a href="/tags/windows">#windows</a>
-                
-            
-        </p>
-        
-            
-        
-        
-            <div class="articlePreview">
-                <p>
-                    
-                        FILETIME in Windows What is FILETIME? A file time is a 64-bit value that represents the number of 100-nanosecond intervals that have elapsed since 12:00 A.M. January 1, 1601 Coordinated Universal Time (UTC).
-                    
-                </p>
-                <p><a href="http://localhost:1313/posts/filetime/">Continue reading </a></p>
-            </div>
-        
-    </div>
-    <hr />
-</article>
-<article class="card postlistitem">
-    <div>
-        <h2>
-            <a href="http://localhost:1313/posts/master-file-table/">Master File Table</a>
-        </h2>
-        <p class="date">
-            <span title='Date'> </span>
-    2024-05-16
-
-
-                | 
-                <span title='Tags'> </span>
-                
-                    <a href="/tags/dfir">#dfir</a>
-                
-                    <a href="/tags/file">#file</a>
-                
-                    <a href="/tags/master">#master</a>
-                
-                    <a href="/tags/table">#table</a>
-                
-                    <a href="/tags/windows">#windows</a>
-                
-            
-        </p>
-        
-            
-        
-        
-            <div class="articlePreview">
-                <p>
-                    
-                        What is a Master File Table? The Master File Table (MFT) is a system file in the NTFS file system (having the name $MFT) that stores metadata information about all files and directories on an NTFS volume.
-                    
-                </p>
-                <p><a href="http://localhost:1313/posts/master-file-table/">Continue reading </a></p>
-            </div>
-        
-    </div>
-    <hr />
-</article>
-
-</div>
-<div id="getNextBtnContainer"></div>
-
-
-    
-    <div id="pageNavigation" class='
-            
-    '>
-        
-            <a href="/" title='Previous page'>
-                
-                    &lt;&lt;&lt;
-                
-            </a>
-        
-        
-        
-            
-                <a href="/">1</a>
-            
-        
-            
-            <span>
-                [2]
-            </span>
-            
-        
-        
-    </div>
-
-
-
-
-
-                    </main><footer>
-    <hr />
-
-<p><small>
-        2024 &copy; Shakil Hossain - All Right Reserved.
-    </small></p>
-    <p><small>
-        <a href='https://gitlab.com/gabmus/hugo-ficurinia'>Ficurinia theme</a> for <a href='https://gohugo.io'>Hugo</a> by <a href='https://gabmus.org'>Gabriele Musco</a>.
-    </small></p>
-</footer>
-</div>
-            </div>
-        </div>
-
-
-</body>
-</html>
+<!doctype html><html class=home lang=en-us><head><meta name=generator content="Hugo 0.131.0"><script>location.host!=new URL("https://hshakilst.github.io/").host&&(location.href="https://hshakilst.github.io/")</script><meta name=robots content="noai, noimageai"><meta name=viewport content="width=device-width"><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=7"><link href=https://hshakilst.github.io/index.xml rel=alternate type=application/rss+xml title="Shakil's Blog"><link href=https://hshakilst.github.io/index.xml rel=feed type=application/rss+xml title="Shakil's Blog"><link rel=icon href=/favicon.png><link rel="shortcut icon" href=/favicon.ico type=image/x-icon><link rel=apple-touch-icon href=/apple-touch-icon.png><link rel=icon href=/logo.svg type=image/svg+xml><title>Shakil's Blog
+</title><link href=/symbols-nerd-font/symbols-nerd-font.css rel=stylesheet integrity="sha512-lydow8GLOLlYNOtHlksNCmGWWCBsbIEtikXpHzfWqx78HLlyQZHOzyLwPpKol4Th6aCwLUXOfODVYgwrd3nwKQ=="><link href=/jetbrains-mono/jetbrains-mono.css rel=stylesheet integrity="sha512-tJxlgL6v1Y7kFf+qB8SloaAMKnOAw6WouknxXtIjkBux9Y/9aX81EUWOJO8c/3l98DmjG8brr4to7zaez606Fg=="><link type=text/css rel=stylesheet href=https://hshakilst.github.io/css/styles.159e622b5082f31a00ec6f1883bbaf21cb06404f86f78d11446793c0fd5d5060b90e94ef79525a194da08b247c2b8b82413944e9b2af3d2c35c0fa6157961cd6.css integrity="sha512-FZ5iK1CC8xoA7G8Yg7uvIcsGQE+G940RRGeTwP1dUGC5DpTveVJaGU2giyR8K4uCQTlE6bKvPSw1wPphV5Yc1g=="><meta name=author content="Shakil Hossain"><meta name=description content="Shakil's Blog about Cybersecurity"><meta property="og:site_name" content="Shakil's Blog"><meta property="og:title" content="Shakil's Blog"><meta property="og:description" content="Shakil's Blog about Cybersecurity"><meta property="og:type" content="blog"><meta property="og:image" content='https://hshakilst.github.io/android-chrome-512x512.png'><meta name=twitter:card content="summary_large_image"><meta property="twitter:domain" content='akilst.github.io'><meta property="twitter:url" content="https://hshakilst.github.io/"><meta name=twitter:title content="Shakil's Blog"><meta name=twitter:description content="Shakil's Blog about Cybersecurity"><meta name=twitter:image content='https://hshakilst.github.io/android-chrome-512x512.png'><link rel=manifest href=/manifest/index.json></head><body><div id=baseContainer><header class=jumbotronContainer><div class=titleAndSearchContainer><div id=titleContainer><a class=unstyledLink href=/><img src=/logo.svg alt=Logo></a><div class=rightOfLogo><div class=titleAndHamburger><h1><a class=unstyledLink href=/>Shakil's Blog</a></h1></div><div id=wide_nav><nav><ul id=main-nav><li><a href=/>Home</a></li><li><a href=/posts/>Posts</a></li><li><a href=/tags/>Tags</a></li></ul></nav></div></div></div><div class=search><input id=searchbar type=text placeholder=Search>
+<span class=nerdlink onclick=newSearch()>&#xf002;</span></div><script>function newSearch(){let e=searchbar.value.trim();if(!e)return;location.href=`/search/?q=${e}`}searchbar.onkeyup=e=>{e.keyCode==13&&newSearch()}</script></div><div id=links><a rel=noreferrer target=_blank class=nerdlink href=/index.xml>&#xf09e;
+<span>RSS
+</span></a><a rel=noreferrer target=_blank class=nerdlink href=https://github.com/hshakilst>&#xf09b;
+<span>Github
+</span></a><a rel=noreferrer target=_blank class=nerdlink href=https://linkedin.com/in/hshakilst>&#xf0e1;
+<span>LinkedIn
+</span></a><a rel=noreferrer target=_blank class=nerdlink href=mailto:hshakilst@gmail.com>&#xf6ed;
+<span>Gmail</span></a></div></header><div id=contentContainer><div id=content><main><div class=postlist id=postlist><article class="card postlistitem"><div><h2><a href=https://hshakilst.github.io/posts/htb-sherlocks/bumblebee/>HTB Sherlock Bumblebee</a></h2><p class=date><span title=Date> </span>2024-06-15
+|
+<span title=Tags> </span><a href=/tags/access>#access</a>
+<a href=/tags/dfir>#dfir</a>
+<a href=/tags/htb>#htb</a>
+<a href=/tags/linux>#linux</a>
+<a href=/tags/log>#log</a>
+<a href=/tags/phishing>#phishing</a>
+<a href=/tags/phpbb>#phpbb</a>
+<a href=/tags/sherlock>#sherlock</a>
+<a href=/tags/sqlite3>#sqlite3</a></p><div class=articlePreview><p>Bumblebee (DFIR) Scenario An external contractor has accessed the internal forum here at Forela via the Guest Wi-Fi, and they appear to have stolen credentials for the administrative user! We have attached some logs from the forum and a full database dump in sqlite3 format to help you in your investigation.</p><p><a href=https://hshakilst.github.io/posts/htb-sherlocks/bumblebee/>Continue reading </a></p></div></div><hr></article><article class="card postlistitem"><div><h2><a href=https://hshakilst.github.io/posts/htb-sherlocks/logjammer/>HTB Sherlock Logjammer</a></h2><p class=date><span title=Date> </span>2024-06-13
+|
+<span title=Tags> </span><a href=/tags/dfir>#dfir</a>
+<a href=/tags/event>#event</a>
+<a href=/tags/evtx>#evtx</a>
+<a href=/tags/evtxecmd>#evtxecmd</a>
+<a href=/tags/firewall-event>#firewall-event</a>
+<a href=/tags/htb>#htb</a>
+<a href=/tags/log>#log</a>
+<a href=/tags/powershell-event>#powershell-event</a>
+<a href=/tags/python-evtx>#python-evtx</a>
+<a href=/tags/security-event>#security-event</a>
+<a href=/tags/sherlock>#sherlock</a>
+<a href=/tags/system-event>#system-event</a>
+<a href=/tags/windows>#windows</a>
+<a href=/tags/windows-defender-event>#windows-defender-event</a>
+<a href=/tags/zimmerman-tools>#zimmerman-tools</a></p><div class=articlePreview><p>LoLogjammer - DFIR Scenario You have been presented with the opportunity to work as a junior DFIR consultant for a big consultancy. However, they have provided a technical assessment for you to complete.</p><p><a href=https://hshakilst.github.io/posts/htb-sherlocks/logjammer/>Continue reading </a></p></div></div><hr></article><article class="card postlistitem"><div><h2><a href=https://hshakilst.github.io/posts/htb-sherlocks/meerkat/>HTB Sherlock Meerkat</a></h2><p class=date><span title=Date> </span>2024-06-12
+|
+<span title=Tags> </span><a href=/tags/alerts>#alerts</a>
+<a href=/tags/exploit>#exploit</a>
+<a href=/tags/forensic>#forensic</a>
+<a href=/tags/htb>#htb</a>
+<a href=/tags/jq>#jq</a>
+<a href=/tags/json>#json</a>
+<a href=/tags/linux>#linux</a>
+<a href=/tags/pcap>#pcap</a>
+<a href=/tags/sherlock>#sherlock</a>
+<a href=/tags/siem>#siem</a>
+<a href=/tags/soc>#soc</a>
+<a href=/tags/wireshark>#wireshark</a></p><div class=articlePreview><p>Meerkat - SOC Scenario As a fast-growing startup, Forela has been utilising a business management platform. Unfortunately, our documentation is scarce, and our administrators aren&rsquo;t the most security aware. As our new security provider we&rsquo;d like you to have a look at some PCAP and log data we have exported to confirm if we have (or have not) been compromised.</p><p><a href=https://hshakilst.github.io/posts/htb-sherlocks/meerkat/>Continue reading </a></p></div></div><hr></article><article class="card postlistitem"><div><h2><a href=https://hshakilst.github.io/posts/htb-sherlocks/rogueone/>HTB Sherlock RogueOne</a></h2><p class=date><span title=Date> </span>2024-06-11
+|
+<span title=Tags> </span><a href=/tags/dfir>#dfir</a>
+<a href=/tags/dump>#dump</a>
+<a href=/tags/forensic>#forensic</a>
+<a href=/tags/htb>#htb</a>
+<a href=/tags/malware>#malware</a>
+<a href=/tags/memory>#memory</a>
+<a href=/tags/sherlock>#sherlock</a>
+<a href=/tags/volatility>#volatility</a>
+<a href=/tags/windows>#windows</a></p><div class=articlePreview><p>RogueOne - DFIR Scenario Your SIEM system generated multiple alerts in less than a minute, indicating potential C2 communication from Simon Stark&rsquo;s workstation. Despite Simon not noticing anything unusual, the IT team had him share screenshots of his task manager to check for any unusual processes.</p><p><a href=https://hshakilst.github.io/posts/htb-sherlocks/rogueone/>Continue reading </a></p></div></div><hr></article><article class="card postlistitem"><div><h2><a href=https://hshakilst.github.io/posts/htb-sherlocks/ultimatum/>HTB Sherlock Ultimatum</a></h2><p class=date><span title=Date> </span>2024-05-27
+|
+<span title=Tags> </span><a href=/tags/cve-2023-3460>#CVE-2023-3460</a>
+<a href=/tags/dfir>#dfir</a>
+<a href=/tags/htb>#htb</a>
+<a href=/tags/linux>#linux</a>
+<a href=/tags/linuxcatscale>#LinuxCatScale</a>
+<a href=/tags/member>#member</a>
+<a href=/tags/plugin>#plugin</a>
+<a href=/tags/sherlock>#sherlock</a>
+<a href=/tags/ultimate>#ultimate</a>
+<a href=/tags/ultimatum>#ultimatum</a>
+<a href=/tags/worpress>#worpress</a></p><div class=articlePreview><p>Ultimatum (DFIR) Scenario One of the Forela WordPress servers was a target of notorious Threat Actors (TA). The website was running a blog dedicated to the Forela Social Club, where Forela employees can chat and discuss random topics.</p><p><a href=https://hshakilst.github.io/posts/htb-sherlocks/ultimatum/>Continue reading </a></p></div></div><hr></article></div><div id=getNextBtnContainer></div><div id=pageNavigation><a href=/ title='Previous page'>&lt;&lt;&lt;
+</a><a href=/>1</a>
+<span>[2]
+</span><a href=/page/3/>3</a>
+<a href=/page/4/>4</a>
+<a href=/page/3/ title='Next page'>>>></a></div></main><footer><hr><p><small>2025 &copy; Shakil Hossain - All Right Reserved.</small></p><p><small><a href=https://gitlab.com/gabmus/hugo-ficurinia>Ficurinia theme</a> for <a href=https://gohugo.io>Hugo</a> by <a href=https://gabmus.org>Gabriele Musco</a>.</small></p></footer></div></div></div></body></html>

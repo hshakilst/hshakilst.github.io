@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss"><channel><title>Python-Evtx on Shakil's Blog</title><link>https://hshakilst.github.io/tags/python-evtx/</link><description>Recent content in Python-Evtx on Shakil's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>Shakil Hossain - All Right Reserved.</copyright><lastBuildDate>Thu, 13 Jun 2024 04:39:51 -0400</lastBuildDate><atom:link href="https://hshakilst.github.io/tags/python-evtx/index.xml" rel="self" type="application/rss+xml"/><icon>https://hshakilst.github.io/logo.svg</icon><item><title>HTB Sherlock Logjammer</title><link>https://hshakilst.github.io/posts/htb-sherlocks/logjammer/</link><pubDate>Thu, 13 Jun 2024 04:39:51 -0400</pubDate><guid>https://hshakilst.github.io/posts/htb-sherlocks/logjammer/</guid><description><![CDATA[<h1 id="lologjammer---dfir">LoLogjammer - DFIR</h1>
+<h3 id="scenario">Scenario</h3>
+<p>You have been presented with the opportunity to work as a junior DFIR consultant for a big consultancy. However, they have provided a technical assessment for you to complete. The consultancy Forela-Security would like to gauge your Windows Event Log Analysis knowledge. We believe the Cyberjunkie user logged in to his computer and may have taken malicious actions. Please analyze the given event logs and report back.</p>
+<h3 id="artifacts">Artifacts</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>MD5 Hash</th>
+<th>Password</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>logjammer.zip</td>
+<td>2ba794c406aee485186a959c840125af</td>
+<td>hacktheblue</td>
+</tr>
+<tr>
+<td>Event-Logs/Powershell-Operational.evtx</td>
+<td>6739802c74adc7bf6432dfcec853397c</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td>Event-Logs/Security.evtx</td>
+<td>5b75f867d2107d04721ccaeea7914cfd</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td>Event-Logs/System.evtx</td>
+<td>34b0d7a505c880a8ae78405d581b2b1a</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td>Event-Logs/Windows Defender-Operational.evtx</td>
+<td>a2f06faad866ac054705643b0e2c2364</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td>Event-Logs/Windows Firewall-Firewall.evtx</td>
+<td>7ff34616822baa259a8179ed3677173a</td>
+<td>n/a</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tools">Tools</h3>
+<ul>
+<li><a href="https://github.com/omerbenamram/EVTX">evtx_dump</a>: For dumping the evtx file.</li>
+<li><code>jq</code>: For querying the dumped JSON files.</li>
+</ul>
+<h3 id="forensic-analysis">Forensic Analysis</h3>
+<p>Let&rsquo;s dump the evtx file to JSON, after that we can determine if we should use any SIEM tool for analysis for the Linux command line will be sufficient based on the volume of the data.</p>
+<p>To dump the evtx file to JSON we can use <code>evtx-dump</code>. Here are some resources for finding Windows Event Log&rsquo;s Event IDs, Event Names, Event Description, etc. - [[Windows Event Logs]].</p>
+<p>Dump .evtx to JSONL</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ evtx_dump -f <span style="color:#f1fa8c">&#39;Windows Firewall-Firewall.json&#39;</span> -o jsonl Windows<span style="color:#f1fa8c">\ </span>Firewall-Firewall.evtx
+</span></span></code></pre></div><p>Analyze the logs using Event ID and search the converted JSON files using <code>jq</code>. To make this operation easy we can concatenate all the converted json files to a single log file.</p>
+<p>Looking for a user with username <code>CyberJunkie</code> for a user logon event (4624) would be like the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cat all_events.json | jq <span style="color:#f1fa8c">&#39;select(.Event.System.EventID==4624 and .Event.EventData.TargetUserName==&#34;CyberJunkie&#34;)&#39;</span> -c | wc -l
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">4</span>
+</span></span></code></pre></div><p>The user <code>CyberJunkie</code> logged in 4 times to the workstation that is compromised.</p>
+<p>The user also modified the firewall setting and added a firewall rule <code>Metasploit C2 Bypass</code> to facilitate his C2 server communication. Here, Event ID 2004 for Event Source <code>Microsoft-Windows-Windows Firewall with Advanced Security</code> is logged when a rule has been added to the Windows Firewall exception list.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cat all_events.json | jq <span style="color:#f1fa8c">&#39;select(.Event.System.EventID==2004 and .Event.EventData.ModifyingUser==&#34;S-1-5-21-3393683511-3463148672-371912004-1001&#34;) .Event.EventData.RuleName&#39;</span>       
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;File and Printer Sharing (LLMNR-UDP-Out)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;File and Printer Sharing (LLMNR-UDP-In)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;File and Printer Sharing (Echo Request - ICMPv6-Out)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;File and Printer Sharing (Echo Request - ICMPv6-In)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;File and Printer Sharing (Echo Request - ICMPv4-Out)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;File and Printer Sharing (Echo Request - ICMPv4-In)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;File and Printer Sharing (Spooler Service - RPC-EPMAP)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;File and Printer Sharing (Spooler Service - RPC)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;File and Printer Sharing (NB-Datagram-Out)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;File and Printer Sharing (NB-Datagram-In)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;File and Printer Sharing (NB-Name-Out)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;File and Printer Sharing (NB-Name-In)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;File and Printer Sharing (SMB-Out)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;File and Printer Sharing (SMB-In)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;File and Printer Sharing (NB-Session-Out)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;File and Printer Sharing (NB-Session-In)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;Network Discovery (Pub WSD-Out)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;Network Discovery (Pub-WSD-In)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;Network Discovery (LLMNR-UDP-Out)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;Network Discovery (LLMNR-UDP-In)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;Network Discovery (WSD-Out)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;Network Discovery (WSD-In)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;Network Discovery (WSD-In)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;Network Discovery (UPnPHost-Out)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;Network Discovery (SSDP-Out)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;Network Discovery (SSDP-In)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;Firefox (C:\\Program Files\\Mozilla Firefox)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;Firefox (C:\\Program Files\\Mozilla Firefox)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;Metasploit C2 Bypass&#34;</span>
+</span></span></code></pre></div><p>Here&rsquo;s the details of the malicious rule named added to the exception list.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cat all_events.json | jq <span style="color:#f1fa8c">&#39;select(.Event.System.EventID==2004 and .Event.EventData.ModifyingUser==&#34;S-1-5-21-3393683511-3463148672-371912004-1001&#34; and .Event.EventData.RuleName==&#34;Metasploit C2 Bypass&#34;)&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;Event&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;xmlns&#34;</span>: <span style="color:#f1fa8c">&#34;http://schemas.microsoft.com/win/2004/08/events/event&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;EventData&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Action&#34;</span>: 3,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Active&#34;</span>: 1,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;ApplicationPath&#34;</span>: <span style="color:#f1fa8c">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Direction&#34;</span>: 2,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;EdgeTraversal&#34;</span>: 0,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;EmbeddedContext&#34;</span>: <span style="color:#f1fa8c">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Flags&#34;</span>: 1,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;LocalAddresses&#34;</span>: <span style="color:#f1fa8c">&#34;*&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;LocalOnlyMapped&#34;</span>: 0,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;LocalPorts&#34;</span>: <span style="color:#f1fa8c">&#34;*&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;LooseSourceMapped&#34;</span>: 0,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;ModifyingApplication&#34;</span>: <span style="color:#f1fa8c">&#34;C:\\Windows\\System32\\mmc.exe&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;ModifyingUser&#34;</span>: <span style="color:#f1fa8c">&#34;S-1-5-21-3393683511-3463148672-371912004-1001&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Origin&#34;</span>: 1,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Profiles&#34;</span>: 2147483647,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Protocol&#34;</span>: 6,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;RemoteAddresses&#34;</span>: <span style="color:#f1fa8c">&#34;*&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;RemoteMachineAuthorizationList&#34;</span>: <span style="color:#f1fa8c">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;RemotePorts&#34;</span>: <span style="color:#f1fa8c">&#34;4444&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;RemoteUserAuthorizationList&#34;</span>: <span style="color:#f1fa8c">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;RuleId&#34;</span>: <span style="color:#f1fa8c">&#34;{11309293-FB68-4969-93F9-7F75A9032570}&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;RuleName&#34;</span>: <span style="color:#f1fa8c">&#34;Metasploit C2 Bypass&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;RuleStatus&#34;</span>: 65536,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;SchemaVersion&#34;</span>: 542,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;SecurityOptions&#34;</span>: 0,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;ServiceName&#34;</span>: <span style="color:#f1fa8c">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;System&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Channel&#34;</span>: <span style="color:#f1fa8c">&#34;Microsoft-Windows-Windows Firewall With Advanced Security/Firewall&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Computer&#34;</span>: <span style="color:#f1fa8c">&#34;DESKTOP-887GK2L&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Correlation&#34;</span>: null,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;EventID&#34;</span>: 2004,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;EventRecordID&#34;</span>: 1120,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Execution&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;ProcessID&#34;</span>: 2384,
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;ThreadID&#34;</span>: <span style="color:#bd93f9">2868</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Keywords&#34;</span>: <span style="color:#f1fa8c">&#34;0x8000020000000000&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Level&#34;</span>: 4,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Opcode&#34;</span>: 0,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Provider&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;Guid&#34;</span>: <span style="color:#f1fa8c">&#34;D1BC9AFF-2ABF-4D71-9146-ECB2A986EB85&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;Name&#34;</span>: <span style="color:#f1fa8c">&#34;Microsoft-Windows-Windows Firewall With Advanced Security&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Security&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;UserID&#34;</span>: <span style="color:#f1fa8c">&#34;S-1-5-19&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Task&#34;</span>: 0,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;TimeCreated&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;SystemTime&#34;</span>: <span style="color:#f1fa8c">&#34;2023-03-27T14:44:43.415702Z&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Version&#34;</span>: <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">}</span>
+</span></span></code></pre></div><p>The firewall rule&rsquo;s direction was set to &ldquo;2&rdquo; which means &ldquo;Outbound&rdquo;. So, I think &ldquo;1&rdquo; means &ldquo;Inbound&rdquo;? Unable to find documentation regarding the integer values.</p>
+<p>Windows Policy Change Event ID is 4719:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cat all_events.json | jq <span style="color:#f1fa8c">&#39;select(.Event.System.EventID==4719)&#39;</span>       
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;Event&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;xmlns&#34;</span>: <span style="color:#f1fa8c">&#34;http://schemas.microsoft.com/win/2004/08/events/event&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;EventData&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;AuditPolicyChanges&#34;</span>: <span style="color:#f1fa8c">&#34;%%8449&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;CategoryId&#34;</span>: <span style="color:#f1fa8c">&#34;%%8274&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;SubcategoryGuid&#34;</span>: <span style="color:#f1fa8c">&#34;0CCE9227-69AE-11D9-BED3-505054503030&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;SubcategoryId&#34;</span>: <span style="color:#f1fa8c">&#34;%%12804&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;SubjectDomainName&#34;</span>: <span style="color:#f1fa8c">&#34;WORKGROUP&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;SubjectLogonId&#34;</span>: <span style="color:#f1fa8c">&#34;0x3e7&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;SubjectUserName&#34;</span>: <span style="color:#f1fa8c">&#34;DESKTOP-887GK2L</span>$<span style="color:#f1fa8c">&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;SubjectUserSid&#34;</span>: <span style="color:#f1fa8c">&#34;S-1-5-18&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;System&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Channel&#34;</span>: <span style="color:#f1fa8c">&#34;Security&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Computer&#34;</span>: <span style="color:#f1fa8c">&#34;DESKTOP-887GK2L&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Correlation&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;ActivityID&#34;</span>: <span style="color:#f1fa8c">&#34;986A053F-60B9-0002-5B05-6A98B960D901&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;EventID&#34;</span>: 4719,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;EventRecordID&#34;</span>: 13102,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Execution&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;ProcessID&#34;</span>: 780,
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;ThreadID&#34;</span>: <span style="color:#bd93f9">1488</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Keywords&#34;</span>: <span style="color:#f1fa8c">&#34;0x8020000000000000&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Level&#34;</span>: 0,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Opcode&#34;</span>: 0,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Provider&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;Guid&#34;</span>: <span style="color:#f1fa8c">&#34;54849625-5478-4994-A5BA-3E3B0328C30D&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;Name&#34;</span>: <span style="color:#f1fa8c">&#34;Microsoft-Windows-Security-Auditing&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Security&#34;</span>: null,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Task&#34;</span>: 13568,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;TimeCreated&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;SystemTime&#34;</span>: <span style="color:#f1fa8c">&#34;2023-03-27T14:50:03.721835Z&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Version&#34;</span>: <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">}</span>
+</span></span></code></pre></div><p>Searching the sub category&rsquo;s GUID yielded the result <code>Other Object Access Events</code>.</p>
+<p>Finding Scheduled Task Creation Events by the user CyberJunkie</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cat all_events.json | jq <span style="color:#f1fa8c">&#39;select(.Event.System.EventID==4698 and .Event.EventData.SubjectUserName==&#34;CyberJunkie&#34;)&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;Event&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;xmlns&#34;</span>: <span style="color:#f1fa8c">&#34;http://schemas.microsoft.com/win/2004/08/events/event&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;EventData&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;ClientProcessId&#34;</span>: 9320,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;ClientProcessStartKey&#34;</span>: 4222124650660162,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;FQDN&#34;</span>: <span style="color:#f1fa8c">&#34;DESKTOP-887GK2L&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;ParentProcessId&#34;</span>: 6112,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;RpcCallClientLocality&#34;</span>: 0,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;SubjectDomainName&#34;</span>: <span style="color:#f1fa8c">&#34;DESKTOP-887GK2L&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;SubjectLogonId&#34;</span>: <span style="color:#f1fa8c">&#34;0x25f28&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;SubjectUserName&#34;</span>: <span style="color:#f1fa8c">&#34;CyberJunkie&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;SubjectUserSid&#34;</span>: <span style="color:#f1fa8c">&#34;S-1-5-21-3393683511-3463148672-371912004-1001&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;TaskContent&#34;</span>: <span style="color:#f1fa8c">&#34;&lt;?xml version=\&#34;1.0\&#34; encoding=\&#34;UTF-16\&#34;?&gt;\r\n&lt;Task version=\&#34;1.2\&#34; xmlns=\&#34;http://schemas.microsoft.com/windows/2004/02/mit/task\&#34;&gt;\r\n  &lt;RegistrationInfo&gt;\r\n    &lt;Date&gt;2023-03-27T07:51:21.4599985&lt;/Date&gt;\r\n    &lt;Author&gt;DESKTOP-887GK2L\\CyberJunkie&lt;/Author&gt;\r\n    &lt;Description&gt;practice&lt;/Description&gt;\r\n    &lt;URI&gt;\\HTB-AUTOMATION&lt;/URI&gt;\r\n  &lt;/RegistrationInfo&gt;\r\n  &lt;Triggers&gt;\r\n    &lt;CalendarTrigger&gt;\r\n      &lt;StartBoundary&gt;2023-03-27T09:00:00&lt;/StartBoundary&gt;\r\n      &lt;Enabled&gt;true&lt;/Enabled&gt;\r\n      &lt;ScheduleByDay&gt;\r\n        &lt;DaysInterval&gt;1&lt;/DaysInterval&gt;\r\n      &lt;/ScheduleByDay&gt;\r\n    &lt;/CalendarTrigger&gt;\r\n  &lt;/Triggers&gt;\r\n  &lt;Principals&gt;\r\n    &lt;Principal id=\&#34;Author\&#34;&gt;\r\n      &lt;RunLevel&gt;LeastPrivilege&lt;/RunLevel&gt;\r\n      &lt;UserId&gt;DESKTOP-887GK2L\\CyberJunkie&lt;/UserId&gt;\r\n      &lt;LogonType&gt;InteractiveToken&lt;/LogonType&gt;\r\n    &lt;/Principal&gt;\r\n  &lt;/Principals&gt;\r\n  &lt;Settings&gt;\r\n    &lt;MultipleInstancesPolicy&gt;IgnoreNew&lt;/MultipleInstancesPolicy&gt;\r\n    &lt;DisallowStartIfOnBatteries&gt;true&lt;/DisallowStartIfOnBatteries&gt;\r\n    &lt;StopIfGoingOnBatteries&gt;true&lt;/StopIfGoingOnBatteries&gt;\r\n    &lt;AllowHardTerminate&gt;true&lt;/AllowHardTerminate&gt;\r\n    &lt;StartWhenAvailable&gt;false&lt;/StartWhenAvailable&gt;\r\n    &lt;RunOnlyIfNetworkAvailable&gt;false&lt;/RunOnlyIfNetworkAvailable&gt;\r\n    &lt;IdleSettings&gt;\r\n      &lt;Duration&gt;PT10M&lt;/Duration&gt;\r\n      &lt;WaitTimeout&gt;PT1H&lt;/WaitTimeout&gt;\r\n      &lt;StopOnIdleEnd&gt;true&lt;/StopOnIdleEnd&gt;\r\n      &lt;RestartOnIdle&gt;false&lt;/RestartOnIdle&gt;\r\n    &lt;/IdleSettings&gt;\r\n    &lt;AllowStartOnDemand&gt;true&lt;/AllowStartOnDemand&gt;\r\n    &lt;Enabled&gt;true&lt;/Enabled&gt;\r\n    &lt;Hidden&gt;false&lt;/Hidden&gt;\r\n    &lt;RunOnlyIfIdle&gt;false&lt;/RunOnlyIfIdle&gt;\r\n    &lt;WakeToRun&gt;false&lt;/WakeToRun&gt;\r\n    &lt;ExecutionTimeLimit&gt;P3D&lt;/ExecutionTimeLimit&gt;\r\n    &lt;Priority&gt;7&lt;/Priority&gt;\r\n  &lt;/Settings&gt;\r\n  &lt;Actions Context=\&#34;Author\&#34;&gt;\r\n    &lt;Exec&gt;\r\n      &lt;Command&gt;C:\\Users\\CyberJunkie\\Desktop\\Automation-HTB.ps1&lt;/Command&gt;\r\n      &lt;Arguments&gt;-A cyberjunkie@hackthebox.eu&lt;/Arguments&gt;\r\n    &lt;/Exec&gt;\r\n  &lt;/Actions&gt;\r\n&lt;/Task&gt;&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;TaskName&#34;</span>: <span style="color:#f1fa8c">&#34;\\HTB-AUTOMATION&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;System&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Channel&#34;</span>: <span style="color:#f1fa8c">&#34;Security&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Computer&#34;</span>: <span style="color:#f1fa8c">&#34;DESKTOP-887GK2L&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Correlation&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;ActivityID&#34;</span>: <span style="color:#f1fa8c">&#34;986A053F-60B9-0002-5B05-6A98B960D901&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;EventID&#34;</span>: 4698,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;EventRecordID&#34;</span>: 13103,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Execution&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;ProcessID&#34;</span>: 780,
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;ThreadID&#34;</span>: <span style="color:#bd93f9">4180</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Keywords&#34;</span>: <span style="color:#f1fa8c">&#34;0x8020000000000000&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Level&#34;</span>: 0,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Opcode&#34;</span>: 0,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Provider&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;Guid&#34;</span>: <span style="color:#f1fa8c">&#34;54849625-5478-4994-A5BA-3E3B0328C30D&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;Name&#34;</span>: <span style="color:#f1fa8c">&#34;Microsoft-Windows-Security-Auditing&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Security&#34;</span>: null,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Task&#34;</span>: 12804,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;TimeCreated&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;SystemTime&#34;</span>: <span style="color:#f1fa8c">&#34;2023-03-27T14:51:21.481720Z&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Version&#34;</span>: <span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">}</span>
+</span></span></code></pre></div><p>Task name was &ldquo;HTB-AUTOMATION&rdquo; and the contents were:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#ff79c6">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-16&#34;?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;Task</span> <span style="color:#50fa7b">version=</span><span style="color:#f1fa8c">&#34;1.2&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">xmlns=</span><span style="color:#f1fa8c">&#34;http://schemas.microsoft.com/windows/2004/02/mit/task&#34;</span><span style="color:#ff79c6">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;RegistrationInfo&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;Date&gt;</span>2023-03-27T07:51:21.4599985<span style="color:#ff79c6">&lt;/Date&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;Author&gt;</span>DESKTOP-887GK2L\\CyberJunkie<span style="color:#ff79c6">&lt;/Author&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;Description&gt;</span>practice<span style="color:#ff79c6">&lt;/Description&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;URI&gt;</span>\\HTB-AUTOMATION<span style="color:#ff79c6">&lt;/URI&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;/RegistrationInfo&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;Triggers&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;CalendarTrigger&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;StartBoundary&gt;</span>2023-03-27T09:00:00<span style="color:#ff79c6">&lt;/StartBoundary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;Enabled&gt;</span>true<span style="color:#ff79c6">&lt;/Enabled&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;ScheduleByDay&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;DaysInterval&gt;</span>1<span style="color:#ff79c6">&lt;/DaysInterval&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;/ScheduleByDay&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;/CalendarTrigger&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;/Triggers&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;Principals&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;Principal</span> <span style="color:#50fa7b">id=</span><span style="color:#f1fa8c">&#34;Author&#34;</span><span style="color:#ff79c6">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;RunLevel&gt;</span>LeastPrivilege<span style="color:#ff79c6">&lt;/RunLevel&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;UserId&gt;</span>DESKTOP-887GK2L\\CyberJunkie<span style="color:#ff79c6">&lt;/UserId&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;LogonType&gt;</span>InteractiveToken<span style="color:#ff79c6">&lt;/LogonType&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;/Principal&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;/Principals&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;Settings&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;MultipleInstancesPolicy&gt;</span>IgnoreNew<span style="color:#ff79c6">&lt;/MultipleInstancesPolicy&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;DisallowStartIfOnBatteries&gt;</span>true<span style="color:#ff79c6">&lt;/DisallowStartIfOnBatteries&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;StopIfGoingOnBatteries&gt;</span>true<span style="color:#ff79c6">&lt;/StopIfGoingOnBatteries&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;AllowHardTerminate&gt;</span>true<span style="color:#ff79c6">&lt;/AllowHardTerminate&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;StartWhenAvailable&gt;</span>false<span style="color:#ff79c6">&lt;/StartWhenAvailable&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;RunOnlyIfNetworkAvailable&gt;</span>false<span style="color:#ff79c6">&lt;/RunOnlyIfNetworkAvailable&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;IdleSettings&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;Duration&gt;</span>PT10M<span style="color:#ff79c6">&lt;/Duration&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;WaitTimeout&gt;</span>PT1H<span style="color:#ff79c6">&lt;/WaitTimeout&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;StopOnIdleEnd&gt;</span>true<span style="color:#ff79c6">&lt;/StopOnIdleEnd&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;RestartOnIdle&gt;</span>false<span style="color:#ff79c6">&lt;/RestartOnIdle&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;/IdleSettings&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;AllowStartOnDemand&gt;</span>true<span style="color:#ff79c6">&lt;/AllowStartOnDemand&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;Enabled&gt;</span>true<span style="color:#ff79c6">&lt;/Enabled&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;Hidden&gt;</span>false<span style="color:#ff79c6">&lt;/Hidden&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;RunOnlyIfIdle&gt;</span>false<span style="color:#ff79c6">&lt;/RunOnlyIfIdle&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;WakeToRun&gt;</span>false<span style="color:#ff79c6">&lt;/WakeToRun&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;ExecutionTimeLimit&gt;</span>P3D<span style="color:#ff79c6">&lt;/ExecutionTimeLimit&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;Priority&gt;</span>7<span style="color:#ff79c6">&lt;/Priority&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;/Settings&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;Actions</span> <span style="color:#50fa7b">Context=</span><span style="color:#f1fa8c">&#34;Author&#34;</span><span style="color:#ff79c6">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;Exec&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;Command&gt;</span>C:\\Users\\CyberJunkie\\Desktop\\Automation-HTB.ps1<span style="color:#ff79c6">&lt;/Command&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;Arguments&gt;</span>-A cyberjunkie@hackthebox.eu<span style="color:#ff79c6">&lt;/Arguments&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;/Exec&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;/Actions&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;/Task&gt;</span>
+</span></span></code></pre></div><p>Windows Defend Antivirus threat detection event ID is <code>1117</code>. To list these events invoked by the use CyberJunkie we can use the following command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cat all_events.json | jq <span style="color:#f1fa8c">&#39;select(.Event.System.EventID==1117 and .Event.EventData.&#34;Detection User&#34;==&#34;DESKTOP-887GK2L\\CyberJunkie&#34;)&#39;</span> -c | tail -n1
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;Event&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;xmlns&#34;</span>: <span style="color:#f1fa8c">&#34;http://schemas.microsoft.com/win/2004/08/events/event&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;EventData&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Action ID&#34;</span>: <span style="color:#f1fa8c">&#34;2&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Action Name&#34;</span>: <span style="color:#f1fa8c">&#34;Quarantine&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Additional Actions ID&#34;</span>: <span style="color:#f1fa8c">&#34;0&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Additional Actions String&#34;</span>: <span style="color:#f1fa8c">&#34;No additional actions required&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Category ID&#34;</span>: <span style="color:#f1fa8c">&#34;34&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Category Name&#34;</span>: <span style="color:#f1fa8c">&#34;Tool&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Detection ID&#34;</span>: <span style="color:#f1fa8c">&#34;{0EBC4BEA-5532-4EFB-8A34-64F91CC8702E}&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Detection Time&#34;</span>: <span style="color:#f1fa8c">&#34;2023-03-27T14:42:34.272Z&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Detection User&#34;</span>: <span style="color:#f1fa8c">&#34;DESKTOP-887GK2L\\CyberJunkie&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Engine Version&#34;</span>: <span style="color:#f1fa8c">&#34;AM: 1.1.20100.6, NIS: 1.1.20100.6&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Error Code&#34;</span>: <span style="color:#f1fa8c">&#34;0x80508023&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Error Description&#34;</span>: <span style="color:#f1fa8c">&#34;The program could not find the malware and other potentially unwanted software on this device. &#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Execution ID&#34;</span>: <span style="color:#f1fa8c">&#34;0&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Execution Name&#34;</span>: <span style="color:#f1fa8c">&#34;Unknown&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;FWLink&#34;</span>: <span style="color:#f1fa8c">&#34;https://go.microsoft.com/fwlink/?linkid=37020&amp;name=HackTool:MSIL/SharpHound!MSR&amp;threatid=2147814944&amp;enterprise=0&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Origin ID&#34;</span>: <span style="color:#f1fa8c">&#34;4&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Origin Name&#34;</span>: <span style="color:#f1fa8c">&#34;Internet&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Path&#34;</span>: <span style="color:#f1fa8c">&#34;containerfile:_C:\\Users\\CyberJunkie\\Downloads\\SharpHound-v1.1.0.zip; file:_C:\\Users\\CyberJunkie\\Downloads\\SharpHound-v1.1.0.zip-&gt;SharpHound.exe; webfile:_C:\\Users\\CyberJunkie\\Downloads\\SharpHound-v1.1.0.zip|https://objects.githubusercontent.com/github-production-release-asset-2e65be/385323486/70d776cc-8f83-44d5-b226-2dccc4f7c1e3?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20230327%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20230327T144228Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=f969ef5ca3eec150dc1e23623434adc1e4a444ba026423c32edf5e85d881a771&amp;X-Amz-SignedHeaders=host&amp;actor_id=0&amp;key_id=0&amp;repo_id=385323486&amp;response-content-disposition=attachment%3B%20filename%3DSharpHound-v1.1.0.zip&amp;response-content-type=application%2Foctet-stream|pid:3532,ProcessStart:133244017530289775&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Post Clean Status&#34;</span>: <span style="color:#f1fa8c">&#34;0&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Pre Execution Status&#34;</span>: <span style="color:#f1fa8c">&#34;0&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Process Name&#34;</span>: <span style="color:#f1fa8c">&#34;Unknown&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Product Name&#34;</span>: <span style="color:#f1fa8c">&#34;Microsoft Defender Antivirus&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Product Version&#34;</span>: <span style="color:#f1fa8c">&#34;4.18.2302.7&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Remediation User&#34;</span>: <span style="color:#f1fa8c">&#34;NT AUTHORITY\\SYSTEM&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Security intelligence Version&#34;</span>: <span style="color:#f1fa8c">&#34;AV: 1.385.1261.0, AS: 1.385.1261.0, NIS: 1.385.1261.0&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Severity ID&#34;</span>: <span style="color:#f1fa8c">&#34;4&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Severity Name&#34;</span>: <span style="color:#f1fa8c">&#34;High&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Source ID&#34;</span>: <span style="color:#f1fa8c">&#34;4&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Source Name&#34;</span>: <span style="color:#f1fa8c">&#34;Downloads and attachments&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;State&#34;</span>: <span style="color:#f1fa8c">&#34;2&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Status Code&#34;</span>: <span style="color:#f1fa8c">&#34;103&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Status Description&#34;</span>: <span style="color:#f1fa8c">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Threat ID&#34;</span>: <span style="color:#f1fa8c">&#34;2147814944&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Threat Name&#34;</span>: <span style="color:#f1fa8c">&#34;HackTool:MSIL/SharpHound!MSR&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Type ID&#34;</span>: <span style="color:#f1fa8c">&#34;0&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Type Name&#34;</span>: <span style="color:#f1fa8c">&#34;Concrete&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Unused&#34;</span>: <span style="color:#f1fa8c">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Unused2&#34;</span>: <span style="color:#f1fa8c">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Unused3&#34;</span>: <span style="color:#f1fa8c">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Unused4&#34;</span>: <span style="color:#f1fa8c">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Unused5&#34;</span>: <span style="color:#f1fa8c">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Unused6&#34;</span>: <span style="color:#f1fa8c">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;System&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Channel&#34;</span>: <span style="color:#f1fa8c">&#34;Microsoft-Windows-Windows Defender/Operational&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Computer&#34;</span>: <span style="color:#f1fa8c">&#34;DESKTOP-887GK2L&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Correlation&#34;</span>: null,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;EventID&#34;</span>: 1117,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;EventRecordID&#34;</span>: 444,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Execution&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;ProcessID&#34;</span>: 3300,
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;ThreadID&#34;</span>: <span style="color:#bd93f9">3056</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Keywords&#34;</span>: <span style="color:#f1fa8c">&#34;0x8000000000000000&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Level&#34;</span>: 4,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Opcode&#34;</span>: 0,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Provider&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;Guid&#34;</span>: <span style="color:#f1fa8c">&#34;11CD958A-C507-4EF3-B3F2-5FD9DFBD2C78&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;Name&#34;</span>: <span style="color:#f1fa8c">&#34;Microsoft-Windows-Windows Defender&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Security&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;UserID&#34;</span>: <span style="color:#f1fa8c">&#34;S-1-5-18&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Task&#34;</span>: 0,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;TimeCreated&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;SystemTime&#34;</span>: <span style="color:#f1fa8c">&#34;2023-03-27T14:42:48.353664Z&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Version&#34;</span>: <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">}</span>
+</span></span></code></pre></div><p>To List the commands executed on PowerShell by the user <code>CyberJunkie</code> we need two pieces of Information.</p>
+<ol>
+<li>We need the time when CyberJunkie user logged on to the System.</li>
+<li>We need the PowerShell Script Block Execution Event ID which is <code>4104</code></li>
+</ol>
+<p>Correlating this two pieces of data we can extract the commands ran by the user CyberJunkie.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cat all_events.json | jq <span style="color:#f1fa8c">&#39;select(.Event.System.EventID==4104 and .Event.System.TimeCreated.&#34;#attributes&#34;.SystemTime &gt; &#34;2023-03-27T14:38:32.937458Z&#34;) .Event.EventData.ScriptBlockText&#39;</span>       
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;prompt&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;Get-FileHash -Algorithm md5 .\\Desktop\\Automation-HTB.ps1&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;prompt&#34;</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>Use Zimmerman&#39;s EvtxECmd.exe for future Windows Event Log Analysis. It flattens the JSON fields to almost 1 level deep, which can be very useful to query using **jq**
+</span></span></code></pre></div><p>Finding the deleted System Event log after CyberJunkie logged on to the system.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cat all_events.json | jq <span style="color:#f1fa8c">&#39;select(.Event.System.EventID==104 and .Event.System.TimeCreated.&#34;#attributes&#34;.SystemTime &gt; &#34;2023-03-27T14:38:32.937458Z&#34;)&#39;</span>       
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;Event&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;xmlns&#34;</span>: <span style="color:#f1fa8c">&#34;http://schemas.microsoft.com/win/2004/08/events/event&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;System&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Channel&#34;</span>: <span style="color:#f1fa8c">&#34;System&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Computer&#34;</span>: <span style="color:#f1fa8c">&#34;DESKTOP-887GK2L&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Correlation&#34;</span>: null,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;EventID&#34;</span>: 104,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;EventRecordID&#34;</span>: 2186,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Execution&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;ProcessID&#34;</span>: 1332,
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;ThreadID&#34;</span>: <span style="color:#bd93f9">5332</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Keywords&#34;</span>: <span style="color:#f1fa8c">&#34;0x8000000000000000&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Level&#34;</span>: 4,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Opcode&#34;</span>: 0,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Provider&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;Guid&#34;</span>: <span style="color:#f1fa8c">&#34;{fc65ddd8-d6ef-4962-83d5-6e5cfe9ce148}&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;Name&#34;</span>: <span style="color:#f1fa8c">&#34;Microsoft-Windows-Eventlog&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Security&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;UserID&#34;</span>: <span style="color:#f1fa8c">&#34;S-1-5-21-3393683511-3463148672-371912004-1001&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Task&#34;</span>: 104,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;TimeCreated&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;SystemTime&#34;</span>: <span style="color:#f1fa8c">&#34;2023-03-27T15:01:56.515836Z&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Version&#34;</span>: <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;UserData&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;LogFileCleared&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;#attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;xmlns&#34;</span>: <span style="color:#f1fa8c">&#34;http://manifests.microsoft.com/win/2004/08/windows/eventlog&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;BackupPath&#34;</span>: <span style="color:#f1fa8c">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;Channel&#34;</span>: <span style="color:#f1fa8c">&#34;Microsoft-Windows-Windows Firewall With Advanced Security/Firewall&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;SubjectDomainName&#34;</span>: <span style="color:#f1fa8c">&#34;DESKTOP-887GK2L&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;SubjectUserName&#34;</span>: <span style="color:#f1fa8c">&#34;CyberJunkie&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">}</span>
+</span></span></code></pre></div><h3 id="summary">Summary</h3>
+<p>This Sherlock was tough for me to answer the Task 11, 12 questions. I get to study different kinds of Windows Event Logs specially Firewall, PowerShell, Windows Defender and System. I get to analyze what commands the TA ran, what malicious files they uploaded, what firewall rules were added and also how they tried to cover their tracks by removing certain log files. It was a fun experience.</p>
+]]></description></item></channel></rss>

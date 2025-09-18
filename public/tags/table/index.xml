@@ -1,21 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss">
-  <channel>
-    <title>Table on Shakil&#39;s Blog</title>
-    <link>http://localhost:1313/tags/table/</link>
-    <description>Recent content in Table on Shakil&#39;s Blog</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <copyright>Shakil Hossain - All Right Reserved.</copyright>
-    <lastBuildDate>Thu, 16 May 2024 12:44:59 +0200</lastBuildDate><atom:link href="http://localhost:1313/tags/table/index.xml" rel="self" type="application/rss+xml" /><icon>http://localhost:1313/logo.svg</icon>
-    
-    
-    <item>
-      <title>HTB Sherlock BFT</title>
-      <link>http://localhost:1313/posts/htb-sherlocks/bft/</link>
-      <pubDate>Thu, 16 May 2024 12:44:59 +0200</pubDate>
-      
-      <guid>http://localhost:1313/posts/htb-sherlocks/bft/</guid>
-      <description><![CDATA[<h1 id="bft-dfir">BFT (DFIR)</h1>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss"><channel><title>Table on Shakil's Blog</title><link>https://hshakilst.github.io/tags/table/</link><description>Recent content in Table on Shakil's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>Shakil Hossain - All Right Reserved.</copyright><lastBuildDate>Thu, 16 May 2024 12:44:59 +0200</lastBuildDate><atom:link href="https://hshakilst.github.io/tags/table/index.xml" rel="self" type="application/rss+xml"/><icon>https://hshakilst.github.io/logo.svg</icon><item><title>HTB Sherlock BFT</title><link>https://hshakilst.github.io/posts/htb-sherlocks/bft/</link><pubDate>Thu, 16 May 2024 12:44:59 +0200</pubDate><guid>https://hshakilst.github.io/posts/htb-sherlocks/bft/</guid><description><![CDATA[<h1 id="bft-dfir">BFT (DFIR)</h1>
 <h3 id="scenario">Scenario</h3>
 <p>In this Sherlock, you will become acquainted with MFT (Master File Table) forensics. You will be introduced to well-known tools and methodologies for analyzing MFT artifacts to identify malicious activity. During our analysis, you will utilize the MFTECmd tool to parse the provided MFT file, TimeLine Explorer to open and analyze the results from the parsed MFT, and a Hex editor to recover file contents from the MFT.</p>
 <h3 id="forensics">Forensics</h3>
@@ -78,19 +61,7 @@
 </ul>
 <h3 id="summary">Summary</h3>
 <p>Using the MFT file I was able to discover a stager file residing in MFT and the URL which was used to deliver it initially. I also discovered a C2 server by reading the contents of that file. A timeline for this incident was also established using Timeline Explorer.</p>
-]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>Master File Table</title>
-      <link>http://localhost:1313/posts/master-file-table/</link>
-      <pubDate>Thu, 16 May 2024 11:20:29 +0200</pubDate>
-      
-      <guid>http://localhost:1313/posts/master-file-table/</guid>
-      <description><![CDATA[<h2 id="what-is-a-master-file-table">What is a Master File Table?</h2>
+]]></description></item><item><title>Master File Table</title><link>https://hshakilst.github.io/posts/master-file-table/</link><pubDate>Thu, 16 May 2024 11:20:29 +0200</pubDate><guid>https://hshakilst.github.io/posts/master-file-table/</guid><description><![CDATA[<h2 id="what-is-a-master-file-table">What is a Master File Table?</h2>
 <p>The Master File Table (MFT) is a system file in the NTFS file system (having the name $MFT) that stores metadata information about all files and directories on an NTFS volume. The MFT acts as an index to all the files and directories on the volume, providing quick access to the information needed to retrieve a file.</p>
 <p>Each file and directory on an NTFS volume has a unique record in the MFT, known as an MFT entry. The MFT entry contains information such as the file name, timestamps, permissions, and a pointer to the file’s data. The corresponding MFT entry is updated when a file is created or modified.</p>
 <p>When a file is deleted, the corresponding MFT entry is marked as free, but the actual file data remains on the disk until it is overwritten by new data. This can be useful in data recovery scenarios, as the deleted file’s data may still be recoverable. Successful data recovery requires that the Disk regions occupied by the deleted data are not overwritten.</p>
@@ -212,10 +183,4 @@ access or malware activity.</p>
 <li><a href="http://www.kazamiya.net/en/NTFS_Timestamps">Kazamiya</a></li>
 <li><a href="BFT-Write-Up.pdf">Official Writeup BFT by Cyberjunkie &amp; Sebh24 on HTB</a></li>
 </ul>
-]]></description>
-      
-    </item>
-    
-    
-  </channel>
-</rss>
+]]></description></item></channel></rss>

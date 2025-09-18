@@ -1,21 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss">
-  <channel>
-    <title>Mimikatz on Shakil&#39;s Blog</title>
-    <link>http://localhost:1313/tags/mimikatz/</link>
-    <description>Recent content in Mimikatz on Shakil&#39;s Blog</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <copyright>Shakil Hossain - All Right Reserved.</copyright>
-    <lastBuildDate>Thu, 16 May 2024 17:00:43 +0200</lastBuildDate><atom:link href="http://localhost:1313/tags/mimikatz/index.xml" rel="self" type="application/rss+xml" /><icon>http://localhost:1313/logo.svg</icon>
-    
-    
-    <item>
-      <title>HTB Machine Office</title>
-      <link>http://localhost:1313/posts/htb-machines/office/</link>
-      <pubDate>Thu, 16 May 2024 17:00:43 +0200</pubDate>
-      
-      <guid>http://localhost:1313/posts/htb-machines/office/</guid>
-      <description><![CDATA[<h1 id="office---htbhttpsapphacktheboxcommachinesoffice">Office - <a href="https://app.hackthebox.com/machines/Office">HTB</a></h1>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss"><channel><title>Mimikatz on Shakil's Blog</title><link>https://hshakilst.github.io/tags/mimikatz/</link><description>Recent content in Mimikatz on Shakil's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>Shakil Hossain - All Right Reserved.</copyright><lastBuildDate>Thu, 16 May 2024 17:00:43 +0200</lastBuildDate><atom:link href="https://hshakilst.github.io/tags/mimikatz/index.xml" rel="self" type="application/rss+xml"/><icon>https://hshakilst.github.io/logo.svg</icon><item><title>HTB Machine Office</title><link>https://hshakilst.github.io/posts/htb-machines/office/</link><pubDate>Thu, 16 May 2024 17:00:43 +0200</pubDate><guid>https://hshakilst.github.io/posts/htb-machines/office/</guid><description><![CDATA[<h1 id="office---htbhttpsapphacktheboxcommachinesoffice">Office - <a href="https://app.hackthebox.com/machines/Office">HTB</a></h1>
 <p><img src="images/image.png" alt="alt text"></p>
 <h2 id="recon">Recon</h2>
 <h3 id="nmap">Nmap</h3>
@@ -1131,10 +1114,4 @@
 </span></span><span style="display:flex;"><span>nt authority\system
 </span></span></code></pre></div><h2 id="reference">Reference</h2>
 <p><a href="https://namiq.net/blog/htb-office-writeup-hackthebox">For root flag I followed namiq.net&rsquo;s walkthrough.</a></p>
-]]></description>
-      
-    </item>
-    
-    
-  </channel>
-</rss>
+]]></description></item></channel></rss>

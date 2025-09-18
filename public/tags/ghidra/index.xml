@@ -1,0 +1,602 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss"><channel><title>Ghidra on Shakil's Blog</title><link>https://hshakilst.github.io/tags/ghidra/</link><description>Recent content in Ghidra on Shakil's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>Shakil Hossain - All Right Reserved.</copyright><lastBuildDate>Sat, 15 Jun 2024 04:33:24 -0400</lastBuildDate><atom:link href="https://hshakilst.github.io/tags/ghidra/index.xml" rel="self" type="application/rss+xml"/><icon>https://hshakilst.github.io/logo.svg</icon><item><title>HTB Sherlock Lockpick1</title><link>https://hshakilst.github.io/posts/htb-sherlocks/lockpick1/</link><pubDate>Sat, 15 Jun 2024 04:33:24 -0400</pubDate><guid>https://hshakilst.github.io/posts/htb-sherlocks/lockpick1/</guid><description><![CDATA[<h1 id="lockpick-1---malware-analysis">Lockpick 1 - Malware Analysis</h1>
+<h3 id="scenario">Scenario</h3>
+<p>Forela needs your help! A whole portion of our UNIX servers have been hit with what we think is ransomware. We are refusing to pay the attackers and need you to find a way to recover the files provided. Warning This is a warning that this Sherlock includes software that is going to interact with your computer and files. This software has been intentionally included for educational purposes and is NOT intended to be executed or used otherwise. Always handle such files in isolated, controlled, and secure environments. Once the Sherlock zip has been unzipped, you will find a DANGER.txt file. Please read this to proceed.</p>
+<h3 id="artifacts">Artifacts</h3>
+<table>
+<thead>
+<tr>
+<th>Artifact</th>
+<th>MD5 Hash</th>
+<th>Password</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>lockpick1.zip</td>
+<td>e14430ea647d948e3084931652f5e534</td>
+<td>hacktheblue</td>
+</tr>
+<tr>
+<td>bescrypt.zip</td>
+<td>ab7388c8a51ea6c8b53cbc11bfd463f2</td>
+<td>E@iwyzXK7HK&amp;</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tools">Tools</h3>
+<ul>
+<li><a href="https://github.com/mandiant/flare-floss">flare-floss</a>: For static malware analysis.</li>
+<li><a href="https://github.com/jqlang/jq">jq</a>: For querying JSON files.</li>
+<li><a href="https://github.com/NationalSecurityAgency/ghidra">Ghidra SRE</a>: For reverse engineering the malware and static analysis.</li>
+<li>Sublime Text Editor</li>
+<li>xxd Hex Editor</li>
+<li>Visual Studio Code</li>
+</ul>
+<h3 id="tasks">Tasks</h3>
+<ol>
+<li>Please confirm the encryption key string utilised for the encryption of the files provided?</li>
+<li>We have recently received an email from <a href="mailto:wbevansn1@cocolog-nifty.com">wbevansn1@cocolog-nifty.com</a> demanding to know the first and last name we have him registered as. They believe they made a mistake in the application process. Please confirm the first and last name of this applicant.</li>
+<li>What is the MAC address and serial number of the laptop assigned to Hart Manifould?</li>
+<li>What is the email address of the attacker?</li>
+<li>City of London Police have suspiciouns of some insider trading taking part within our trading organisation. Please confirm the email address of the person with the highest profit percentage in a single trade alongside the profit percentage.</li>
+<li>Our E-Discovery team would like to confirm the IP address detailed in the Sales Forecast log for a user who is suspected of sharing their account with a colleague. Please confirm the IP address for Karylin O&rsquo;Hederscoll.</li>
+<li>Which of the following file extensions is not targeted by the malware? <code>.txt, .sql, .ppt, .pdf, .docx, .xlsx, .csv, .json, .xml</code></li>
+<li>We need to confirm the integrity of the files once decrypted. Please confirm the MD5 hash of the applicants DB.</li>
+<li>We need to confirm the integrity of the files once decrypted. Please confirm the MD5 hash of the trading backup.</li>
+<li>We need to confirm the integrity of the files once decrypted. Please confirm the MD5 hash of the complaints file.</li>
+</ol>
+<h3 id="malware-analysis">Malware Analysis</h3>
+<p>We have been given a directory <code>forela-criticaldata</code> that contains encrypted internal files by a ransomware. The sample of the ransomware is also given in a separate zip file <code>bescrypt.zip</code>. Our objective is to recover the encrypted files by analyzing the malware.</p>
+<h4 id="static-analysis">Static Analysis</h4>
+<p>First, let&rsquo;s see what kind of binary we are dealing with.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ file bescrypt3.2               
+</span></span><span style="display:flex;"><span>bescrypt3.2: ELF 64-bit LSB pie executable, x86-64, version <span style="color:#bd93f9">1</span> <span style="color:#ff79c6">(</span>SYSV<span style="color:#ff79c6">)</span>, dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID<span style="color:#ff79c6">[</span>sha1<span style="color:#ff79c6">]=</span>2b6eafade391d7be39a8aff0d2e3a60aa8b6a4c2, <span style="color:#ff79c6">for</span> GNU/Linux 3.2.0, not stripped
+</span></span></code></pre></div><p>It&rsquo;s an ELF 64-bit binary. You can read more about ELF binary in the Medium article mentioned in the reference section.</p>
+<p>Binary Headers</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ readelf -h bescrypt3.2
+</span></span><span style="display:flex;"><span>ELF Header:
+</span></span><span style="display:flex;"><span>  Magic:   7f <span style="color:#bd93f9">45</span> 4c <span style="color:#bd93f9">46</span> <span style="color:#bd93f9">02</span> <span style="color:#bd93f9">01</span> <span style="color:#bd93f9">01</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> 
+</span></span><span style="display:flex;"><span>  Class:                             ELF64
+</span></span><span style="display:flex;"><span>  Data:                              2&#39;s complement, little endian
+</span></span><span style="display:flex;"><span>  Version:                           <span style="color:#bd93f9">1</span> <span style="color:#ff79c6">(</span>current<span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span>  OS/ABI:                            UNIX - System V
+</span></span><span style="display:flex;"><span>  ABI Version:                       <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>  Type:                              DYN <span style="color:#ff79c6">(</span>Position-Independent Executable file<span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span>  Machine:                           Advanced Micro Devices X86-64
+</span></span><span style="display:flex;"><span>  Version:                           0x1
+</span></span><span style="display:flex;"><span>  Entry point address:               0x1160
+</span></span><span style="display:flex;"><span>  Start of program headers:          <span style="color:#bd93f9">64</span> <span style="color:#ff79c6">(</span>bytes into file<span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span>  Start of section headers:          <span style="color:#bd93f9">14904</span> <span style="color:#ff79c6">(</span>bytes into file<span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span>  Flags:                             0x0
+</span></span><span style="display:flex;"><span>  Size of this header:               <span style="color:#bd93f9">64</span> <span style="color:#ff79c6">(</span>bytes<span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span>  Size of program headers:           <span style="color:#bd93f9">56</span> <span style="color:#ff79c6">(</span>bytes<span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span>  Number of program headers:         <span style="color:#bd93f9">13</span>
+</span></span><span style="display:flex;"><span>  Size of section headers:           <span style="color:#bd93f9">64</span> <span style="color:#ff79c6">(</span>bytes<span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span>  Number of section headers:         <span style="color:#bd93f9">31</span>
+</span></span><span style="display:flex;"><span>  Section header string table index: <span style="color:#bd93f9">30</span>
+</span></span></code></pre></div><p>Let&rsquo;s use floss and try to dump the strings of the binary.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ floss bescrypt3.2 --format sc64
+</span></span><span style="display:flex;"><span>INFO: floss: extracting static strings
+</span></span><span style="display:flex;"><span>finding decoding <span style="color:#ff79c6">function</span> features: 100%|█████| 1/1 <span style="color:#ff79c6">[</span>00:00&lt;00:00, 498.08 functions/s, skipped <span style="color:#bd93f9">0</span> library functions<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>INFO: floss.stackstrings: extracting stackstrings from <span style="color:#bd93f9">1</span> functions
+</span></span><span style="display:flex;"><span>extracting stackstrings: 100%|█████████████████████████████████████████████| 1/1 <span style="color:#ff79c6">[</span>00:00&lt;00:00, 151.76 functions/s<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>INFO: floss.tightstrings: extracting tightstrings from <span style="color:#bd93f9">0</span> functions...
+</span></span><span style="display:flex;"><span>extracting tightstrings: <span style="color:#bd93f9">0</span> functions <span style="color:#ff79c6">[</span>00:00, ? functions/s<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>INFO: floss.string_decoder: decoding strings
+</span></span><span style="display:flex;"><span>decoding strings: 100%|████████████████████████████████████████████████████| 1/1 <span style="color:#ff79c6">[</span>00:00&lt;00:00, 289.22 functions/s<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>INFO: floss: finished execution after 3.23 seconds
+</span></span><span style="display:flex;"><span>INFO: floss: rendering results
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>FLARE FLOSS RESULTS <span style="color:#ff79c6">(</span>version 3.1.0<span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>+------------------------+------------------------------------------------------------------------------------+
+</span></span><span style="display:flex;"><span>| file path              | bescrypt3.2                                                                        |
+</span></span><span style="display:flex;"><span>| identified language    | unknown                                                                            |
+</span></span><span style="display:flex;"><span>| extracted strings      |                                                                                    |
+</span></span><span style="display:flex;"><span>|  static strings        | <span style="color:#bd93f9">127</span> <span style="color:#ff79c6">(</span><span style="color:#bd93f9">1700</span> characters<span style="color:#ff79c6">)</span>                                                              |
+</span></span><span style="display:flex;"><span>|   language strings     |   <span style="color:#bd93f9">0</span> <span style="color:#ff79c6">(</span>   <span style="color:#bd93f9">0</span> characters<span style="color:#ff79c6">)</span>                                                              |
+</span></span><span style="display:flex;"><span>|  stack strings         | <span style="color:#bd93f9">0</span>                                                                                  |
+</span></span><span style="display:flex;"><span>|  tight strings         | <span style="color:#bd93f9">0</span>                                                                                  |
+</span></span><span style="display:flex;"><span>|  decoded strings       | <span style="color:#bd93f9">0</span>                                                                                  |
+</span></span><span style="display:flex;"><span>+------------------------+------------------------------------------------------------------------------------+
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> ──────────────────────────── 
+</span></span><span style="display:flex;"><span>  FLOSS STATIC STRINGS <span style="color:#ff79c6">(</span>127<span style="color:#ff79c6">)</span>  
+</span></span><span style="display:flex;"><span> ──────────────────────────── 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>+-----------------------------------+
+</span></span><span style="display:flex;"><span>| FLOSS STATIC STRINGS: ASCII <span style="color:#ff79c6">(</span>127<span style="color:#ff79c6">)</span> |
+</span></span><span style="display:flex;"><span>+-----------------------------------+
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>/lib64/ld-linux-x86-64.so.2
+</span></span><span style="display:flex;"><span>rewind
+</span></span><span style="display:flex;"><span>snprintf
+</span></span><span style="display:flex;"><span>free
+</span></span><span style="display:flex;"><span>fread
+</span></span><span style="display:flex;"><span>closedir
+</span></span><span style="display:flex;"><span>fopen
+</span></span><span style="display:flex;"><span>strlen
+</span></span><span style="display:flex;"><span>strstr
+</span></span><span style="display:flex;"><span>malloc
+</span></span><span style="display:flex;"><span>__libc_start_main
+</span></span><span style="display:flex;"><span>remove
+</span></span><span style="display:flex;"><span>__cxa_finalize
+</span></span><span style="display:flex;"><span>ftell
+</span></span><span style="display:flex;"><span>readdir
+</span></span><span style="display:flex;"><span>fclose
+</span></span><span style="display:flex;"><span>opendir
+</span></span><span style="display:flex;"><span>fwrite
+</span></span><span style="display:flex;"><span>strcmp
+</span></span><span style="display:flex;"><span>fseek
+</span></span><span style="display:flex;"><span>libc.so.6
+</span></span><span style="display:flex;"><span>GLIBC_2.34
+</span></span><span style="display:flex;"><span>GLIBC_2.2.5
+</span></span><span style="display:flex;"><span>_ITM_deregisterTMCloneTable
+</span></span><span style="display:flex;"><span>__gmon_start__
+</span></span><span style="display:flex;"><span>_ITM_registerTMCloneTable
+</span></span><span style="display:flex;"><span>PTE1
+</span></span><span style="display:flex;"><span>u+UH
+</span></span><span style="display:flex;"><span>ATSH
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>A<span style="color:#f1fa8c">\]</span>
+</span></span><span style="display:flex;"><span>Error opening file: %s
+</span></span><span style="display:flex;"><span>%s.24bes
+</span></span><span style="display:flex;"><span>%s_note.txt
+</span></span><span style="display:flex;"><span>This file has been encrypted by bes24 group, please contact us at bes24@protonmail.com to discuss payment <span style="color:#ff79c6">for</span> us providing you the decryption software..
+</span></span><span style="display:flex;"><span>Error creating note file: %s
+</span></span><span style="display:flex;"><span>Error deleting original file: %s
+</span></span><span style="display:flex;"><span>Error opening directory: %s
+</span></span><span style="display:flex;"><span>%s/%s
+</span></span><span style="display:flex;"><span>.txt
+</span></span><span style="display:flex;"><span>.sql
+</span></span><span style="display:flex;"><span>.pdf
+</span></span><span style="display:flex;"><span>.docx
+</span></span><span style="display:flex;"><span>.xlsx
+</span></span><span style="display:flex;"><span>.csv
+</span></span><span style="display:flex;"><span>.json
+</span></span><span style="display:flex;"><span>.xml
+</span></span><span style="display:flex;"><span>Encrypting: %s
+</span></span><span style="display:flex;"><span>bhUlIshutrea98liOp
+</span></span><span style="display:flex;"><span>/forela-criticaldata/
+</span></span><span style="display:flex;"><span>;*3$<span style="color:#f1fa8c">&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">GCC: (Debian 12.2.0-13) 12.2.0
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">Scrt1.o
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">__abi_tag
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">crtstuff.c
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">deregister_tm_clones
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">__do_global_dtors_aux
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">completed.0
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">__do_global_dtors_aux_fini_array_entry
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">frame_dummy
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">__frame_dummy_init_array_entry
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">bescrypt2.c
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">__FRAME_END__
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">_DYNAMIC
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">__GNU_EH_FRAME_HDR
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">_GLOBAL_OFFSET_TABLE_
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">free@GLIBC_2.2.5
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">__libc_start_main@GLIBC_2.34
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">remove@GLIBC_2.2.5
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">_ITM_deregisterTMCloneTable
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">fread@GLIBC_2.2.5
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">_edata
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">fclose@GLIBC_2.2.5
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">opendir@GLIBC_2.2.5
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">_fini
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">strlen@GLIBC_2.2.5
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">rewind@GLIBC_2.2.5
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">snprintf@GLIBC_2.2.5
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">closedir@GLIBC_2.2.5
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">__data_start
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">strcmp@GLIBC_2.2.5
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">ftell@GLIBC_2.2.5
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">__gmon_start__
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">__dso_handle
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">_IO_stdin_used
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">readdir@GLIBC_2.2.5
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">malloc@GLIBC_2.2.5
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">_end
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">fseek@GLIBC_2.2.5
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">__bss_start
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">main
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">encrypt_file
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">process_directory
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">fopen@GLIBC_2.2.5
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">fwrite@GLIBC_2.2.5
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">__TMC_END__
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">_ITM_registerTMCloneTable
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">__cxa_finalize@GLIBC_2.2.5
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">_init
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">strstr@GLIBC_2.2.5
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.symtab
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.strtab
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.shstrtab
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.interp
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.note.gnu.property
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.note.gnu.build-id
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.note.ABI-tag
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.gnu.hash
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.dynsym
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.dynstr
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.gnu.version
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.gnu.version_r
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.rela.dyn
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.rela.plt
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.init
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.plt.got
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.text
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.fini
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.rodata
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.eh_frame_hdr
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.eh_frame
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.init_array
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.fini_array
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.dynamic
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.got.plt
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.data
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.bss
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.comment
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">+------------------------------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">| FLOSS STATIC STRINGS: UTF-16LE (0) |
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">+------------------------------------+
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"> ───────────────────────── 
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">  FLOSS STACK STRINGS (0)  
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"> ───────────────────────── 
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"> ───────────────────────── 
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">  FLOSS TIGHT STRINGS (0)  
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"> ───────────────────────── 
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"> ─────────────────────────── 
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">  FLOSS DECODED STRINGS (0)  
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"> ─────────────────────────── 
+</span></span></span></code></pre></div><p>We can see the structure of the ELF binary, the function names it has, and some hard coded strings. Most Interesting ones are listed below:</p>
+<p>Hard coded strings:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>Error opening file: %s
+</span></span><span style="display:flex;"><span>%s.24bes
+</span></span><span style="display:flex;"><span>%s_note.txt
+</span></span><span style="display:flex;"><span>This file has been encrypted by bes24 group, please contact us at bes24@protonmail.com to discuss payment for us providing you the decryption software..
+</span></span><span style="display:flex;"><span>Error creating note file: %s
+</span></span><span style="display:flex;"><span>Error deleting original file: %s
+</span></span><span style="display:flex;"><span>Error opening directory: %s
+</span></span><span style="display:flex;"><span>%s/%s
+</span></span><span style="display:flex;"><span>.txt
+</span></span><span style="display:flex;"><span>.sql
+</span></span><span style="display:flex;"><span>.pdf
+</span></span><span style="display:flex;"><span>.docx
+</span></span><span style="display:flex;"><span>.xlsx
+</span></span><span style="display:flex;"><span>.csv
+</span></span><span style="display:flex;"><span>.json
+</span></span><span style="display:flex;"><span>.xml
+</span></span><span style="display:flex;"><span>Encrypting: %s
+</span></span><span style="display:flex;"><span>bhUlIshutrea98liOp
+</span></span><span style="display:flex;"><span>/forela-criticaldata/
+</span></span></code></pre></div><p>We found the encryption key which is <code>bhUlIshutrea98liOp</code>. Now, we need to figure out what kind of encryption we are dealing with.</p>
+<p>C header files and functions load order:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>GCC: (Debian 12.2.0-13) 12.2.0
+</span></span><span style="display:flex;"><span>Scrt1.o
+</span></span><span style="display:flex;"><span>__abi_tag
+</span></span><span style="display:flex;"><span>crtstuff.c
+</span></span><span style="display:flex;"><span>deregister_tm_clones
+</span></span><span style="display:flex;"><span>__do_global_dtors_aux
+</span></span><span style="display:flex;"><span>completed.0
+</span></span><span style="display:flex;"><span>__do_global_dtors_aux_fini_array_entry
+</span></span><span style="display:flex;"><span>frame_dummy
+</span></span><span style="display:flex;"><span>__frame_dummy_init_array_entry
+</span></span><span style="display:flex;"><span>bescrypt2.c
+</span></span><span style="display:flex;"><span>__FRAME_END__
+</span></span><span style="display:flex;"><span>_DYNAMIC
+</span></span><span style="display:flex;"><span>__GNU_EH_FRAME_HDR
+</span></span><span style="display:flex;"><span>_GLOBAL_OFFSET_TABLE_
+</span></span><span style="display:flex;"><span>free@GLIBC_2.2.5
+</span></span><span style="display:flex;"><span>__libc_start_main@GLIBC_2.34
+</span></span><span style="display:flex;"><span>remove@GLIBC_2.2.5
+</span></span><span style="display:flex;"><span>_ITM_deregisterTMCloneTable
+</span></span><span style="display:flex;"><span>fread@GLIBC_2.2.5
+</span></span><span style="display:flex;"><span>_edata
+</span></span><span style="display:flex;"><span>fclose@GLIBC_2.2.5
+</span></span><span style="display:flex;"><span>opendir@GLIBC_2.2.5
+</span></span><span style="display:flex;"><span>_fini
+</span></span><span style="display:flex;"><span>strlen@GLIBC_2.2.5
+</span></span><span style="display:flex;"><span>rewind@GLIBC_2.2.5
+</span></span><span style="display:flex;"><span>snprintf@GLIBC_2.2.5
+</span></span><span style="display:flex;"><span>closedir@GLIBC_2.2.5
+</span></span><span style="display:flex;"><span>__data_start
+</span></span><span style="display:flex;"><span>strcmp@GLIBC_2.2.5
+</span></span><span style="display:flex;"><span>ftell@GLIBC_2.2.5
+</span></span><span style="display:flex;"><span>__gmon_start__
+</span></span><span style="display:flex;"><span>__dso_handle
+</span></span><span style="display:flex;"><span>_IO_stdin_used
+</span></span><span style="display:flex;"><span>readdir@GLIBC_2.2.5
+</span></span><span style="display:flex;"><span>malloc@GLIBC_2.2.5
+</span></span><span style="display:flex;"><span>_end
+</span></span><span style="display:flex;"><span>fseek@GLIBC_2.2.5
+</span></span><span style="display:flex;"><span>__bss_start
+</span></span><span style="display:flex;"><span>main
+</span></span><span style="display:flex;"><span>encrypt_file
+</span></span><span style="display:flex;"><span>process_directory
+</span></span><span style="display:flex;"><span>fopen@GLIBC_2.2.5
+</span></span><span style="display:flex;"><span>fwrite@GLIBC_2.2.5
+</span></span><span style="display:flex;"><span>__TMC_END__
+</span></span><span style="display:flex;"><span>_ITM_registerTMCloneTable
+</span></span><span style="display:flex;"><span>__cxa_finalize@GLIBC_2.2.5
+</span></span><span style="display:flex;"><span>_init
+</span></span><span style="display:flex;"><span>strstr@GLIBC_2.2.5
+</span></span></code></pre></div><p>We discovered an interesting function named <code>encrypt_file</code>. Let&rsquo;s decompile the binary and look at the function&rsquo;s source code using <code>ghidra</code>.</p>
+<p>encrypt_file</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">encrypt_file</span>(<span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>param_1,<span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>param_2)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  byte bVar1;
+</span></span><span style="display:flex;"><span>  ulong uVar2;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">int</span> iVar3;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">size_t</span> sVar4;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">char</span> local_848 [<span style="color:#bd93f9">1024</span>];
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">char</span> local_448 [<span style="color:#bd93f9">1032</span>];
+</span></span><span style="display:flex;"><span>  FILE <span style="color:#ff79c6">*</span>local_40;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>local_38;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">size_t</span> local_30;
+</span></span><span style="display:flex;"><span>  FILE <span style="color:#ff79c6">*</span>local_28;
+</span></span><span style="display:flex;"><span>  ulong local_20;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  local_28 <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">fopen</span>(param_1,<span style="color:#f1fa8c">&#34;rb&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (local_28 <span style="color:#ff79c6">==</span> (FILE <span style="color:#ff79c6">*</span>)<span style="color:#bd93f9">0x0</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">printf</span>(<span style="color:#f1fa8c">&#34;Error opening file: %s</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>,param_1);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">fseek</span>(local_28,<span style="color:#bd93f9">0</span>,<span style="color:#bd93f9">2</span>);
+</span></span><span style="display:flex;"><span>    local_30 <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">ftell</span>(local_28);
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">rewind</span>(local_28);
+</span></span><span style="display:flex;"><span>    local_38 <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">malloc</span>(local_30);
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">fread</span>(local_38,<span style="color:#bd93f9">1</span>,local_30,local_28);
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">fclose</span>(local_28);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> (local_20 <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; uVar2 <span style="color:#ff79c6">=</span> local_20, (<span style="color:#8be9fd">long</span>)local_20 <span style="color:#ff79c6">&lt;</span> (<span style="color:#8be9fd">long</span>)local_30; local_20 <span style="color:#ff79c6">=</span> local_20 <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span>) {
+</span></span><span style="display:flex;"><span>      bVar1 <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">*</span>(byte <span style="color:#ff79c6">*</span>)((<span style="color:#8be9fd">long</span>)local_38 <span style="color:#ff79c6">+</span> local_20);
+</span></span><span style="display:flex;"><span>      sVar4 <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">strlen</span>(param_2);
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">*</span>(byte <span style="color:#ff79c6">*</span>)((<span style="color:#8be9fd">long</span>)local_38 <span style="color:#ff79c6">+</span> local_20) <span style="color:#ff79c6">=</span> bVar1 <span style="color:#ff79c6">^</span> param_2[uVar2 <span style="color:#ff79c6">%</span> sVar4];
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">snprintf</span>(local_448,<span style="color:#bd93f9">0x400</span>,<span style="color:#f1fa8c">&#34;%s.24bes&#34;</span>,param_1);
+</span></span><span style="display:flex;"><span>    local_28 <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">fopen</span>(local_448,<span style="color:#f1fa8c">&#34;wb&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">fwrite</span>(local_38,<span style="color:#bd93f9">1</span>,local_30,local_28);
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">fclose</span>(local_28);
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">free</span>(local_38);
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">snprintf</span>(local_848,<span style="color:#bd93f9">0x400</span>,<span style="color:#f1fa8c">&#34;%s_note.txt&#34;</span>,local_448);
+</span></span><span style="display:flex;"><span>    local_40 <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">fopen</span>(local_848,<span style="color:#f1fa8c">&#34;w&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (local_40 <span style="color:#ff79c6">==</span> (FILE <span style="color:#ff79c6">*</span>)<span style="color:#bd93f9">0x0</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#50fa7b">printf</span>(<span style="color:#f1fa8c">&#34;Error creating note file: %s</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>,local_848);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#50fa7b">fwrite</span>(<span style="color:#f1fa8c">&#34;This file has been encrypted by bes24 group, please contact us at bes24@protonmail.com  to discuss payment for us providing you the decryption software..</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>
+</span></span><span style="display:flex;"><span>             ,<span style="color:#bd93f9">1</span>,<span style="color:#bd93f9">0x99</span>,local_40);
+</span></span><span style="display:flex;"><span>      <span style="color:#50fa7b">fclose</span>(local_40);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    iVar3 <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">remove</span>(param_1);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (iVar3 <span style="color:#ff79c6">!=</span> <span style="color:#bd93f9">0</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#50fa7b">printf</span>(<span style="color:#f1fa8c">&#34;Error deleting original file: %s</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>,param_1);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Looks like XOR encryption mechanism. I used ChatGPT to describe the function&rsquo;s source code. I got the following response.
+Sure, let’s go through this C function <code>encrypt_file</code> step by step to understand how it works.</p>
+<h5 id="function-purpose">Function Purpose</h5>
+<p>The <code>encrypt_file</code> function reads a file, encrypts its content using a provided key, writes the encrypted content to a new file, and creates a note file indicating the file has been encrypted.</p>
+<h5 id="function-parameters">Function Parameters</h5>
+<ul>
+<li><code>char *param_1</code>: The name (or path) of the file to be encrypted.</li>
+<li><code>char *param_2</code>: The encryption key used to encrypt the file content.</li>
+</ul>
+<h5 id="local-variables">Local Variables</h5>
+<ul>
+<li><code>byte bVar1</code>: A byte variable used in the encryption process.</li>
+<li><code>ulong uVar2</code>: A variable used in the encryption process for indexing.</li>
+<li><code>int iVar3</code>: An integer to check the result of removing the original file.</li>
+<li><code>size_t sVar4</code>: Size variable used to store the length of the encryption key.</li>
+<li><code>char local_848[1024]</code>: A buffer to store the name of the note file.</li>
+<li><code>char local_448[1032]</code>: A buffer to store the name of the encrypted file.</li>
+<li><code>FILE *local_40</code>: File pointer for creating the note file.</li>
+<li><code>void *local_38</code>: Pointer to dynamically allocated memory for reading the file content.</li>
+<li><code>size_t local_30</code>: Variable to store the size of the file being read.</li>
+<li><code>FILE *local_28</code>: File pointer for the file being read and the encrypted file being written.</li>
+<li><code>ulong local_20</code>: Loop counter used in the encryption process.</li>
+</ul>
+<h5 id="step-by-step-explanation">Step-by-Step Explanation</h5>
+<ol>
+<li>
+<p><strong>Open the Original File</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>local_28 <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">fopen</span>(param_1, <span style="color:#f1fa8c">&#34;rb&#34;</span>);
+</span></span></code></pre></div><ul>
+<li>Attempts to open the file specified by <code>param_1</code> in binary read mode.</li>
+<li>If the file cannot be opened, it prints an error message.</li>
+</ul>
+</li>
+<li>
+<p><strong>Read the File Content</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#50fa7b">fseek</span>(local_28, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">2</span>);
+</span></span><span style="display:flex;"><span>local_30 <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">ftell</span>(local_28);
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">rewind</span>(local_28);
+</span></span><span style="display:flex;"><span>local_38 <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">malloc</span>(local_30);
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">fread</span>(local_38, <span style="color:#bd93f9">1</span>, local_30, local_28);
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">fclose</span>(local_28);
+</span></span></code></pre></div><ul>
+<li>Seeks to the end of the file to determine its size (<code>local_30</code>).</li>
+<li>Allocates memory to <code>local_38</code> to hold the file content.</li>
+<li>Reads the file content into <code>local_38</code>.</li>
+<li>Closes the original file.</li>
+</ul>
+</li>
+<li>
+<p><strong>Encrypt the File Content</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#ff79c6">for</span> (local_20 <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; uVar2 <span style="color:#ff79c6">=</span> local_20, (<span style="color:#8be9fd">long</span>)local_20 <span style="color:#ff79c6">&lt;</span> (<span style="color:#8be9fd">long</span>)local_30; local_20 <span style="color:#ff79c6">=</span> local_20 <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span>) {
+</span></span><span style="display:flex;"><span>    bVar1 <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">*</span>(byte <span style="color:#ff79c6">*</span>)((<span style="color:#8be9fd">long</span>)local_38 <span style="color:#ff79c6">+</span> local_20);
+</span></span><span style="display:flex;"><span>    sVar4 <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">strlen</span>(param_2);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">*</span>(byte <span style="color:#ff79c6">*</span>)((<span style="color:#8be9fd">long</span>)local_38 <span style="color:#ff79c6">+</span> local_20) <span style="color:#ff79c6">=</span> bVar1 <span style="color:#ff79c6">^</span> param_2[uVar2 <span style="color:#ff79c6">%</span> sVar4];
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>Iterates through each byte of the file content.</li>
+<li>Encrypts each byte by XORing it with a byte from the encryption key <code>param_2</code>. The key is used in a cyclic manner.</li>
+</ul>
+</li>
+<li>
+<p><strong>Write the Encrypted Content to a New File</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#50fa7b">snprintf</span>(local_448, <span style="color:#bd93f9">0x400</span>, <span style="color:#f1fa8c">&#34;%s.24bes&#34;</span>, param_1);
+</span></span><span style="display:flex;"><span>local_28 <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">fopen</span>(local_448, <span style="color:#f1fa8c">&#34;wb&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">fwrite</span>(local_38, <span style="color:#bd93f9">1</span>, local_30, local_28);
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">fclose</span>(local_28);
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">free</span>(local_38);
+</span></span></code></pre></div><ul>
+<li>Constructs the name for the encrypted file by appending &ldquo;.24bes&rdquo; to the original filename.</li>
+<li>Opens the new file in binary write mode.</li>
+<li>Writes the encrypted content to this new file.</li>
+<li>Closes the new file and frees the allocated memory.</li>
+</ul>
+</li>
+<li>
+<p><strong>Create a Note File</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#50fa7b">snprintf</span>(local_848, <span style="color:#bd93f9">0x400</span>, <span style="color:#f1fa8c">&#34;%s_note.txt&#34;</span>, local_448);
+</span></span><span style="display:flex;"><span>local_40 <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">fopen</span>(local_848, <span style="color:#f1fa8c">&#34;w&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> (local_40 <span style="color:#ff79c6">==</span> (FILE <span style="color:#ff79c6">*</span>)<span style="color:#bd93f9">0x0</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">printf</span>(<span style="color:#f1fa8c">&#34;Error creating note file: %s</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, local_848);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">fwrite</span>(<span style="color:#f1fa8c">&#34;This file has been encrypted by bes24 group, please contact us at bes24@protonmail.com to discuss payment for us providing you the decryption software..</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, <span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">0x99</span>, local_40);
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">fclose</span>(local_40);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>Constructs the name for the note file by appending &ldquo;_note.txt&rdquo; to the encrypted file name.</li>
+<li>Opens the note file in write mode.</li>
+<li>Writes a ransom note to the note file.</li>
+<li>Closes the note file.</li>
+</ul>
+</li>
+<li>
+<p><strong>Delete the Original File</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>iVar3 <span style="color:#ff79c6">=</span> <span style="color:#50fa7b">remove</span>(param_1);
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> (iVar3 <span style="color:#ff79c6">!=</span> <span style="color:#bd93f9">0</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">printf</span>(<span style="color:#f1fa8c">&#34;Error deleting original file: %s</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, param_1);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>Attempts to delete the original file.</li>
+<li>If deletion fails, it prints an error message.</li>
+</ul>
+</li>
+</ol>
+<h5 id="functions-purpose">Function&rsquo;s Purpose</h5>
+<p>The <code>encrypt_file</code> function encrypts the content of a specified file using a provided key and saves the encrypted content to a new file with a &ldquo;.24bes&rdquo; extension. It also creates a note file containing a message from the &ldquo;bes24 group,&rdquo; and then attempts to delete the original file. This function mimics the behavior of ransomware.</p>
+<p>Using the help of ChatGPT I created the following decryption tool in Python.
+<strong>Decryptor Tool</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> os
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> sys
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">decrypt_file</span>(encrypted_file: <span style="color:#8be9fd;font-style:italic">str</span>, decryption_key: <span style="color:#8be9fd;font-style:italic">str</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">try</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># Open the encrypted file for reading in binary mode</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">with</span> <span style="color:#8be9fd;font-style:italic">open</span>(encrypted_file, <span style="color:#f1fa8c">&#39;rb&#39;</span>) <span style="color:#ff79c6">as</span> ef:
+</span></span><span style="display:flex;"><span>            encrypted_data <span style="color:#ff79c6">=</span> ef<span style="color:#ff79c6">.</span>read()
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># Prepare the decryption key</span>
+</span></span><span style="display:flex;"><span>        key_length <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">len</span>(decryption_key)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># Decrypt the data</span>
+</span></span><span style="display:flex;"><span>        decrypted_data <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">bytearray</span>()
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(<span style="color:#8be9fd;font-style:italic">len</span>(encrypted_data)):
+</span></span><span style="display:flex;"><span>            decrypted_byte <span style="color:#ff79c6">=</span> encrypted_data[i] <span style="color:#ff79c6">^</span> <span style="color:#8be9fd;font-style:italic">ord</span>(decryption_key[i <span style="color:#ff79c6">%</span> key_length])
+</span></span><span style="display:flex;"><span>            decrypted_data<span style="color:#ff79c6">.</span>append(decrypted_byte)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># Prepare the output file name by removing the .24bes extension</span>
+</span></span><span style="display:flex;"><span>        output_file <span style="color:#ff79c6">=</span> encrypted_file<span style="color:#ff79c6">.</span>replace(<span style="color:#f1fa8c">&#39;.24bes&#39;</span>, <span style="color:#f1fa8c">&#39;&#39;</span>)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># Write the decrypted data to the output file</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">with</span> <span style="color:#8be9fd;font-style:italic">open</span>(output_file, <span style="color:#f1fa8c">&#39;wb&#39;</span>) <span style="color:#ff79c6">as</span> df:
+</span></span><span style="display:flex;"><span>            df<span style="color:#ff79c6">.</span>write(decrypted_data)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;File decrypted successfully: </span><span style="color:#f1fa8c">{</span>encrypted_file<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c"> -&gt; </span><span style="color:#f1fa8c">{</span>output_file<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">except</span> FileNotFoundError:
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;Error: The file </span><span style="color:#f1fa8c">{</span>encrypted_file<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c"> does not exist.&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">except</span> Exception <span style="color:#ff79c6">as</span> e:
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;An error occurred: </span><span style="color:#f1fa8c">{</span>e<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">decrypt_directory</span>(directory: <span style="color:#8be9fd;font-style:italic">str</span>, decryption_key: <span style="color:#8be9fd;font-style:italic">str</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># Get all files in the directory with .24bes extension</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> filename <span style="color:#ff79c6">in</span> os<span style="color:#ff79c6">.</span>listdir(directory):
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> filename<span style="color:#ff79c6">.</span>endswith(<span style="color:#f1fa8c">&#39;.24bes&#39;</span>):
+</span></span><span style="display:flex;"><span>            encrypted_file_path <span style="color:#ff79c6">=</span> os<span style="color:#ff79c6">.</span>path<span style="color:#ff79c6">.</span>join(directory, filename)
+</span></span><span style="display:flex;"><span>            decrypt_file(encrypted_file_path, decryption_key)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Hardcoded decryption key</span>
+</span></span><span style="display:flex;"><span>DECRYPTION_KEY <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;bhUlIshutrea98liOp&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> __name__ <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">len</span>(sys<span style="color:#ff79c6">.</span>argv) <span style="color:#ff79c6">!=</span> <span style="color:#bd93f9">2</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">&#34;Usage: python decrypt_files.py &lt;directory&gt;&#34;</span>)
+</span></span><span style="display:flex;"><span>        sys<span style="color:#ff79c6">.</span>exit(<span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    directory <span style="color:#ff79c6">=</span> sys<span style="color:#ff79c6">.</span>argv[<span style="color:#bd93f9">1</span>]
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">not</span> os<span style="color:#ff79c6">.</span>path<span style="color:#ff79c6">.</span>isdir(directory):
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;Error: </span><span style="color:#f1fa8c">{</span>directory<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c"> is not a valid directory.&#34;</span>)
+</span></span><span style="display:flex;"><span>        sys<span style="color:#ff79c6">.</span>exit(<span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    decrypt_directory(directory, DECRYPTION_KEY)
+</span></span></code></pre></div><p>Using this tool we were successful in decrypting the files of the <code>forela-criticaldata</code> directory.</p>
+<h4 id="virustotal">VirusTotal</h4>
+<p><img src="images/20240619191644.png" alt="virustotal score">
+<a href="https://www.virustotal.com/gui/file/19ad47d6e0a43e77e1d23534404bd7bb7f0742b961ef2b219160c9ef3945572d/details">VirusTotal - Analysis</a></p>
+<h4 id="yara-rule">YARA Rule</h4>
+<p>This is my first yara rule. So, please forgive if it&rsquo;s not good.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>rule Bes24Ransomware
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    meta:
+</span></span><span style="display:flex;"><span>        description = &#34;Detects Bes24 Ransomware&#34;
+</span></span><span style="display:flex;"><span>        author = &#34;Shakil Hossain&#34;
+</span></span><span style="display:flex;"><span>        date = &#34;2024-06-19&#34;
+</span></span><span style="display:flex;"><span>        version = &#34;1.0&#34;
+</span></span><span style="display:flex;"><span>        hash = &#34;19ad47d6e0a43e77e1d23534404bd7bb7f0742b961ef2b219160c9ef3945572d&#34;
+</span></span><span style="display:flex;"><span>        score = 32
+</span></span><span style="display:flex;"><span>        id = &#34;fcaf0277-67bc-512a-97ff-4e8b30190eef&#34;
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>    strings:
+</span></span><span style="display:flex;"><span>        $str1 = &#34;This file has been encrypted by bes24 group, please contact us at bes24@protonmail.com to discuss payment for us providing you the decryption software..&#34;
+</span></span><span style="display:flex;"><span>        $str2 = &#34;.24bes&#34;
+</span></span><span style="display:flex;"><span>        $str3 = &#34;_note.txt&#34;
+</span></span><span style="display:flex;"><span>        $str4 = &#34;bes24@protonmail.com&#34;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    condition:
+</span></span><span style="display:flex;"><span>        filesize &lt; 20KB
+</span></span><span style="display:flex;"><span>        and
+</span></span><span style="display:flex;"><span>        any of ($str*)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>After recovering the files we accomplished our objectives. Now let&rsquo;s answer the tasks.</p>
+<h4 id="task-solution">Task Solution</h4>
+<ol>
+<li>For task one we already have the encryption key listed above.</li>
+<li>We can find the answer in the <code>forela_uk_applicants.sql</code> file.</li>
+<li>We can find it in the <code>it_assets.xml</code> file.</li>
+<li>We can find it in any file with the <code>.24bes_note.txt</code> extension.</li>
+<li>To find this answer we can use <code>jq</code> with following query: <code>jq 'to_entries | map(.value) | max_by(.profit_percentage) | {email, profit_percentage}' trading-firebase_bkup.json</code></li>
+<li>We can find this in the <code>sales_forecast.xlsx</code> file.</li>
+<li>Also we can find this answer in the hard coded strings section.</li>
+<li>Doing an <code>md5sum</code> on the file <code>orela_uk_applicants.sql</code> will get you the answer.</li>
+<li>Doing an <code>md5sum</code> on the file <code>trading-firebase_bkup.json</code> will get you the answer.</li>
+<li>Doing an <code>md5sum</code> on the file <code>complaints.csv</code> will get you the answer.</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>Please calculate the hashes for the file without modifying the file. You may feel tempting to format a file for better visibility. For forensic purpose make a copy of the original file then do operation on it.
+</span></span></code></pre></div><h3 id="summary">Summary</h3>
+<p>This was my first malware analysis Sherlock, where I reversed a very simple ransomware. I did static analysis on the binary and found the encryption key and encryption algorithm which facilitate the creation of a decryption tool and recover the business critical files. I also created an YARA rule to detect this malware. It was fun.</p>
+<h3 id="references">References</h3>
+<ul>
+<li><a href="https://medium.com/@ajmewal/basics-of-elf-executable-and-linkable-format-file-88a516877356">Basics of ELF (Executable and Linkable Format) file by Ajmewal - Medium</a></li>
+<li><a href="https://github.com/Neo23x0/yara-uuid-generator">YARA UUID Generator using Hash</a></li>
+<li><a href="https://www.veeam.com/blog/yara-rules-malware-detection-analysis.html">Mastering YARA Rules: Malware Detection and Analysis - Veeam</a></li>
+</ul>
+]]></description></item></channel></rss>

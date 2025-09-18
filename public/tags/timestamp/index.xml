@@ -1,21 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss">
-  <channel>
-    <title>Timestamp on Shakil&#39;s Blog</title>
-    <link>http://localhost:1313/tags/timestamp/</link>
-    <description>Recent content in Timestamp on Shakil&#39;s Blog</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <copyright>Shakil Hossain - All Right Reserved.</copyright>
-    <lastBuildDate>Thu, 16 May 2024 12:14:06 +0200</lastBuildDate><atom:link href="http://localhost:1313/tags/timestamp/index.xml" rel="self" type="application/rss+xml" /><icon>http://localhost:1313/logo.svg</icon>
-    
-    
-    <item>
-      <title>Filetime</title>
-      <link>http://localhost:1313/posts/filetime/</link>
-      <pubDate>Thu, 16 May 2024 12:14:06 +0200</pubDate>
-      
-      <guid>http://localhost:1313/posts/filetime/</guid>
-      <description><![CDATA[<h1 id="filetime-in-windows">FILETIME in Windows</h1>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss"><channel><title>Timestamp on Shakil's Blog</title><link>https://hshakilst.github.io/tags/timestamp/</link><description>Recent content in Timestamp on Shakil's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>Shakil Hossain - All Right Reserved.</copyright><lastBuildDate>Thu, 16 May 2024 12:14:06 +0200</lastBuildDate><atom:link href="https://hshakilst.github.io/tags/timestamp/index.xml" rel="self" type="application/rss+xml"/><icon>https://hshakilst.github.io/logo.svg</icon><item><title>Filetime</title><link>https://hshakilst.github.io/posts/filetime/</link><pubDate>Thu, 16 May 2024 12:14:06 +0200</pubDate><guid>https://hshakilst.github.io/posts/filetime/</guid><description><![CDATA[<h1 id="filetime-in-windows">FILETIME in Windows</h1>
 <h2 id="what-is-filetime">What is FILETIME?</h2>
 <p>A file time is a 64-bit value that represents the number of 100-nanosecond intervals that have elapsed since 12:00 A.M. January 1, 1601 Coordinated Universal Time (UTC). The system records file times when applications create, access, and write to files.</p>
 <p>The NTFS file system stores time values in UTC format, so they are not affected by changes in time zone or daylight saving time. The FAT file system stores time values based on the local time of the computer.</p>
@@ -84,10 +67,4 @@
 <li><a href="https://forum.hackthebox.com/t/noted-sherlock/307329/6">HTB Discussion Board</a></li>
 <li><a href="https://www.epochconverter.com/ldap">LDAP, Active Directory &amp; Filetime Timestamp Converter</a></li>
 </ul>
-]]></description>
-      
-    </item>
-    
-    
-  </channel>
-</rss>
+]]></description></item></channel></rss>

@@ -1,21 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss">
-  <channel>
-    <title>Lab on Shakil&#39;s Blog</title>
-    <link>http://localhost:1313/tags/lab/</link>
-    <description>Recent content in Lab on Shakil&#39;s Blog</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <copyright>Shakil Hossain - All Right Reserved.</copyright>
-    <lastBuildDate>Thu, 16 May 2024 18:00:05 +0200</lastBuildDate><atom:link href="http://localhost:1313/tags/lab/index.xml" rel="self" type="application/rss+xml" /><icon>http://localhost:1313/logo.svg</icon>
-    
-    
-    <item>
-      <title>HTB Machine Solarlab</title>
-      <link>http://localhost:1313/posts/htb-machines/solarlab/</link>
-      <pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate>
-      
-      <guid>http://localhost:1313/posts/htb-machines/solarlab/</guid>
-      <description><![CDATA[<h1 id="solar-lab---htbhttpsapphacktheboxcommachinessolarlab">Solar Lab - <a href="https://app.hackthebox.com/machines/SolarLab">HTB</a></h1>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss"><channel><title>Lab on Shakil's Blog</title><link>https://hshakilst.github.io/tags/lab/</link><description>Recent content in Lab on Shakil's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>Shakil Hossain - All Right Reserved.</copyright><lastBuildDate>Thu, 16 May 2024 18:00:05 +0200</lastBuildDate><atom:link href="https://hshakilst.github.io/tags/lab/index.xml" rel="self" type="application/rss+xml"/><icon>https://hshakilst.github.io/logo.svg</icon><item><title>HTB Machine Solarlab</title><link>https://hshakilst.github.io/posts/htb-machines/solarlab/</link><pubDate>Thu, 16 May 2024 18:00:05 +0200</pubDate><guid>https://hshakilst.github.io/posts/htb-machines/solarlab/</guid><description><![CDATA[<h1 id="solar-lab---htbhttpsapphacktheboxcommachinessolarlab">Solar Lab - <a href="https://app.hackthebox.com/machines/SolarLab">HTB</a></h1>
 <p><img src="images/image.png" alt="alt text"></p>
 <h2 id="nmap">Nmap</h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>PORT     STATE SERVICE       REASON  VERSION
@@ -687,10 +670,4 @@
 <h2 id="summary">Summary</h2>
 <p>I struggled to find a foothold on the box because I didn&rsquo;t test all the parameters to send the exploit. Also, after gaining openfire user&rsquo;s shell I also found it difficult to recover the Administrator password because I lacked the knowledge of openfire password decryption tool.
 Overall, my recon was good.</p>
-]]></description>
-      
-    </item>
-    
-    
-  </channel>
-</rss>
+]]></description></item></channel></rss>

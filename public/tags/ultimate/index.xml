@@ -1,21 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss">
-  <channel>
-    <title>Ultimate on Shakil&#39;s Blog</title>
-    <link>http://localhost:1313/tags/ultimate/</link>
-    <description>Recent content in Ultimate on Shakil&#39;s Blog</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <copyright>Shakil Hossain - All Right Reserved.</copyright>
-    <lastBuildDate>Mon, 27 May 2024 13:25:02 +0200</lastBuildDate><atom:link href="http://localhost:1313/tags/ultimate/index.xml" rel="self" type="application/rss+xml" /><icon>http://localhost:1313/logo.svg</icon>
-    
-    
-    <item>
-      <title>HTB Sherlock Ultimatum</title>
-      <link>http://localhost:1313/posts/htb-sherlocks/ultimatum/</link>
-      <pubDate>Mon, 27 May 2024 13:25:02 +0200</pubDate>
-      
-      <guid>http://localhost:1313/posts/htb-sherlocks/ultimatum/</guid>
-      <description><![CDATA[<h1 id="ultimatum-dfirhttpsapphacktheboxcomsherlocksultimatum"><a href="https://app.hackthebox.com/sherlocks/Ultimatum">Ultimatum (DFIR)</a></h1>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss"><channel><title>Ultimate on Shakil's Blog</title><link>https://hshakilst.github.io/tags/ultimate/</link><description>Recent content in Ultimate on Shakil's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>Shakil Hossain - All Right Reserved.</copyright><lastBuildDate>Mon, 27 May 2024 13:25:02 +0200</lastBuildDate><atom:link href="https://hshakilst.github.io/tags/ultimate/index.xml" rel="self" type="application/rss+xml"/><icon>https://hshakilst.github.io/logo.svg</icon><item><title>HTB Sherlock Ultimatum</title><link>https://hshakilst.github.io/posts/htb-sherlocks/ultimatum/</link><pubDate>Mon, 27 May 2024 13:25:02 +0200</pubDate><guid>https://hshakilst.github.io/posts/htb-sherlocks/ultimatum/</guid><description><![CDATA[<h1 id="ultimatum-dfirhttpsapphacktheboxcomsherlocksultimatum"><a href="https://app.hackthebox.com/sherlocks/Ultimatum">Ultimatum (DFIR)</a></h1>
 <h2 id="scenario">Scenario</h2>
 <p>One of the Forela WordPress servers was a target of notorious Threat Actors (TA). The website was running a blog dedicated to the Forela Social Club, where Forela employees can chat and discuss random topics. Unfortunately, it became a target of a threat group. The SOC team believes this was due to the blog running a vulnerable plugin. The IT admin already followed the acquisition playbook and triaged the server for the security team. Ultimately (no pun intended) it is your responsibility to investigate the incident. Step in and confirm the culprits behind the attack and restore this important service within the Forela environment.</p>
 <h2 id="forensics">Forensics</h2>
@@ -297,10 +280,4 @@
 </ul>
 <h2 id="remarks">Remarks</h2>
 <p>Analyzing the log file indicates that the server was already compromised on <code>2023-08-07 13:50:25</code> by another threat actor who logged into the SSH account of <code>ubuntu</code> user from IP <code>203.101.190.9</code> using SSH key and created a backdoor admin account <code>cyberjunkie_admin</code> on <code>2023-08-07 13:55:36</code>. The account seems to be dormant but that TA (<code>203.101.190.9</code>) also compromised the MySQL Database.</p>
-]]></description>
-      
-    </item>
-    
-    
-  </channel>
-</rss>
+]]></description></item></channel></rss>
